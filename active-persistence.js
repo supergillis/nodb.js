@@ -6,9 +6,20 @@ define(function() {
   };
 
   var Model = function(args) {
-    this.name = args.name;
-    this.properties = args.properties || {};
-    this.proto = Object.create(args.prototype || {});
+    Object.defineProperty(this, 'name', {
+      value: args.name
+    });
+
+    Object.defineProperty(this, 'properties', {
+      value: args.properties || {}
+    });
+
+    Object.defineProperty(this, 'proto', {
+      value: new Instance({
+        model: this,
+        proto: args.prototype
+      })
+    });
 
     for (var property in this.properties)
       this.defineProperty(property, this.properties[property]);
@@ -61,6 +72,28 @@ define(function() {
     }
 
     return instance;
+  };
+
+  var Instance = function(args) {
+    Object.defineProperty(this, 'model', {
+      value: args.model
+    });
+
+    // Shallow copy prototype properties
+    for (var property in args.proto || []) {
+      var descriptor = Object.getOwnPropertyDescriptor(args.proto, property);
+      if (!descriptor) {
+        this[property] = args.proto[property];
+        continue;
+      }
+
+      // Copy the descriptor instead of only the value
+      Object.defineProperty(this, property, descriptor);
+    }
+  };
+
+  Instance.prototype.destroy = function() {
+    console.log('destroy');
   };
 
   return ActivePersistence;
