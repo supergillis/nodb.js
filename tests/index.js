@@ -6,7 +6,15 @@ require(['../active-persistence'], function(ActivePersistence) {
       lastName: '',
       parent: null
     },
-    prototype: {
+    indexes: {
+      firstName: function() {
+        return this.firstName;
+      },
+      firstLetter: function() {
+        return this.firstName ? this.firstName[0] : null;
+      }
+    },
+    proto: {
       get name() {
         return this.firstName + ' ' + this.lastName;
       },
@@ -24,13 +32,22 @@ require(['../active-persistence'], function(ActivePersistence) {
     }
   });
 
-  var gillis = Person.create({
+  Person.create({
     firstName: 'Gillis',
     lastName: 'Van Ginderachter'
   });
 
-  gillis.firstName = 'steste';
-  console.log('firstName', gillis.firstName);
-  console.log('lastName', gillis.lastName);
-  console.log('name', gillis.name);
+  var emile = Person.create({
+    firstName: 'Emile',
+    lastName: 'Van Ginderachter'
+  });
+
+  emile.firstName = 'Emiel';
+
+  var persons = Person.all();
+  while (persons.hasNext()) {
+    var person = persons.next();
+    console.log('person', person);
+    console.log('person.name', person.name);
+  }
 });
