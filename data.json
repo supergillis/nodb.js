@@ -1,0 +1,587 @@
+{
+    "project": {},
+    "files": {
+        "active-persistence.js": {
+            "name": "active-persistence.js",
+            "modules": {},
+            "classes": {
+                "ActivePersistence": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "index.js": {
+            "name": "index.js",
+            "modules": {},
+            "classes": {
+                "IndexIterator": 1,
+                "Index": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "iterator.js": {
+            "name": "iterator.js",
+            "modules": {},
+            "classes": {
+                "Iterator": 1,
+                "EmptyIterator": 1,
+                "ArrayIterator": 1,
+                "MapIterator": 1,
+                "FilterIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "model.js": {
+            "name": "model.js",
+            "modules": {},
+            "classes": {
+                "Model": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "prototype.js": {
+            "name": "prototype.js",
+            "modules": {},
+            "classes": {
+                "Prototype": 1,
+                "Instance": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {},
+    "classes": {
+        "ActivePersistence": {
+            "name": "ActivePersistence",
+            "shortname": "ActivePersistence",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "active-persistence.js",
+            "line": 2,
+            "uses": [
+                "Model"
+            ],
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "IndexIterator": {
+            "name": "IndexIterator",
+            "shortname": "IndexIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "index.js",
+            "line": 2,
+            "description": "The IndexIterator class.",
+            "extends": "Iterator",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "Index": {
+            "name": "Index",
+            "shortname": "Index",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "index.js",
+            "line": 34,
+            "description": "The Index class.",
+            "extends": "Iterator",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "Iterator": {
+            "name": "Iterator",
+            "shortname": "Iterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "iterator.js",
+            "line": 2,
+            "description": "The Iterator class.",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "EmptyIterator": {
+            "name": "EmptyIterator",
+            "shortname": "EmptyIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "iterator.js",
+            "line": 74,
+            "description": "The EmptyIterator class.",
+            "extends": "Iterator",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "ArrayIterator": {
+            "name": "ArrayIterator",
+            "shortname": "ArrayIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "iterator.js",
+            "line": 102,
+            "description": "The ArrayIterator class.",
+            "extends": "Iterator",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "MapIterator": {
+            "name": "MapIterator",
+            "shortname": "MapIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "iterator.js",
+            "line": 136,
+            "description": "The MapIterator class.",
+            "extends": "Iterator",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "FilterIterator": {
+            "name": "FilterIterator",
+            "shortname": "FilterIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "iterator.js",
+            "line": 176,
+            "description": "The FilterIterator class.",
+            "extends": "Iterator",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "Model": {
+            "name": "Model",
+            "shortname": "Model",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [
+                "ActivePersistence"
+            ],
+            "file": "model.js",
+            "line": 3,
+            "description": "A model specifies a specific data type. It is currently possible to\nspecify its prototype, properties and indexes.\n\nThe model tracks all the instances\n{{#crossLink \"Model/create:method\"}}{{/crossLink}}d so we can\neasily query {{#crossLink \"Model/all:method\"}}{{/crossLink}} the\ncreated instances.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "persistence",
+                    "description": "The ActivePersistence object\n  that is notified about creations, changes, ...",
+                    "type": "ActivePersistence"
+                },
+                {
+                    "name": "name",
+                    "description": "The name of the model.",
+                    "type": "String"
+                },
+                {
+                    "name": "proto",
+                    "description": "The prototype to be used by instances\n  created by this model.",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "properties",
+                    "description": "An object containing the properties\n  and their default values.",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "indexes",
+                    "description": "An object containing the indexes defined\n  on this model.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "example": [
+                " In this example we define a model for a person. A person\nhas a first name, a last name and a parent. We create two indexes:\none index on the first name, and one on the first letter of the\nfirst name. With those two indexes we can quickly\n{{#crossLink \"Model/find:method\"}}{{/crossLink}} persons with\na specific first name or a specific first letter. Finally we define\nthe prototype. We could like to get the full name of a person. A\nfull name is just the combination of the first name and the last\nname.\n\n    var Person = persistence.create({\n      name: 'Person',\n      properties: {\n        firstName: '',\n        lastName: '',\n        parent: null\n      },\n      indexes: {\n        firstName: 'firstName',\n        firstLetter: function() {\n          return this.firstName ? this.firstName[0] : null;\n        }\n      },\n      proto: {\n        get name() {\n          return this.firstName + ' ' + this.lastName;\n        },\n        set name(value) {\n          var spaceIndex = value.indexOf(' ');\n          if (spaceIndex === -1) {\n            this.firstName = value;\n            this.lastName = '';\n          }\n          else {\n            this.firstName = value.substr(0, spaceIndex);\n            this.lastName = value.substr(spaceIndex + 1);\n          }\n        }\n      }\n    });"
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "Prototype": {
+            "name": "Prototype",
+            "shortname": "Prototype",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "prototype.js",
+            "line": 2,
+            "description": "This class represents the prototype of an instance of a model.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "model",
+                    "description": "",
+                    "type": "Model"
+                },
+                {
+                    "name": "proto",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                },
+                {
+                    "name": "properties",
+                    "description": "",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "Instance": {
+            "name": "Instance",
+            "shortname": "Instance",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "prototype.js",
+            "line": 61,
+            "description": "This class represents an instance of a model. It is used as\nprototype for instances of models.",
+            "is_constructor": 1,
+            "params": [
+                {
+                    "name": "model",
+                    "description": "",
+                    "type": "Model"
+                }
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        }
+    },
+    "classitems": [
+        {
+            "file": "active-persistence.js",
+            "line": 16,
+            "description": "Creates a new model. See {{#crossLink \"Model\"}}{{/crossLink}}.",
+            "itemtype": "method",
+            "name": "create",
+            "params": [
+                {
+                    "name": "args",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "name",
+                            "description": "The name of the model.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "proto",
+                            "description": "The properties for the instances of\n  the model.",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "properties",
+                            "description": "The prototype for the instances\n  of the model.",
+                            "type": "Object",
+                            "optional": true
+                        },
+                        {
+                            "name": "indexes",
+                            "description": "The indexes of the model.",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "A model with given name, prototype, properties and\n  indexes.",
+                "type": "Model"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "ActivePersistence"
+        },
+        {
+            "file": "active-persistence.js",
+            "line": 38,
+            "description": "Bind a callback that is called when an event occurs.",
+            "itemtype": "method",
+            "name": "on",
+            "params": [
+                {
+                    "name": "args",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "event",
+                            "description": "The name of the event to bind.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "callback",
+                            "description": "The function to be executed when\n  the event occurs.",
+                            "type": "Function"
+                        },
+                        {
+                            "name": "caller",
+                            "description": "The object to be bound to `this` in\n  the callback function.",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "ActivePersistence"
+        },
+        {
+            "file": "active-persistence.js",
+            "line": 60,
+            "description": "Bind a callback that is called after an event occurred.",
+            "itemtype": "method",
+            "name": "after",
+            "params": [
+                {
+                    "name": "args",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "event",
+                            "description": "The name of the event to bind.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "callback",
+                            "description": "The function to be executed after\n  the event occurred.",
+                            "type": "Function"
+                        },
+                        {
+                            "name": "caller",
+                            "description": "The object to be bound to `this` in\n  the callback function.",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "ActivePersistence"
+        },
+        {
+            "file": "active-persistence.js",
+            "line": 82,
+            "description": "Notify the corresponding callbacks that the event has occured. The\n_on_ callbacks will always be called. The given `func` function\nwill automatically be executed. When it finishes successfully the\ncorresponding _after_ callbacks will be called.",
+            "itemtype": "method",
+            "name": "emit",
+            "params": [
+                {
+                    "name": "args",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "event",
+                            "description": "The name of the event that occurred.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "args",
+                            "description": "The arguments that will be passed to\n  the callbacks.",
+                            "type": "Any",
+                            "optional": true,
+                            "multiple": true
+                        },
+                        {
+                            "name": "func",
+                            "description": "This function will automatically be\n  executed. When it finished successfully the corresponding _after_\n  callbacks will be called.",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "caller",
+                            "description": "The object to be bound to `this` in\n  the given `func`.",
+                            "type": "Object",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "ActivePersistence"
+        },
+        {
+            "file": "model.js",
+            "line": 121,
+            "description": "Create a new instance of this model. This instance will inherit the\nprototype given as parameter to the model. You can specify initial\nvalues for the instance being created.",
+            "itemtype": "method",
+            "name": "create",
+            "params": [
+                {
+                    "name": "values",
+                    "description": "Initial values for the instance being\n  created.",
+                    "type": "Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "An instance of the model with the prototype of\n  given as parameter to constructor of the model.",
+                "type": "Instance"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "Model"
+        },
+        {
+            "file": "model.js",
+            "line": 139,
+            "itemtype": "method",
+            "name": "all",
+            "return": {
+                "description": "An iterator for all the instances of this model.",
+                "type": "Iterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "Model"
+        },
+        {
+            "file": "model.js",
+            "line": 150,
+            "itemtype": "method",
+            "name": "find",
+            "params": [
+                {
+                    "name": "index",
+                    "description": "An index or a name of an index defined\n  on the model.",
+                    "type": "Index|String"
+                },
+                {
+                    "name": "value",
+                    "description": "The value that the index must equal.",
+                    "type": "Any"
+                }
+            ],
+            "return": {
+                "description": "An iterator for all the instances of this model\n  for which `index` is equal to `value`.",
+                "type": "Iterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "Model"
+        },
+        {
+            "file": "model.js",
+            "line": 170,
+            "description": "This method is syntactic sugar for:\n\n    all().filter(filter);",
+            "itemtype": "method",
+            "name": "filter",
+            "params": [
+                {
+                    "name": "filter",
+                    "description": "A function that accepts one parameter,\n  i.e. an instance of the model. Returns `true` if the iterator must\n  include this instance, `false` if it must be skipped.",
+                    "type": "Function"
+                }
+            ],
+            "return": {
+                "description": "An iterator for all the instances of this model\n  for which `filter` returns `true`.",
+                "type": "Iterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "Model"
+        },
+        {
+            "file": "prototype.js",
+            "line": 23,
+            "description": "Create an instance of this prototype.",
+            "itemtype": "method",
+            "name": "create",
+            "params": [
+                {
+                    "name": "values",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Instance"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "Prototype"
+        },
+        {
+            "file": "prototype.js",
+            "line": 73,
+            "itemtype": "property",
+            "name": "model",
+            "type": "{Model}",
+            "class": "Instance"
+        },
+        {
+            "file": "prototype.js",
+            "line": 80,
+            "description": "Define a property that will be tracked by the\n{{#crossLink \"ActivePersistence\"}}{{/crossLink}} of the\n{{#crossLink \"Model\"}}{{/crossLink}}.",
+            "itemtype": "method",
+            "name": "defineProperty",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "",
+                    "type": "Any"
+                }
+            ],
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "Instance"
+        }
+    ],
+    "warnings": []
+}
