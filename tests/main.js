@@ -13,9 +13,7 @@ require(['active-persistence'], function(ActivePersistence) {
       parent: null
     },
     indexes: {
-      firstName: function() {
-        return this.firstName;
-      },
+      firstName: 'firstName',
       firstLetter: function() {
         return this.firstName ? this.firstName[0] : null;
       }
@@ -39,27 +37,42 @@ require(['active-persistence'], function(ActivePersistence) {
   });
 
   Person.create({
+    firstName: 'Joske',
+    lastName: 'Vermeulen'
+  });
+
+  Person.create({
     firstName: 'Gillis',
-    lastName: 'Van Ginderachter'
+    lastName: 'Sandwich'
   });
 
   Person.create({
     firstName: 'Joseph',
-    lastName: 'Van Ginderachter'
+    lastName: 'Boterham'
   });
 
   var emile = Person.create({
     firstName: 'Jean',
-    lastName: 'Van Ginderachter',
+    lastName: 'Boterham',
     kaka: 'pipi'
   });
+
+  emile.firstName = 'Emile';
 
   var js = Person.find('firstLetter', 'J');
   while (js.hasNext()) {
     var person = js.next();
     console.log('person', person);
-    console.log('person.firstName', person.firstName);
     console.log('person.name', person.name);
-    console.log('person.kaka', person.kaka);
+  }
+
+  var sw = Person.filter(function() {
+    return this.lastName === 'Sandwich';
+  });
+
+  while (sw.hasNext()) {
+    var person = sw.next();
+    console.log('person', person);
+    console.log('person.name', person.name);
   }
 });

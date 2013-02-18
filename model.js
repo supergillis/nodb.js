@@ -66,5 +66,9 @@ define(['utils', 'base', 'index', 'iterator'], function(µ, Base, Index, Iterato
     return index.find(value);
   };
 
+  Model.prototype.filter = function(filter) {
+    return this.all().filter(filter);
+  };
+
   return Model;
 });
