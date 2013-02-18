@@ -38,41 +38,72 @@ require(['active-persistence'], function(ActivePersistence) {
 
   Person.create({
     firstName: 'Joske',
-    lastName: 'Vermeulen'
+    lastName: 'Vermeulen',
+    age: 15
   });
 
   Person.create({
     firstName: 'Gillis',
-    lastName: 'Sandwich'
+    lastName: 'Sandwich',
+    age: 22
   });
 
   Person.create({
     firstName: 'Joseph',
-    lastName: 'Boterham'
+    lastName: 'Boterham',
+    age: 32
   });
 
   var emile = Person.create({
     firstName: 'Jean',
     lastName: 'Boterham',
+    age: 41,
     kaka: 'pipi'
   });
 
   emile.firstName = 'Emile';
 
+  console.log('** Names starting with J');
+
   var js = Person.find('firstLetter', 'J');
   while (js.hasNext()) {
     var person = js.next();
-    console.log('person', person);
     console.log('person.name', person.name);
   }
 
-  var sw = Person.filter(function() {
-    return this.lastName === 'Sandwich';
+  console.log('** Last name is Sandwich');
+
+  var sw = Person.filter(function(person) {
+    return person.lastName === 'Sandwich';
   });
 
   while (sw.hasNext()) {
     var person = sw.next();
-    console.log('person', person);
     console.log('person.name', person.name);
   }
+
+  console.log('** All names');
+
+  var names = Person.all().map(function(person) {
+    return person.name;
+  });
+  while (names.hasNext()) {
+    console.log(names.next());
+  }
+
+  console.log('** Sum of ages');
+
+  var ages = Person.all().map(function(person) {
+    return person.age;
+  }).sum();
+
+  console.log(ages);
+
+  console.log('** Maximum age');
+
+  var maximum = Person.all().map(function(person) {
+    return person.age;
+  }).max();
+
+  console.log(maximum);
 });
