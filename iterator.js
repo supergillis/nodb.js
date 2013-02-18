@@ -2,6 +2,10 @@ define(function() {
   var Iterator = function() {
   };
 
+  Iterator.prototype.reset = function() {
+    throw 'not implemented';
+  };
+
   Iterator.prototype.hasNext = function() {
     throw 'not implemented';
   };
@@ -58,50 +62,45 @@ define(function() {
     return new ArrayIterator(array);
   };
 
-  ThrowingIterator = function() {
+  EmptyIterator = function() {
     Iterator.call(this);
   };
 
-  ThrowingIterator.prototype = Object.create(Iterator.prototype);
-  ThrowingIterator.prototype.constructor = ThrowingIterator;
-
-  ThrowingIterator.prototype.next = function() {
-    if (!this.hasNext())
-      throw StopIteration;
-
-    return this.uncheckedNext();
-  };
-
-  ThrowingIterator.prototype.uncheckedNext = function() {
-    throw 'not implemented';
-  };
-
-  EmptyIterator = function() {
-    ThrowingIterator.call(this);
-  };
-
-  EmptyIterator.prototype = Object.create(ThrowingIterator.prototype);
+  EmptyIterator.prototype = Object.create(Iterator.prototype);
   EmptyIterator.prototype.constructor = EmptyIterator;
+
+  EmptyIterator.prototype.reset = function() {
+  };
 
   EmptyIterator.prototype.hasNext = function() {
     return false;
   };
 
+  EmptyIterator.prototype.next = function() {
+      throw StopIteration;
+  };
+
   ArrayIterator = function(array) {
-    ThrowingIterator.call(this);
+    Iterator.call(this);
 
     this.array = array;
     this.index = 0;
   };
 
-  ArrayIterator.prototype = Object.create(ThrowingIterator.prototype);
+  ArrayIterator.prototype = Object.create(Iterator.prototype);
   ArrayIterator.prototype.constructor = ArrayIterator;
+
+  ArrayIterator.prototype.reset = function() {
+    this.index = 0;
+  };
 
   ArrayIterator.prototype.hasNext = function() {
     return this.index < this.array.length;
   };
 
-  ArrayIterator.prototype.uncheckedNext = function() {
+  ArrayIterator.prototype.next = function() {
+    if (!this.hasNext())
+      throw StopIteration;
     return this.array[this.index++];
   };
 
@@ -114,6 +113,10 @@ define(function() {
 
   MapIterator.prototype = Object.create(Iterator.prototype);
   MapIterator.prototype.constructor = MapIterator;
+
+  MapIterator.prototype.reset = function() {
+    this.wrapped.reset();
+  };
 
   MapIterator.prototype.hasNext = function() {
     return this.wrapped.hasNext();
@@ -133,6 +136,10 @@ define(function() {
 
   FilterIterator.prototype = Object.create(Iterator.prototype);
   FilterIterator.prototype.constructor = FilterIterator;
+
+  MapIterator.prototype.reset = function() {
+    this.wrapped.reset();
+  };
 
   FilterIterator.prototype.hasNext = function() {
     return this._hasNext;
