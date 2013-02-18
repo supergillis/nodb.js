@@ -1,4 +1,8 @@
-require(['../active-persistence'], function(ActivePersistence) {
+requirejs.config({
+  baseUrl: '../'
+});
+
+require(['active-persistence'], function(ActivePersistence) {
   var Person = ActivePersistence.create({
     name: 'Person',
     properties: {
@@ -42,12 +46,12 @@ require(['../active-persistence'], function(ActivePersistence) {
     lastName: 'Van Ginderachter'
   });
 
-  Person.create({
+  var emile = Person.create({
     firstName: 'Jean',
     lastName: 'Van Ginderachter'
   });
 
-  var js = Person.get('firstLetter', 'J');
+  var js = Person.find('firstLetter', 'J');
   while (js.hasNext()) {
     var person = js.next();
     console.log('person', person);
