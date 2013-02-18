@@ -1,31 +1,16 @@
-define(function() {
-  var each = function(object, mapper) {
-    for (var index in object)
-      mapper.call(object, index, object[index]);
-  };
-
-  var copy = function(source, destination) {
-    for (var name in source) {
-      var descriptor = Object.getOwnPropertyDescriptor(source, name);
-      if (descriptor)
-        Object.defineProperty(destination, name, descriptor);
-      else
-        destination[name] = source[name];
-    }
-  };
-
+define(['utils'], function(µ) {
   var Base = function(model, proto, properties) {
     this.model = model;
     this.properties = properties;
 
     // Copy prototype stuff, including getters and setters, to this
-    copy(proto, this);
+    µ.copy(proto, this);
   };
 
   Base.create = function(base, values) {
     var instance = Object.create(base);
 
-    each(base.properties, function(name, defaultValue) {
+    µ.each(base.properties, function(name, defaultValue) {
       (function(value) {
         Object.defineProperty(instance, name, {
           configurable: false,
@@ -46,7 +31,7 @@ define(function() {
       })(values.hasOwnProperty(name) ? values[name] : defaultValue);
     });
 
-    each(values, function(name, value) {
+    µ.each(values, function(name, value) {
       if (!instance.hasOwnProperty(name))
         instance[name] = value;
     });

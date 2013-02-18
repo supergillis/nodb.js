@@ -1,9 +1,4 @@
-define(['base', 'index', 'iterator'], function(Base, Index, Iterator) {
-  var mapped = function(source, destination, mapper) {
-    for (var index in source)
-      destination[index] = mapper.call(source, index, source[index]);
-  };
-
+define(['utils', 'base', 'index', 'iterator'], function(µ, Base, Index, Iterator) {
   var Model = function(persistence, name, proto, properties, indexes) {
     this.persistence = persistence;
     this.name = name;
@@ -12,7 +7,7 @@ define(['base', 'index', 'iterator'], function(Base, Index, Iterator) {
     this.instances = [];
     this.indexes = {};
 
-    mapped(indexes, this.indexes, function(name, hasher) {
+    µ.mapped(indexes, this.indexes, function(name, hasher) {
       if (Object.prototype.toString.call(hasher) === '[object Function]')
         return new Index(hasher);
 

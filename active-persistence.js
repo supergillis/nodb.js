@@ -34,7 +34,7 @@ define(['model'], function(Model) {
       return;
 
     while (onCurrent) {
-      onCurrent.callback.apply(onCurrent.caller, args.args);
+      onCurrent.callback.apply(onCurrent.caller, args.args || []);
       onCurrent = onCurrent.next;
     }
 
@@ -45,7 +45,7 @@ define(['model'], function(Model) {
     args.callback.call(args.caller);
 
     while (afterCurrent) {
-      afterCurrent.callback.apply(afterCurrent.caller, args.args);
+      afterCurrent.callback.apply(afterCurrent.caller, args.args || []);
       afterCurrent = afterCurrent.next;
     }
   };
