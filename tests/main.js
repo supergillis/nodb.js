@@ -65,7 +65,7 @@ require(['active-persistence'], function(ActivePersistence) {
 
   console.log('** Names starting with J');
 
-  var js = Person.find('firstLetter', 'J');
+  var js = Person.index('firstLetter').all('J');
   while (js.hasNext()) {
     var person = js.next();
     console.log('person.name', person.name);
@@ -73,7 +73,7 @@ require(['active-persistence'], function(ActivePersistence) {
 
   console.log('** Last name is Sandwich');
 
-  var sw = Person.filter(function(person) {
+  var sw = Person.all().filter(function(person) {
     return person.lastName === 'Sandwich';
   });
 

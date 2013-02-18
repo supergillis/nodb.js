@@ -101,6 +101,9 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
       event: 'set',
       caller: this,
       callback: function(instance, property, value) {
+        if (instance.model !== this)
+          return;
+
         // Remove old index
         for (var i in this.indexes)
           this.indexes[i].remove(instance);
@@ -111,12 +114,26 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
       event: 'set',
       caller: this,
       callback: function(instance, property, value) {
+        if (instance.model !== this)
+          return;
+
         // Insert new index
         for (var i in this.indexes)
           this.indexes[i].insert(instance);
       }
     });
   };
+
+  /**
+   * @property emptyIndex
+   * @type {Index}
+   * @private
+   * @static
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Model.emptyIndex = new Index(function() {});
 
   /**
    * Create a new instance of this model. This instance will inherit the
@@ -148,42 +165,16 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
   };
 
   /**
-   * @method find
-   * @param index {Index|String} An index or a name of an index defined
-   *   on the model.
-   * @param value {Any} The value that the index must equal.
-   * @return {Iterator} An iterator for all the instances of this model
-   *   for which `index` is equal to `value`.
+   * @method index
+   * @param name {String} The name of the index to return.
+   * @return {Index} The index with name `name`. If no such index exists
+   *   then an empty index is returned.
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Model.prototype.find = function(index, value) {
-    if (!(index instanceof Index)) {
-      index = this.indexes[index];
-      if (!index)
-        return Iterator.forNothing();
-    }
-    return index.find(value);
-  };
-
-  /**
-   * This method is syntactic sugar for:
-   *
-   *     all().filter(filter);
-   *
-   * @method filter
-   * @param filter {Function} A function that accepts one parameter,
-   *   i.e. an instance of the model. Returns `true` if the iterator must
-   *   include this instance, `false` if it must be skipped.
-   * @return {Iterator} An iterator for all the instances of this model
-   *   for which `filter` returns `true`.
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Model.prototype.filter = function(filter) {
-    return this.all().filter(filter);
+  Model.prototype.index = function(name) {
+    return this.indexes[name] || Model.emptyIndex;
   };
 
   return Model;
