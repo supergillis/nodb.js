@@ -145,7 +145,6 @@ define(function() {
   };
 
   Model.prototype.onGet = function(instance, property) {
-    console.log('onGet', instance, property);
   };
 
   Model.prototype.onSet = function(instance, property, value) {
@@ -164,23 +163,28 @@ define(function() {
       this.indexes[i].update(instance);
   };
 
-  Model.prototype.all = function() {
-    var instances = this.instances;
+  var createArrayIterator = function(array) {
     var index = 0;
     return {
       hasNext: function() {
-        return index < instances.length;
+        return index < array.length;
       },
       next: function() {
         if (!this.hasNext())
           throw StopIteration;
-        return instances[index++];
+        return array[index++];
       }
     };
   };
 
-  Model.prototype.get = function(index, value) {
-    // TODO
+  Model.prototype.all = function() {
+    return createArrayIterator(this.instances);
+  };
+
+  Model.prototype.get = function(indexName, value) {
+    var index = this.indexes[indexName];
+    var instances = index ? index.get(value) || [] : [];
+    return createArrayIterator(instances);
   };
 
   Model.prototype.filter = function(filter) {
@@ -225,6 +229,10 @@ define(function() {
     Object.defineProperty(this, 'pending', {
       value: []
     });
+  };
+
+  Index.prototype.get = function(key) {
+    return this.values[key] || [];
   };
 
   Index.prototype.put = function(instance) {

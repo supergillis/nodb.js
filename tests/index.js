@@ -37,16 +37,19 @@ require(['../active-persistence'], function(ActivePersistence) {
     lastName: 'Van Ginderachter'
   });
 
-  var emile = Person.create({
-    firstName: 'Emile',
+  Person.create({
+    firstName: 'Joseph',
     lastName: 'Van Ginderachter'
   });
 
-  emile.firstName = 'Emiel';
+  Person.create({
+    firstName: 'Jean',
+    lastName: 'Van Ginderachter'
+  });
 
-  var persons = Person.all();
-  while (persons.hasNext()) {
-    var person = persons.next();
+  var js = Person.get('firstLetter', 'J');
+  while (js.hasNext()) {
+    var person = js.next();
     console.log('person', person);
     console.log('person.name', person.name);
   }
