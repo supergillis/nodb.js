@@ -20,6 +20,40 @@ define(['base', 'index', 'iterator'], function(Base, Index, Iterator) {
         return this[hasher];
       });
     });
+
+    this.persistence.on({
+      event: 'create',
+      caller: this,
+      callback: function(instance) {
+        if (instance.model !== this)
+          return;
+
+        // Insert index and add to instances
+        for (var i in this.indexes)
+          this.indexes[i].insert(instance);
+        this.instances.push(instance);
+      }
+    });
+
+    this.persistence.on({
+      event: 'set',
+      caller: this,
+      callback: function(instance, property, value) {
+        // Remove old index
+        for (var i in this.indexes)
+          this.indexes[i].remove(instance);
+      }
+    });
+
+    this.persistence.after({
+      event: 'set',
+      caller: this,
+      callback: function(instance, property, value) {
+        // Insert new index
+        for (var i in this.indexes)
+          this.indexes[i].insert(instance);
+      }
+    });
   };
 
   Model.prototype.create = function(values) {
@@ -35,36 +69,6 @@ define(['base', 'index', 'iterator'], function(Base, Index, Iterator) {
     if (!index)
       return Iterator.forNothing();
     return index.find(value);
-  };
-
-  Model.prototype.onCreate = function(instance) {
-    if (instance.model !== this)
-      return;
-
-    console.log('onCreate', instance);
-
-    // Track this instance
-    this.instances.push(instance);
-
-    // Create __indexes
-    for (var i in this.indexes)
-      this.indexes[i].insert(instance);
-  };
-
-  Model.prototype.onSet = function(instance, property, value) {
-    console.log('onSet', instance, property, value);
-
-    // Pend __indexes
-    for (var i in this.indexes)
-      this.indexes[i].remove(instance);
-  };
-
-  Model.prototype.afterSet = function(instance, property, value) {
-    console.log('afterSet', instance, property, value);
-
-    // Update __indexes
-    for (var i in this.indexes)
-      this.indexes[i].insert(instance);
   };
 
   return Model;

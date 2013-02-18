@@ -34,9 +34,13 @@ define(function() {
             return value;
           },
           set: function(newValue) {
-            this.model.persistence.onSet(this, name, newValue);
-            value = newValue;
-            this.model.persistence.afterSet(this, name, newValue);
+            this.model.persistence.emit({
+              event: 'set',
+              callback: function() {
+                value = newValue;
+              },
+              args: [this, name, newValue]
+            });
           }
         });
       })(values.hasOwnProperty(name) ? values[name] : defaultValue);
@@ -47,7 +51,10 @@ define(function() {
         instance[name] = value;
     });
 
-    base.model.persistence.onCreate(instance);
+    base.model.persistence.emit({
+      event: 'create',
+      args: [instance]
+    });
 
     return instance;
   };

@@ -3,7 +3,9 @@ requirejs.config({
 });
 
 require(['active-persistence'], function(ActivePersistence) {
-  var Person = ActivePersistence.create({
+  var persistence = new ActivePersistence();
+
+  var Person = persistence.create({
     name: 'Person',
     properties: {
       firstName: '',

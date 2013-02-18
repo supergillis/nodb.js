@@ -1,29 +1,52 @@
 define(['model'], function(Model) {
-  var ActivePersistence = {};
+  var ActivePersistence = function() {
+    this.models = {};
+    this.onListeners = {};
+    this.afterListeners = {};
+  };
 
-  ActivePersistence.models = [];
-
-  ActivePersistence.create = function(args) {
+  ActivePersistence.prototype.create = function(args) {
     var model = new Model(this, args.name, args.proto || {}, args.properties || {}, args.indexes || {});
-    this.models.push(model);
+    this.models[args.name] = model;
     return model;
   };
 
-  ActivePersistence.onCreate = function(instance) {
-    for (var i in this.models) {
-      this.models[i].onCreate(instance);
-    }
+  ActivePersistence.prototype.on = function(args) {
+    this.onListeners[args.event] = {
+      callback: args.callback,
+      caller: args.caller,
+      next: this.onListeners[args.event]
+    };
   };
 
-  ActivePersistence.onSet = function(instance, property, value) {
-    for (var i in this.models) {
-      this.models[i].onSet(instance, property, value);
-    }
+  ActivePersistence.prototype.after = function(args) {
+    this.afterListeners[args.event] = {
+      callback: args.callback,
+      caller: args.caller,
+      next: this.afterListeners[args.event]
+    };
   };
 
-  ActivePersistence.afterSet = function(instance, property, value) {
-    for (var i in this.models) {
-      this.models[i].afterSet(instance, property, value);
+  ActivePersistence.prototype.emit = function(args) {
+    var onCurrent = this.onListeners[args.event];
+    var afterCurrent = this.afterListeners[args.event];
+    if (!onCurrent && !afterCurrent)
+      return;
+
+    while (onCurrent) {
+      onCurrent.callback.apply(onCurrent.caller, args.args);
+      onCurrent = onCurrent.next;
+    }
+
+    if (!args.callback)
+      return;
+
+    // Call function
+    args.callback.call(args.caller);
+
+    while (afterCurrent) {
+      afterCurrent.callback.apply(afterCurrent.caller, args.args);
+      afterCurrent = afterCurrent.next;
     }
   };
 
