@@ -1,24 +1,15 @@
-define(['index', 'instance', 'iterator'], function(Index, Instance, Iterator) {
-  var each = function(object, mapper) {
-    for (var index in object)
-      mapper.call(object, index, this[index]);
-  };
-
+define(['base', 'index', 'iterator'], function(Base, Index, Iterator) {
   var mapped = function(source, destination, mapper) {
     for (var index in source)
       destination[index] = mapper.call(source, index, source[index]);
   };
 
   var Model = function(persistence, name, proto, properties, indexes) {
-    var model = this;
-
     this.persistence = persistence;
     this.name = name;
-    this.proto = new Instance(this, proto);
+    this.base = new Base(this, proto, properties);
 
     this.instances = [];
-
-    this.properties = {};
     this.indexes = {};
 
     mapped(indexes, this.indexes, function(name, hasher) {
@@ -29,67 +20,10 @@ define(['index', 'instance', 'iterator'], function(Index, Instance, Iterator) {
         return this[hasher];
       });
     });
-
-    each(properties, function(name, defaultValue) {
-      model.defineProperty(name, defaultValue);
-    });
-  };
-
-  Model.prototype.defineProperty = function(name, defaultValue) {
-    var persistence = this.persistence;
-
-    // Store default value in prototype
-    Object.defineProperty(this.proto, '_' + name, {
-      configurable: false,
-      enumerable: false,
-      writable: true,
-      value: defaultValue
-    });
-
-    // Define getter and setter for property with _ prefix
-    Object.defineProperty(this.proto, name, {
-      configurable: false,
-      enumerable: true,
-      get: function() {
-        persistence.onGet(this, name);
-        return this['_' + name];
-      },
-      set: function(value) {
-        persistence.onSet(this, name, value);
-        this['_' + name] = value;
-        persistence.afterSet(this, name, value);
-      }
-    });
-  };
-
-  Model.prototype.hasProperty = function(name) {
-    return this.proto.hasOwnProperty(name);
   };
 
   Model.prototype.create = function(values) {
-    var instance = Object.create(this.proto);
-
-    // Set initial values
-    for (var property in values || []) {
-      if (!this.hasProperty(property)) {
-        // Non-model properties are stores with the real name
-        instance[property] = values[property];
-        continue;
-      }
-
-      // Model properties are stored with _ prefix
-      Object.defineProperty(instance, '_' + property, {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: values[property]
-      });
-    }
-
-    // Notify ActivePersistence
-    this.persistence.onCreate(instance);
-
-    return instance;
+    return Base.create(this.base, values);
   };
 
   Model.prototype.all = function() {
@@ -115,9 +49,6 @@ define(['index', 'instance', 'iterator'], function(Index, Instance, Iterator) {
     // Create __indexes
     for (var i in this.indexes)
       this.indexes[i].insert(instance);
-  };
-
-  Model.prototype.onGet = function(instance, property) {
   };
 
   Model.prototype.onSet = function(instance, property, value) {

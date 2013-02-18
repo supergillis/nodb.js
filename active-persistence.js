@@ -15,12 +15,6 @@ define(['model'], function(Model) {
     }
   };
 
-  ActivePersistence.onGet = function(instance, property) {
-    for (var i in this.models) {
-      this.models[i].onGet(instance, property);
-    }
-  };
-
   ActivePersistence.onSet = function(instance, property, value) {
     for (var i in this.models) {
       this.models[i].onSet(instance, property, value);
