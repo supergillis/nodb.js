@@ -1,4 +1,14 @@
 define(['iterator'], function(Iterator) {
+  /**
+   * The IndexIterator class.
+   *
+   * @class IndexIterator
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   var IndexIterator = function(bucket) {
     Iterator.call(this);
 
@@ -21,6 +31,16 @@ define(['iterator'], function(Iterator) {
     return value;
   };
 
+  /**
+   * The Index class.
+   *
+   * @class Index
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   var Index = function(hasher) {
     this.hasher = hasher;
     this.buckets = {};

@@ -1,4 +1,13 @@
 define(function() {
+  /**
+   * The Iterator class.
+   *
+   * @class Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   var Iterator = function() {
   };
 
@@ -62,6 +71,16 @@ define(function() {
     return new ArrayIterator(array);
   };
 
+  /**
+   * The EmptyIterator class.
+   *
+   * @class EmptyIterator
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   EmptyIterator = function() {
     Iterator.call(this);
   };
@@ -80,6 +99,16 @@ define(function() {
       throw StopIteration;
   };
 
+  /**
+   * The ArrayIterator class.
+   *
+   * @class ArrayIterator
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   ArrayIterator = function(array) {
     Iterator.call(this);
 
@@ -104,6 +133,16 @@ define(function() {
     return this.array[this.index++];
   };
 
+  /**
+   * The MapIterator class.
+   *
+   * @class MapIterator
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   MapIterator = function(wrapped, mapper) {
     Iterator.call(this);
 
@@ -134,10 +173,20 @@ define(function() {
     this.findNext();
   };
 
+  /**
+   * The FilterIterator class.
+   *
+   * @class FilterIterator
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   FilterIterator.prototype = Object.create(Iterator.prototype);
   FilterIterator.prototype.constructor = FilterIterator;
 
-  MapIterator.prototype.reset = function() {
+  FilterIterator.prototype.reset = function() {
     this.wrapped.reset();
   };
 
