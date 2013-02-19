@@ -1,10 +1,11 @@
-define(['iterator'], function(Iterator) {
+define(['iterators/Iterator'], function(Iterator) {
   /**
    * The BucketIterator class.
    *
    * @class BucketIterator
    * @extends Iterator
    * @constructor
+   * @private
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
@@ -13,27 +14,21 @@ define(['iterator'], function(Iterator) {
     Iterator.call(this);
 
     this.bucket = bucket;
-    this.current = bucket;
   };
 
   BucketIterator.prototype = Object.create(Iterator.prototype);
   BucketIterator.prototype.constructor = BucketIterator;
 
-  BucketIterator.prototype.reset = function() {
-    this.current = this.bucket;
-    return this;
-  };
-
   BucketIterator.prototype.hasNext = function() {
-    return this.current !== undefined;
+    return this.bucket !== undefined;
   };
 
   BucketIterator.prototype.next = function() {
     if (!this.hasNext())
       throw StopIteration;
 
-    var value = this.current.value;
-    this.current = this.current.next;
+    var value = this.bucket.value;
+    this.bucket = this.bucket.next;
     return value;
   };
 

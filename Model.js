@@ -1,4 +1,4 @@
-define(['utils', 'eventable', 'prototype', 'index', 'iterator'],
+define(['Utilities', 'Eventable', 'Prototype', 'Index', 'iterators/Iterator'],
   function(µ, Eventable, Prototype, Index, Iterator) {
   /**
    * A model specifies a specific data type. It is currently possible to
@@ -158,7 +158,7 @@ define(['utils', 'eventable', 'prototype', 'index', 'iterator'],
    * @since 1.0.0
    */
   Model.prototype.all = function() {
-    return Iterator.forArray(this.instances);
+    return Iterator.array(this.instances);
   };
 
   /**

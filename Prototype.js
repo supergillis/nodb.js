@@ -1,4 +1,4 @@
-define(['utils'], function(µ) {
+define(['Utilities'], function(µ) {
   /**
    * This class represents the prototype of an instance of a model.
    *
@@ -36,6 +36,7 @@ define(['utils'], function(µ) {
 
     // Find properties with values from values and default values
     µ.mapped(this.properties, properties, function(name, defaultValue) {
+      // TODO: Make a copy of the defaultValue
       return values.hasOwnProperty(name) ? values[name] : defaultValue;
     });
 
@@ -44,11 +45,13 @@ define(['utils'], function(µ) {
       instance.defineProperty(name, value);
     });
 
-    // Define untracked property values
-    µ.each(values, function(name, value) {
-      if (!instance.hasOwnProperty(name))
-        instance[name] = value;
+    µ.each(values, function(name) {
+      if (!properties.hasOwnProperty(name))
+        throw 'The extra property \'' + name + '\' is not allowed!';
     });
+
+    // Don't allow extra properties on this instance
+    Object.freeze(instance);
 
     this.model.emit({
       event: 'create',
@@ -83,6 +86,7 @@ define(['utils'], function(µ) {
    * {{#crossLink "Model"}}{{/crossLink}}.
    *
    * @method defineProperty
+   * @protected
    * @param name {String}
    * @param value {Any}
    *

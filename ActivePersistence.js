@@ -1,4 +1,4 @@
-define(['model'], function(Model) {
+define(['Model'], function(Model) {
   /**
    * @class ActivePersistence
    * @constructor

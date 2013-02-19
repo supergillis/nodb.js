@@ -2,7 +2,7 @@ requirejs.config({
   baseUrl: '../'
 });
 
-require(['active-persistence'], function(ActivePersistence) {
+require(['ActivePersistence'], function(ActivePersistence) {
   var persistence = new ActivePersistence();
 
   var Person = persistence.create({
@@ -10,6 +10,7 @@ require(['active-persistence'], function(ActivePersistence) {
     properties: {
       firstName: '',
       lastName: '',
+      birthDate: new Date(),
       parent: null
     },
     indexes: {
@@ -19,6 +20,10 @@ require(['active-persistence'], function(ActivePersistence) {
       }
     },
     proto: {
+      get age() {
+        // NOTE: This is a simplification for testing purposes only.
+        return new Date().getFullYear() - this.birthDate.getFullYear();
+      },
       get name() {
         return this.firstName + ' ' + this.lastName;
       },
@@ -39,26 +44,25 @@ require(['active-persistence'], function(ActivePersistence) {
   Person.create({
     firstName: 'Joske',
     lastName: 'Vermeulen',
-    age: 15
+    birthDate: new Date('January 12, 1996')
   });
 
   Person.create({
     firstName: 'Gillis',
     lastName: 'Sandwich',
-    age: 22
+    birthDate: new Date('March 01, 1990')
   });
 
   Person.create({
     firstName: 'Joseph',
     lastName: 'Boterham',
-    age: 32
+    birthDate: new Date('December 25, 1932')
   });
 
   var emile = Person.create({
     firstName: 'Jean',
     lastName: 'Boterham',
-    age: 41,
-    kaka: 'pipi'
+    birthDate: new Date('October 5, 1954')
   });
 
   emile.firstName = 'Emile';
@@ -71,22 +75,21 @@ require(['active-persistence'], function(ActivePersistence) {
     console.log('person.name', person.name);
   }
 
-  console.log('** Last name is Sandwich');
+  console.log('** All persons');
 
-  var sw = Person.all().filter(function(person) {
-    return person.lastName === 'Sandwich';
-  });
+  var sw = Person.all();
 
   while (sw.hasNext()) {
     var person = sw.next();
     console.log('person.name', person.name);
+    console.log('person.age', person.age);
   }
 
-  console.log('** All names');
+  console.log('** Sorted names');
 
   var names = Person.all().map(function(person) {
     return person.name;
-  });
+  }).sort();
   while (names.hasNext()) {
     console.log(names.next());
   }
