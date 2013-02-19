@@ -78,22 +78,28 @@ define(function() {
    * @since 1.0.0
    */
   Eventable.prototype.emit = function(args) {
-    var onCurrent = this.onListeners[args.event];
-    while (onCurrent) {
-      onCurrent.callback.apply(onCurrent.caller, args.args || []);
-      onCurrent = onCurrent.next;
+    try {
+      var onCurrent = this.onListeners[args.event];
+      while (onCurrent) {
+        onCurrent.callback.apply(onCurrent.caller, args.args || []);
+        onCurrent = onCurrent.next;
+      }
     }
+    catch(exception) {}
 
-    if (!args.callback)
+    if (!args.func)
       return;
 
-    args.func.call(args.caller);
+    try {
+      args.func.call(args.caller);
 
-    var afterCurrent = this.afterListeners[args.event];
-    while (afterCurrent) {
-      afterCurrent.callback.apply(afterCurrent.caller, args.args || []);
-      afterCurrent = afterCurrent.next;
+      var afterCurrent = this.afterListeners[args.event];
+      while (afterCurrent) {
+        afterCurrent.callback.apply(afterCurrent.caller, args.args || []);
+        afterCurrent = afterCurrent.next;
+      }
     }
+    catch(exception) {}
   };
 
   return Eventable;
