@@ -56,6 +56,17 @@ define(function() {
   };
 
   /**
+   * @method each
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.each = function(callback) {
+    while (this.hasNext())
+      callback(this.next());
+  };
+
+  /**
    * @method fold
    * @return {Any}
    *
@@ -94,6 +105,7 @@ define(function() {
 
   /**
    * @property defaultComparator
+   * @private
    * @static
    *
    * @author Gillis Van Ginderachter
@@ -139,10 +151,11 @@ define(function() {
    * @since 1.0.0
    */
   Iterator.prototype.collect = function() {
-    return this.fold([], function(array, value) {
+    var array = [];
+    this.each(function(value) {
       array.push(value);
-      return array;
     });
+    return array;
   };
 
   /**
