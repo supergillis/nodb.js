@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>index.js</title>
+    <title>..&#x2F;active-persistence&#x2F;prototype.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -102,90 +104,121 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: index.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;prototype.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define([&#x27;iterator&#x27;], function(Iterator) {
+define([&#x27;utils&#x27;], function(µ) {
   &#x2F;**
-   * The IndexIterator class.
+   * This class represents the prototype of an instance of a model.
    *
-   * @class IndexIterator
-   * @extends Iterator
+   * @class Prototype
    * @constructor
+   * @param model {Model}
+   * @param [proto] {Object}
+   * @param [properties] {Object}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  var IndexIterator = function(bucket) {
-    Iterator.call(this);
+  var Prototype = function(model, proto, properties) {
+    this.model = model;
+    this.properties = properties || {};
+    this.base = new Instance(model);
 
-    this.bucket = bucket;
-  };
-
-  IndexIterator.prototype = Object.create(Iterator.prototype);
-  IndexIterator.prototype.constructor = IndexIterator;
-
-  IndexIterator.prototype.hasNext = function() {
-    return this.bucket !== undefined;
-  };
-
-  IndexIterator.prototype.next = function() {
-    if (!this.hasNext())
-      throw StopIteration;
-
-    var value = this.bucket.value;
-    this.bucket = this.bucket.next;
-    return value;
+    &#x2F;&#x2F; Copy prototype stuff, including getters and setters
+    µ.copy(proto || {}, this.base);
   };
 
   &#x2F;**
-   * The Index class.
+   * Create an instance of this prototype.
    *
-   * @class Index
-   * @extends Iterator
-   * @constructor
+   * @method create
+   * @param values {Object}
+   * @return {Instance}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  var Index = function(hasher) {
-    this.hasher = hasher;
-    this.buckets = {};
+  Prototype.prototype.create = function(values) {
+    var instance = Object.create(this.base);
+    var properties = {};
+
+    &#x2F;&#x2F; Find properties with values from values and default values
+    µ.mapped(this.properties, properties, function(name, defaultValue) {
+      return values.hasOwnProperty(name) ? values[name] : defaultValue;
+    });
+
+    &#x2F;&#x2F; Define properties with the corresponding values
+    µ.each(properties, function(name, value) {
+      instance.defineProperty(name, value);
+    });
+
+    &#x2F;&#x2F; Define untracked property values
+    µ.each(values, function(name, value) {
+      if (!instance.hasOwnProperty(name))
+        instance[name] = value;
+    });
+
+    this.model.emit({
+      event: &#x27;create&#x27;,
+      args: [instance]
+    });
+
+    return instance;
   };
 
-  Index.prototype.find = function(hash) {
-    return new IndexIterator(this.buckets[hash]);
+  &#x2F;**
+   * This class represents an instance of a model. It is used as
+   * prototype for instances of models.
+   *
+   * @class Instance
+   * @constructor
+   * @param model {Model}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  var Instance = function(model) {
+    &#x2F;**
+     * @property model
+     * @type {Model}
+     *&#x2F;
+    this.model = model;
   };
 
-  Index.prototype.insert = function(value) {
-    var hash = this.hasher.call(value);
-    this.buckets[hash] = {
-      value: value,
-      next: this.buckets[hash]
-    };
-  };
-
-  Index.prototype.remove = function(value) {
-    var hash = this.hasher.call(value);
-    var previous = undefined;
-    var current = this.buckets[hash];
-
-    while (current) {
-      if (current.value === value) {
-        if (previous === undefined)
-          this.buckets[hash] = current.next;
-        else
-          previous.next = current.next;
-        return true;
+  &#x2F;**
+   * Define a property that will be tracked by the
+   * {{#crossLink &quot;ActivePersistence&quot;}}{{&#x2F;crossLink}} of the
+   * {{#crossLink &quot;Model&quot;}}{{&#x2F;crossLink}}.
+   *
+   * @method defineProperty
+   * @param name {String}
+   * @param value {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  Instance.prototype.defineProperty = function(name, value) {
+    Object.defineProperty(this, name, {
+      configurable: false,
+      enumerable: false,
+      get: function() {
+        return value;
+      },
+      set: function(newValue) {
+        this.model.emit({
+          event: &#x27;set&#x27;,
+          args: [this, name, newValue],
+          func: function() {
+            value = newValue;
+          }
+        });
       }
-      previous = current;
-      current = current.next;
-    }
-    return false;
+    });
   };
 
-  return Index;
+  return Prototype;
 });
 
     </pre>

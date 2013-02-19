@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>ActivePersistence</title>
+    <title>Eventable</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -102,24 +104,15 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>ActivePersistence Class</h1>
+                        <h1>Eventable Class</h1>
 <div class="box meta">
-    
-        <div class="uses">
-            Uses
-            <ul class="inline commas">
-                
-                    <li><a href="Model.html">Model</a></li>
-                
-            </ul>
-        </div>
     
 
     
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;active-persistence.js.html#l2"><code>active-persistence.js:2</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l2"><code>..&#x2F;active-persistence&#x2F;eventable.js:2</code></a>
         </div>
     
 
@@ -133,14 +126,14 @@
 
 
 <div class="box intro">
-    
+    <p>The Eventable class.</p>
 </div>
 
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_ActivePersistence" class="method item">
-    <h3 class="name"><code>ActivePersistence</code></h3>
+        <div id="method_Eventable" class="method item">
+    <h3 class="name"><code>Eventable</code></h3>
 
     
         <span class="paren">()</span>
@@ -171,7 +164,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;active-persistence.js.html#l2"><code>active-persistence.js:2</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l2"><code>..&#x2F;active-persistence&#x2F;eventable.js:2</code></a>
         
         </p>
 
@@ -226,36 +219,8 @@
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
-                                <a href="#method_all">all</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
-                                <a href="#method_create">create</a>
-
-                                
-                                
-                            </li>
-                        
                             <li class="index-item method">
                                 <a href="#method_emit">emit</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
-                                <a href="#method_filter">filter</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
-                                <a href="#method_find">find</a>
 
                                 
                                 
@@ -326,7 +291,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;active-persistence.js.html#l60"><code>active-persistence.js:60</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l38"><code>..&#x2F;active-persistence&#x2F;eventable.js:38</code></a>
         
         </p>
 
@@ -419,244 +384,6 @@
 </div>
 
                 
-                    <div id="method_all" class="method item inherited">
-    <h3 class="name"><code>all</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;Model.html#method_all">Model</a>:
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;model.js.html#l139"><code>model.js:139</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>:
-                    
-                    An iterator for all the instances of this model.
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_create" class="method item">
-    <h3 class="name"><code>create</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>args</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Model.html" class="crosslink">Model</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            <p>Inherited from
-            <a href="..&#x2F;classes&#x2F;Model.html#method_create">
-                Model
-            </a>
-            
-            but overwritten in
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;active-persistence.js.html#l16"><code>active-persistence.js:16</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        <p>Creates a new model. See <a href="../classes/Model.html" class="crosslink">Model</a>.</p>
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">args</code>
-                        <span class="type">Object</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                         
-                    </div>
-
-                    
-                        <ul class="params-list">
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name">name</code>
-                                    <span class="type">String</span>
-                                
-
-                                <div class="param-description">
-                                    <p>The name of the model.</p>
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[proto]</code>
-                                    <span class="type">Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>The properties for the instances of
-  the model.</p>
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[properties]</code>
-                                    <span class="type">Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>The prototype for the instances
-  of the model.</p>
-                                </div>
-
-                                
-                            </li>
-                            
-                            <li class="param">
-                                
-                                    <code class="param-name optional">[indexes]</code>
-                                    <span class="type">Object</span>
-                                    <span class="flag optional" title="This parameter is optional.">optional</span>
-                                
-
-                                <div class="param-description">
-                                    <p>The indexes of the model.</p>
-                                </div>
-
-                                
-                            </li>
-                            
-                        </ul>
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Model.html" class="crosslink">Model</a></span>:
-                    
-                    A model with given name, prototype, properties and
-  indexes.
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_emit" class="method item">
     <h3 class="name"><code>emit</code></h3>
 
@@ -699,7 +426,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;active-persistence.js.html#l82"><code>active-persistence.js:82</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l60"><code>..&#x2F;active-persistence&#x2F;eventable.js:60</code></a>
         
         </p>
 
@@ -812,241 +539,6 @@ corresponding <em>after</em> callbacks will be called.</p>
 </div>
 
                 
-                    <div id="method_filter" class="method item inherited">
-    <h3 class="name"><code>filter</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>filter</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;Model.html#method_filter">Model</a>:
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;model.js.html#l170"><code>model.js:170</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        <p>This method is syntactic sugar for:</p>
-
-<pre class="code prettyprint"><code>all().filter(filter);
-</code></pre>
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">filter</code>
-                        <span class="type">Function</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>A function that accepts one parameter,
-  i.e. an instance of the model. Returns <code>true</code> if the iterator must
-  include this instance, <code>false</code> if it must be skipped.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>:
-                    
-                    An iterator for all the instances of this model
-  for which <code>filter</code> returns <code>true</code>.
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_find" class="method item inherited">
-    <h3 class="name"><code>find</code></h3>
-
-    
-        <div class="args">
-            <span class="paren">(</span><ul class="args-list inline commas">
-            
-                <li class="arg">
-                    
-                        <code>index</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>value</code>
-                    
-                </li>
-            
-            </ul><span class="paren">)</span>
-        </div>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;Model.html#method_find">Model</a>:
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;model.js.html#l150"><code>model.js:150</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-        <div class="params">
-            <h4>Parameters:</h4>
-
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">index</code>
-                        <span class="type"><a href="../classes/Index.html" class="crosslink">Index</a> | String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>An index or a name of an index defined
-  on the model.</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">value</code>
-                        <span class="type">Any</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The value that the index must equal.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>:
-                    
-                    An iterator for all the instances of this model
-  for which <code>index</code> is equal to <code>value</code>.
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
                     <div id="method_on" class="method item">
     <h3 class="name"><code>on</code></h3>
 
@@ -1089,7 +581,7 @@ corresponding <em>after</em> callbacks will be called.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;active-persistence.js.html#l38"><code>active-persistence.js:38</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l16"><code>..&#x2F;active-persistence&#x2F;eventable.js:16</code></a>
         
         </p>
 

@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -107,10 +109,14 @@
     
 
     
+        <div class="extends">
+            Extends <a href="../classes/Eventable.html" class="crosslink">Eventable</a>
+        </div>
+    
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;model.js.html#l3"><code>model.js:3</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;.._active-persistence_model.js.html#l3"><code>..&#x2F;active-persistence&#x2F;model.js:3</code></a>
         </div>
     
 
@@ -202,7 +208,7 @@ created instances.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;model.js.html#l3"><code>model.js:3</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_model.js.html#l3"><code>..&#x2F;active-persistence&#x2F;model.js:3</code></a>
         
         </p>
 
@@ -321,7 +327,7 @@ created instances.</p>
 has a first name, a last name and a parent. We create two indexes:
 one index on the first name, and one on the first letter of the
 first name. With those two indexes we can quickly
-<a href="../classes/Model.html#method_find" class="crosslink">find</a> persons with
+Model/find:method persons with
 a specific first name or a specific first letter. Finally we define
 the prototype. We could like to get the full name of a person. A
 full name is just the combination of the first name and the last
@@ -374,6 +380,8 @@ name.</p>
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
         
         
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
+        
         
         
     </ul>
@@ -386,7 +394,14 @@ name.</p>
                 <div class="index-section methods">
                     <h3>Methods</h3>
 
-                    <ul class="index-list methods">
+                    <ul class="index-list methods extends">
+                        
+                            <li class="index-item method inherited">
+                                <a href="#method_after">after</a>
+
+                                
+                                
+                            </li>
                         
                             <li class="index-item method">
                                 <a href="#method_all">all</a>
@@ -402,16 +417,42 @@ name.</p>
                                 
                             </li>
                         
-                            <li class="index-item method">
-                                <a href="#method_filter">filter</a>
+                            <li class="index-item method inherited">
+                                <a href="#method_emit">emit</a>
 
                                 
                                 
                             </li>
                         
                             <li class="index-item method">
-                                <a href="#method_find">find</a>
+                                <a href="#method_index">index</a>
 
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method inherited">
+                                <a href="#method_on">on</a>
+
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
+            
+
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties extends">
+                        
+                            <li class="index-item property private">
+                                <a href="#property_emptyIndex">emptyIndex</a>
+
+                                
+                                    <span class="flag static">static</span>
                                 
                                 
                             </li>
@@ -423,13 +464,143 @@ name.</p>
             
 
             
-
-            
         </div>
 
         
             <div id="methods" class="api-class-tabpanel">
                 <h2 class="off-left">Methods</h2>
+
+                
+                    <div id="method_after" class="method item inherited">
+    <h3 class="name"><code>after</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>args</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="..&#x2F;classes&#x2F;Eventable.html#method_after">Eventable</a>:
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l38"><code>..&#x2F;active-persistence&#x2F;eventable.js:38</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        <p>Bind a callback that is called after an event occurred.</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">args</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name">event</code>
+                                    <span class="type">String</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The name of the event to bind.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name">callback</code>
+                                    <span class="type">Function</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The function to be executed after
+  the event occurred.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[caller]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The object to be bound to <code>this</code> in
+  the callback function.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
 
                 
                     <div id="method_all" class="method item">
@@ -468,7 +639,7 @@ name.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;model.js.html#l139"><code>model.js:139</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_model.js.html#l153"><code>..&#x2F;active-persistence&#x2F;model.js:153</code></a>
         
         </p>
 
@@ -551,7 +722,7 @@ name.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;model.js.html#l121"><code>model.js:121</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_model.js.html#l135"><code>..&#x2F;active-persistence&#x2F;model.js:135</code></a>
         
         </p>
 
@@ -616,8 +787,8 @@ values for the instance being created.</p>
 </div>
 
                 
-                    <div id="method_filter" class="method item">
-    <h3 class="name"><code>filter</code></h3>
+                    <div id="method_emit" class="method item inherited">
+    <h3 class="name"><code>emit</code></h3>
 
     
         <div class="args">
@@ -625,7 +796,159 @@ values for the instance being created.</p>
             
                 <li class="arg">
                     
-                        <code>filter</code>
+                        <code>args</code>
+                    
+                </li>
+            
+            </ul><span class="paren">)</span>
+        </div>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                <p>Inherited from
+                <a href="..&#x2F;classes&#x2F;Eventable.html#method_emit">Eventable</a>:
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l60"><code>..&#x2F;active-persistence&#x2F;eventable.js:60</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        <p>Notify the corresponding callbacks that the event has occured. The
+<em>on</em> callbacks will always be called. The given <code>func</code> function
+will automatically be executed. When it finishes successfully the
+corresponding <em>after</em> callbacks will be called.</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">args</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name">event</code>
+                                    <span class="type">String</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The name of the event that occurred.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[args]</code>
+                                    <span class="type">Any</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The arguments that will be passed to
+  the callbacks.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[func]</code>
+                                    <span class="type">Function</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>This function will automatically be
+  executed. When it finished successfully the corresponding <em>after</em>
+  callbacks will be called.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[caller]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The object to be bound to <code>this</code> in
+  the given <code>func</code>.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+                    <div id="method_index" class="method item">
+    <h3 class="name"><code>index</code></h3>
+
+    
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+            
+                <li class="arg">
+                    
+                        <code>name</code>
                     
                 </li>
             
@@ -635,7 +958,7 @@ values for the instance being created.</p>
 
     
         <span class="returns-inline">
-            <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>
+            <span class="type"><a href="../classes/Index.html" class="crosslink">Index</a></span>
         </span>
     
 
@@ -662,7 +985,7 @@ values for the instance being created.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;model.js.html#l170"><code>model.js:170</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_model.js.html#l164"><code>..&#x2F;active-persistence&#x2F;model.js:164</code></a>
         
         </p>
 
@@ -675,10 +998,7 @@ values for the instance being created.</p>
     </div>
 
     <div class="description">
-        <p>This method is syntactic sugar for:</p>
-
-<pre class="code prettyprint"><code>all().filter(filter);
-</code></pre>
+        
     </div>
 
     
@@ -689,16 +1009,14 @@ values for the instance being created.</p>
             
                 <li class="param">
                     
-                        <code class="param-name">filter</code>
-                        <span class="type">Function</span>
+                        <code class="param-name">name</code>
+                        <span class="type">String</span>
                     
 
                     
 
                     <div class="param-description">
-                        <p>A function that accepts one parameter,
-  i.e. an instance of the model. Returns <code>true</code> if the iterator must
-  include this instance, <code>false</code> if it must be skipped.</p>
+                        <p>The name of the index to return.</p>
                     </div>
 
                     
@@ -715,10 +1033,10 @@ values for the instance being created.</p>
             <div class="returns-description">
                 
                     
-                        <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>:
+                        <span class="type"><a href="../classes/Index.html" class="crosslink">Index</a></span>:
                     
-                    An iterator for all the instances of this model
-  for which <code>filter</code> returns <code>true</code>.
+                    The index with name <code>name</code>. If no such index exists
+  then an empty index is returned.
                 
             </div>
         </div>
@@ -728,8 +1046,8 @@ values for the instance being created.</p>
 </div>
 
                 
-                    <div id="method_find" class="method item">
-    <h3 class="name"><code>find</code></h3>
+                    <div id="method_on" class="method item inherited">
+    <h3 class="name"><code>on</code></h3>
 
     
         <div class="args">
@@ -737,13 +1055,7 @@ values for the instance being created.</p>
             
                 <li class="arg">
                     
-                        <code>index</code>
-                    
-                </li>
-            
-                <li class="arg">
-                    
-                        <code>value</code>
+                        <code>args</code>
                     
                 </li>
             
@@ -751,10 +1063,6 @@ values for the instance being created.</p>
         </div>
     
 
-    
-        <span class="returns-inline">
-            <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>
-        </span>
     
 
     
@@ -772,6 +1080,131 @@ values for the instance being created.</p>
     <div class="meta">
         
             
+                <p>Inherited from
+                <a href="..&#x2F;classes&#x2F;Eventable.html#method_on">Eventable</a>:
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_eventable.js.html#l16"><code>..&#x2F;active-persistence&#x2F;eventable.js:16</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        <p>Bind a callback that is called when an event occurs.</p>
+    </div>
+
+    
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+            
+                <li class="param">
+                    
+                        <code class="param-name">args</code>
+                        <span class="type">Object</span>
+                    
+
+                    
+
+                    <div class="param-description">
+                        
+                    </div>
+
+                    
+                        <ul class="params-list">
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name">event</code>
+                                    <span class="type">String</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The name of the event to bind.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name">callback</code>
+                                    <span class="type">Function</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The function to be executed when
+  the event occurs.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                            <li class="param">
+                                
+                                    <code class="param-name optional">[caller]</code>
+                                    <span class="type">Object</span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                
+
+                                <div class="param-description">
+                                    <p>The object to be bound to <code>this</code> in
+  the callback function.</p>
+                                </div>
+
+                                
+                            </li>
+                            
+                        </ul>
+                    
+                </li>
+            
+            </ul>
+        </div>
+    
+
+    
+
+    
+</div>
+
+                
+            </div>
+        
+
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+                
+                    <div id="property_emptyIndex" class="property item private">
+    <h3 class="name"><code>emptyIndex</code></h3>
+    <span class="type"><a href="../classes/Index.html" class="crosslink">Index</a></span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
                 
                 <p>
                 
@@ -780,10 +1213,9 @@ values for the instance being created.</p>
             
         
         
-        <a href="..&#x2F;files&#x2F;model.js.html#l150"><code>model.js:150</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_model.js.html#l124"><code>..&#x2F;active-persistence&#x2F;model.js:124</code></a>
         
         </p>
-
 
         
 
@@ -797,60 +1229,7 @@ values for the instance being created.</p>
     </div>
 
     
-        <div class="params">
-            <h4>Parameters:</h4>
 
-            <ul class="params-list">
-            
-                <li class="param">
-                    
-                        <code class="param-name">index</code>
-                        <span class="type"><a href="../classes/Index.html" class="crosslink">Index</a> | String</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>An index or a name of an index defined
-  on the model.</p>
-                    </div>
-
-                    
-                </li>
-            
-                <li class="param">
-                    
-                        <code class="param-name">value</code>
-                        <span class="type">Any</span>
-                    
-
-                    
-
-                    <div class="param-description">
-                        <p>The value that the index must equal.</p>
-                    </div>
-
-                    
-                </li>
-            
-            </ul>
-        </div>
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type"><a href="../classes/Iterator.html" class="crosslink">Iterator</a></span>:
-                    
-                    An iterator for all the instances of this model
-  for which <code>index</code> is equal to <code>value</code>.
-                
-            </div>
-        </div>
     
 
     
@@ -858,8 +1237,6 @@ values for the instance being created.</p>
 
                 
             </div>
-        
-
         
 
         

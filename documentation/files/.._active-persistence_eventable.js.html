@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>active-persistence.js</title>
+    <title>..&#x2F;active-persistence&#x2F;eventable.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -102,45 +104,23 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: active-persistence.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;eventable.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define([&#x27;model&#x27;], function(Model) {
+define(function() {
   &#x2F;**
-   * @class ActivePersistence
-   * @uses Model
+   * The Eventable class.
+   *
+   * @class Eventable
    * @constructor
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  var ActivePersistence = function() {
-    this.models = {};
+  var Eventable = function() {
     this.onListeners = {};
     this.afterListeners = {};
-  };
-
-  &#x2F;**
-   * Creates a new model. See {{#crossLink &quot;Model&quot;}}{{&#x2F;crossLink}}.
-   *
-   * @method create
-   * @param args {Object}
-   * @param args.name {String} The name of the model.
-   * @param [args.proto] {Object} The properties for the instances of
-   *   the model.
-   * @param [args.properties] {Object} The prototype for the instances
-   *   of the model.
-   * @param [args.indexes] {Object} The indexes of the model.
-   * @return {Model} A model with given name, prototype, properties and
-   *   indexes.
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  ActivePersistence.prototype.create = function(args) {
-    return this.models[args.name] = new Model(this, args.name,
-      args.proto, args.properties, args.indexes);
   };
 
   &#x2F;**
@@ -157,7 +137,7 @@ define([&#x27;model&#x27;], function(Model) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  ActivePersistence.prototype.on = function(args) {
+  Eventable.prototype.on = function(args) {
     this.onListeners[args.event] = {
       callback: args.callback,
       caller: args.caller,
@@ -179,7 +159,7 @@ define([&#x27;model&#x27;], function(Model) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  ActivePersistence.prototype.after = function(args) {
+  Eventable.prototype.after = function(args) {
     this.afterListeners[args.event] = {
       callback: args.callback,
       caller: args.caller,
@@ -207,7 +187,7 @@ define([&#x27;model&#x27;], function(Model) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  ActivePersistence.prototype.emit = function(args) {
+  Eventable.prototype.emit = function(args) {
     var onCurrent = this.onListeners[args.event];
     while (onCurrent) {
       onCurrent.callback.apply(onCurrent.caller, args.args || []);
@@ -226,7 +206,7 @@ define([&#x27;model&#x27;], function(Model) {
     }
   };
 
-  return ActivePersistence;
+  return Eventable;
 });
 
     </pre>

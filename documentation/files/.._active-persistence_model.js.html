@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>model.js</title>
+    <title>..&#x2F;active-persistence&#x2F;model.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -102,12 +104,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: model.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;model.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;iterator&#x27;], function(µ,
-    Prototype, Index, Iterator) {
+define([&#x27;utils&#x27;, &#x27;eventable&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;iterator&#x27;],
+  function(µ, Eventable, Prototype, Index, Iterator) {
   &#x2F;**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -118,6 +120,7 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
    * created instances.
    *
    * @class Model
+   * @extends Eventable
    * @constructor
    * @param persistence {ActivePersistence} The ActivePersistence object
    *   that is notified about creations, changes, ...
@@ -174,6 +177,8 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
    * @since 1.0.0
    *&#x2F;
   var Model = function(persistence, name, proto, properties, indexes) {
+    Eventable.call(this);
+
     this.persistence = persistence;
     this.name = name;
     this.proto = new Prototype(this, proto, properties);
@@ -191,13 +196,10 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
       });
     });
 
-    this.persistence.on({
+    this.on({
       event: &#x27;create&#x27;,
       caller: this,
       callback: function(instance) {
-        if (instance.model !== this)
-          return;
-
         &#x2F;&#x2F; Insert index and add to instances
         for (var i in this.indexes)
           this.indexes[i].insert(instance);
@@ -205,7 +207,7 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
       }
     });
 
-    this.persistence.on({
+    this.on({
       event: &#x27;set&#x27;,
       caller: this,
       callback: function(instance, property, value) {
@@ -215,7 +217,7 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
       }
     });
 
-    this.persistence.after({
+    this.after({
       event: &#x27;set&#x27;,
       caller: this,
       callback: function(instance, property, value) {
@@ -225,6 +227,20 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
       }
     });
   };
+
+  Model.prototype = Object.create(Eventable.prototype);
+  Model.prototype.constructor = Model;
+
+  &#x2F;**
+   * @property emptyIndex
+   * @type {Index}
+   * @private
+   * @static
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  Model.emptyIndex = new Index(function() {});
 
   &#x2F;**
    * Create a new instance of this model. This instance will inherit the
@@ -256,42 +272,16 @@ define([&#x27;utils&#x27;, &#x27;prototype&#x27;, &#x27;index&#x27;, &#x27;itera
   };
 
   &#x2F;**
-   * @method find
-   * @param index {Index|String} An index or a name of an index defined
-   *   on the model.
-   * @param value {Any} The value that the index must equal.
-   * @return {Iterator} An iterator for all the instances of this model
-   *   for which &#x60;index&#x60; is equal to &#x60;value&#x60;.
+   * @method index
+   * @param name {String} The name of the index to return.
+   * @return {Index} The index with name &#x60;name&#x60;. If no such index exists
+   *   then an empty index is returned.
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Model.prototype.find = function(index, value) {
-    if (!(index instanceof Index)) {
-      index = this.indexes[index];
-      if (!index)
-        return Iterator.forNothing();
-    }
-    return index.find(value);
-  };
-
-  &#x2F;**
-   * This method is syntactic sugar for:
-   *
-   *     all().filter(filter);
-   *
-   * @method filter
-   * @param filter {Function} A function that accepts one parameter,
-   *   i.e. an instance of the model. Returns &#x60;true&#x60; if the iterator must
-   *   include this instance, &#x60;false&#x60; if it must be skipped.
-   * @return {Iterator} An iterator for all the instances of this model
-   *   for which &#x60;filter&#x60; returns &#x60;true&#x60;.
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Model.prototype.filter = function(filter) {
-    return this.all().filter(filter);
+  Model.prototype.index = function(name) {
+    return this.indexes[name] || Model.emptyIndex;
   };
 
   return Model;

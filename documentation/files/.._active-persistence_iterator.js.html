@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>iterator.js</title>
+    <title>..&#x2F;active-persistence&#x2F;iterator.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -102,7 +104,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: iterator.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;iterator.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -119,51 +121,121 @@ define(function() {
   var Iterator = function() {
   };
 
+  &#x2F;**
+   * @method reset
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.reset = function() {
     throw &#x27;not implemented&#x27;;
   };
 
+  &#x2F;**
+   * @method hasNext
+   * @return {Boolean}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.hasNext = function() {
     throw &#x27;not implemented&#x27;;
   };
 
+  &#x2F;**
+   * @method next
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.next = function() {
     throw &#x27;not implemented&#x27;;
   };
 
+  &#x2F;**
+   * @method filter
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.filter = function(filter) {
     return new FilterIterator(this, filter);
   };
 
+  &#x2F;**
+   * @method map
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.map = function(mapper) {
     return new MapIterator(this, mapper);
   };
 
-  Iterator.prototype.reduce = function(reducer, start) {
-    var value = start;
+  &#x2F;**
+   * @method reduce
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  Iterator.prototype.reduce = function(reducer, initialValue) {
+    var value = initialValue;
     while (this.hasNext())
       value = reducer(value, this.next());
     return value;
   };
 
+  &#x2F;**
+   * @method sum
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.sum = function() {
     return this.reduce(function(sum, value) {
       return sum + value;
     }, 0);
   };
 
+  &#x2F;**
+   * @method min
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.min = function() {
     return this.reduce(function(min, value) {
       return !!min &amp;&amp; min &lt; value ? min : value;
     }, undefined);
   };
 
+  &#x2F;**
+   * @method max
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.max = function() {
     return this.reduce(function(max, value) {
       return !!max &amp;&amp; max &gt; value ? max : value;
     }, undefined);
   };
 
+  &#x2F;**
+   * @method collect
+   * @return {Array}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.prototype.collect = function() {
     var collection = [];
     while (this.hasNext())
@@ -171,10 +243,26 @@ define(function() {
     return collection;
   };
 
+  &#x2F;**
+   * @static
+   * @method forNothing
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.forNothing = function() {
     return new EmptyIterator();
   };
 
+  &#x2F;**
+   * @static
+   * @method forArray
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
   Iterator.forArray = function(array) {
     return new ArrayIterator(array);
   };
@@ -197,6 +285,7 @@ define(function() {
   EmptyIterator.prototype.constructor = EmptyIterator;
 
   EmptyIterator.prototype.reset = function() {
+    return this;
   };
 
   EmptyIterator.prototype.hasNext = function() {
@@ -229,6 +318,7 @@ define(function() {
 
   ArrayIterator.prototype.reset = function() {
     this.index = 0;
+    return this;
   };
 
   ArrayIterator.prototype.hasNext = function() {
@@ -263,6 +353,7 @@ define(function() {
 
   MapIterator.prototype.reset = function() {
     this.wrapped.reset();
+    return this;
   };
 
   MapIterator.prototype.hasNext = function() {
@@ -296,6 +387,7 @@ define(function() {
 
   FilterIterator.prototype.reset = function() {
     this.wrapped.reset();
+    return this;
   };
 
   FilterIterator.prototype.hasNext = function() {

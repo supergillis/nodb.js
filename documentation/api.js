@@ -3,10 +3,11 @@ YUI.add("yuidoc-meta", function(Y) {
     "classes": [
         "ActivePersistence",
         "ArrayIterator",
+        "BucketIterator",
         "EmptyIterator",
+        "Eventable",
         "FilterIterator",
         "Index",
-        "IndexIterator",
         "Instance",
         "Iterator",
         "MapIterator",

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Index</title>
+    <title>..&#x2F;active-persistence&#x2F;index.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -45,13 +45,15 @@
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
             
+                <li><a href="..&#x2F;classes/BucketIterator.html">BucketIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/EmptyIterator.html">EmptyIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/Eventable.html">Eventable</a></li>
             
                 <li><a href="..&#x2F;classes/FilterIterator.html">FilterIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Index.html">Index</a></li>
-            
-                <li><a href="..&#x2F;classes/IndexIterator.html">IndexIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
@@ -102,127 +104,124 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>Index Class</h1>
-<div class="box meta">
-    
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;index.js</h1>
 
-    
-        <div class="extends">
-            Extends <a href="../classes/Iterator.html" class="crosslink">Iterator</a>
-        </div>
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+define([&#x27;iterator&#x27;], function(Iterator) {
+  &#x2F;**
+   * The BucketIterator class.
+   *
+   * @class BucketIterator
+   * @extends Iterator
+   * @constructor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  var BucketIterator = function(bucket) {
+    Iterator.call(this);
 
-    
-        <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;index.js.html#l34"><code>index.js:34</code></a>
-        </div>
-    
+    this.bucket = bucket;
+    this.current = bucket;
+  };
 
-    
+  BucketIterator.prototype = Object.create(Iterator.prototype);
+  BucketIterator.prototype.constructor = BucketIterator;
 
-    
-        <p>Available since 1.0.0</p>
-    
-</div>
+  BucketIterator.prototype.reset = function() {
+    this.current = this.bucket;
+    return this;
+  };
 
+  BucketIterator.prototype.hasNext = function() {
+    return this.current !== undefined;
+  };
 
+  BucketIterator.prototype.next = function() {
+    if (!this.hasNext())
+      throw StopIteration;
 
-<div class="box intro">
-    <p>The Index class.</p>
-</div>
+    var value = this.current.value;
+    this.current = this.current.next;
+    return value;
+  };
 
+  &#x2F;**
+   * The Index class.
+   *
+   * @class Index
+   * @extends Iterator
+   * @constructor
+   * @protected
+   * @param generator {Function}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  var Index = function(generator) {
+    this.generator = generator;
+    this.buckets = {};
+  };
 
-    <div class="constructor">
-        <h2>Constructor</h2>
-        <div id="method_Index" class="method item">
-    <h3 class="name"><code>Index</code></h3>
+  &#x2F;**
+   * @method all
+   * @param key {Any}
+   * @return {Iterator} An iterator for all the instances of the
+   *   corresponding model for which the key of the index equals &#x60;key&#x60;.
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  Index.prototype.all = function(key) {
+    return new BucketIterator(this.buckets[key]);
+  };
 
-    
-        <span class="paren">()</span>
-    
+  &#x2F;**
+   * @method insert
+   * @protected
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  Index.prototype.insert = function(value) {
+    var key = this.generator.call(value);
+    this.buckets[key] = {
+      value: value,
+      next: this.buckets[key]
+    };
+  };
 
-    
+  &#x2F;**
+   * @method remove
+   * @protected
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  Index.prototype.remove = function(value) {
+    var key = this.generator.call(value);
+    var previous = undefined;
+    var current = this.buckets[key];
 
-    
+    while (current) {
+      if (current.value === value) {
+        if (previous === undefined)
+          this.buckets[key] = current.next;
+        else
+          previous.next = current.next;
+        return true;
+      }
+      previous = current;
+      current = current.next;
+    }
+    return false;
+  };
 
-    
+  return Index;
+});
 
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                
-                <p>
-                
-                Defined in
-                
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;index.js.html#l34"><code>index.js:34</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-
-    
-</div>
-
-    </div>
-
-
-<div id="classdocs" class="tabview">
-    <ul class="api-class-tabs">
-        <li class="api-class-tab index"><a href="#index">Index</a></li>
-
-        
-        
-        
-        
-    </ul>
-
-    <div>
-        <div id="index" class="api-class-tabpanel index">
-            <h2 class="off-left">Item Index</h2>
-
-            
-
-            
-
-            
-
-            
-        </div>
-
-        
-
-        
-
-        
-
-        
-    </div>
+    </pre>
 </div>
 
                     </div>
