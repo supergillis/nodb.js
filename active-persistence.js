@@ -1,7 +1,6 @@
 define(['model'], function(Model) {
   /**
    * @class ActivePersistence
-   * @uses Model
    * @constructor
    *
    * @author Gillis Van Ginderachter
