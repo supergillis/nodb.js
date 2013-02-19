@@ -86,7 +86,7 @@ define(['Utilities'], function(µ) {
    * {{#crossLink "Model"}}{{/crossLink}}.
    *
    * @method defineProperty
-   * @protected
+   * @private
    * @param name {String}
    * @param value {Any}
    *
