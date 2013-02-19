@@ -13,21 +13,27 @@ define(['iterator'], function(Iterator) {
     Iterator.call(this);
 
     this.bucket = bucket;
+    this.current = bucket;
   };
 
   BucketIterator.prototype = Object.create(Iterator.prototype);
   BucketIterator.prototype.constructor = BucketIterator;
 
+  BucketIterator.prototype.reset = function() {
+    this.current = this.bucket;
+    return this;
+  };
+
   BucketIterator.prototype.hasNext = function() {
-    return this.bucket !== undefined;
+    return this.current !== undefined;
   };
 
   BucketIterator.prototype.next = function() {
     if (!this.hasNext())
       throw StopIteration;
 
-    var value = this.bucket.value;
-    this.bucket = this.bucket.next;
+    var value = this.current.value;
+    this.current = this.current.next;
     return value;
   };
 

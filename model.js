@@ -1,5 +1,5 @@
-define(['utils', 'prototype', 'index', 'iterator'], function(µ,
-    Prototype, Index, Iterator) {
+define(['utils', 'eventable', 'prototype', 'index', 'iterator'],
+  function(µ, Eventable, Prototype, Index, Iterator) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -10,6 +10,7 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
    * created instances.
    *
    * @class Model
+   * @extends Eventable
    * @constructor
    * @param persistence {ActivePersistence} The ActivePersistence object
    *   that is notified about creations, changes, ...
@@ -66,6 +67,8 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
    * @since 1.0.0
    */
   var Model = function(persistence, name, proto, properties, indexes) {
+    Eventable.call(this);
+
     this.persistence = persistence;
     this.name = name;
     this.proto = new Prototype(this, proto, properties);
@@ -83,13 +86,10 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
       });
     });
 
-    this.persistence.on({
+    this.on({
       event: 'create',
       caller: this,
       callback: function(instance) {
-        if (instance.model !== this)
-          return;
-
         // Insert index and add to instances
         for (var i in this.indexes)
           this.indexes[i].insert(instance);
@@ -97,32 +97,29 @@ define(['utils', 'prototype', 'index', 'iterator'], function(µ,
       }
     });
 
-    this.persistence.on({
+    this.on({
       event: 'set',
       caller: this,
       callback: function(instance, property, value) {
-        if (instance.model !== this)
-          return;
-
         // Remove old index
         for (var i in this.indexes)
           this.indexes[i].remove(instance);
       }
     });
 
-    this.persistence.after({
+    this.after({
       event: 'set',
       caller: this,
       callback: function(instance, property, value) {
-        if (instance.model !== this)
-          return;
-
         // Insert new index
         for (var i in this.indexes)
           this.indexes[i].insert(instance);
       }
     });
   };
+
+  Model.prototype = Object.create(Eventable.prototype);
+  Model.prototype.constructor = Model;
 
   /**
    * @property emptyIndex

@@ -11,51 +11,121 @@ define(function() {
   var Iterator = function() {
   };
 
+  /**
+   * @method reset
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.reset = function() {
     throw 'not implemented';
   };
 
+  /**
+   * @method hasNext
+   * @return {Boolean}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.hasNext = function() {
     throw 'not implemented';
   };
 
+  /**
+   * @method next
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.next = function() {
     throw 'not implemented';
   };
 
+  /**
+   * @method filter
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.filter = function(filter) {
     return new FilterIterator(this, filter);
   };
 
+  /**
+   * @method map
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.map = function(mapper) {
     return new MapIterator(this, mapper);
   };
 
-  Iterator.prototype.reduce = function(reducer, start) {
-    var value = start;
+  /**
+   * @method reduce
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.reduce = function(reducer, initialValue) {
+    var value = initialValue;
     while (this.hasNext())
       value = reducer(value, this.next());
     return value;
   };
 
+  /**
+   * @method sum
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.sum = function() {
     return this.reduce(function(sum, value) {
       return sum + value;
     }, 0);
   };
 
+  /**
+   * @method min
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.min = function() {
     return this.reduce(function(min, value) {
       return !!min && min < value ? min : value;
     }, undefined);
   };
 
+  /**
+   * @method max
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.max = function() {
     return this.reduce(function(max, value) {
       return !!max && max > value ? max : value;
     }, undefined);
   };
 
+  /**
+   * @method collect
+   * @return {Array}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.prototype.collect = function() {
     var collection = [];
     while (this.hasNext())
@@ -63,10 +133,26 @@ define(function() {
     return collection;
   };
 
+  /**
+   * @static
+   * @method forNothing
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.forNothing = function() {
     return new EmptyIterator();
   };
 
+  /**
+   * @static
+   * @method forArray
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Iterator.forArray = function(array) {
     return new ArrayIterator(array);
   };
@@ -89,6 +175,7 @@ define(function() {
   EmptyIterator.prototype.constructor = EmptyIterator;
 
   EmptyIterator.prototype.reset = function() {
+    return this;
   };
 
   EmptyIterator.prototype.hasNext = function() {
@@ -121,6 +208,7 @@ define(function() {
 
   ArrayIterator.prototype.reset = function() {
     this.index = 0;
+    return this;
   };
 
   ArrayIterator.prototype.hasNext = function() {
@@ -155,6 +243,7 @@ define(function() {
 
   MapIterator.prototype.reset = function() {
     this.wrapped.reset();
+    return this;
   };
 
   MapIterator.prototype.hasNext = function() {
@@ -188,6 +277,7 @@ define(function() {
 
   FilterIterator.prototype.reset = function() {
     this.wrapped.reset();
+    return this;
   };
 
   FilterIterator.prototype.hasNext = function() {

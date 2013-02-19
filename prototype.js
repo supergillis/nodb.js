@@ -50,7 +50,7 @@ define(['utils'], function(µ) {
         instance[name] = value;
     });
 
-    this.model.persistence.emit({
+    this.model.emit({
       event: 'create',
       args: [instance]
     });
@@ -97,7 +97,7 @@ define(['utils'], function(µ) {
         return value;
       },
       set: function(newValue) {
-        this.model.persistence.emit({
+        this.model.emit({
           event: 'set',
           args: [this, name, newValue],
           func: function() {
