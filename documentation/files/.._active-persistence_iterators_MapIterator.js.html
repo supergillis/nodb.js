@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>..&#x2F;active-persistence&#x2F;prototype.js</title>
+    <title>..&#x2F;active-persistence&#x2F;iterators&#x2F;MapIterator.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/AbstractIterator.html">AbstractIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/ActivePersistence.html">ActivePersistence</a></li>
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
@@ -57,13 +59,19 @@
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
-                <li><a href="..&#x2F;classes/Iterator.html">Iterator</a></li>
-            
                 <li><a href="..&#x2F;classes/MapIterator.html">MapIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Model.html">Model</a></li>
             
                 <li><a href="..&#x2F;classes/Prototype.html">Prototype</a></li>
+            
+                <li><a href="..&#x2F;classes/RangeIterator.html">RangeIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/RepeatIterator.html">RepeatIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/StatefulIterator.html">StatefulIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/ZipIterator.html">ZipIterator</a></li>
             
             </ul>
 
@@ -104,121 +112,41 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;prototype.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;iterators&#x2F;MapIterator.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define([&#x27;utils&#x27;], function(µ) {
+define([&#x27;.&#x2F;AbstractIterator&#x27;], function(AbstractIterator) {
   &#x2F;**
-   * This class represents the prototype of an instance of a model.
+   * The MapIterator class.
    *
-   * @class Prototype
+   * @class MapIterator
+   * @extends AbstractIterator
    * @constructor
-   * @param model {Model}
-   * @param [proto] {Object}
-   * @param [properties] {Object}
+   * @private
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  var Prototype = function(model, proto, properties) {
-    this.model = model;
-    this.properties = properties || {};
-    this.base = new Instance(model);
+  var MapIterator = function(wrapped, mapper) {
+    AbstractIterator.call(this);
 
-    &#x2F;&#x2F; Copy prototype stuff, including getters and setters
-    µ.copy(proto || {}, this.base);
+    this.wrapped = wrapped;
+    this.mapper = mapper;
   };
 
-  &#x2F;**
-   * Create an instance of this prototype.
-   *
-   * @method create
-   * @param values {Object}
-   * @return {Instance}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Prototype.prototype.create = function(values) {
-    var instance = Object.create(this.base);
-    var properties = {};
+  MapIterator.prototype = Object.create(AbstractIterator.prototype);
+  MapIterator.prototype.constructor = MapIterator;
 
-    &#x2F;&#x2F; Find properties with values from values and default values
-    µ.mapped(this.properties, properties, function(name, defaultValue) {
-      return values.hasOwnProperty(name) ? values[name] : defaultValue;
-    });
-
-    &#x2F;&#x2F; Define properties with the corresponding values
-    µ.each(properties, function(name, value) {
-      instance.defineProperty(name, value);
-    });
-
-    &#x2F;&#x2F; Define untracked property values
-    µ.each(values, function(name, value) {
-      if (!instance.hasOwnProperty(name))
-        instance[name] = value;
-    });
-
-    this.model.emit({
-      event: &#x27;create&#x27;,
-      args: [instance]
-    });
-
-    return instance;
+  MapIterator.prototype.hasNext = function() {
+    return this.wrapped.hasNext();
   };
 
-  &#x2F;**
-   * This class represents an instance of a model. It is used as
-   * prototype for instances of models.
-   *
-   * @class Instance
-   * @constructor
-   * @param model {Model}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  var Instance = function(model) {
-    &#x2F;**
-     * @property model
-     * @type {Model}
-     *&#x2F;
-    this.model = model;
+  MapIterator.prototype.next = function() {
+    return this.mapper(this.wrapped.next());
   };
 
-  &#x2F;**
-   * Define a property that will be tracked by the
-   * {{#crossLink &quot;ActivePersistence&quot;}}{{&#x2F;crossLink}} of the
-   * {{#crossLink &quot;Model&quot;}}{{&#x2F;crossLink}}.
-   *
-   * @method defineProperty
-   * @param name {String}
-   * @param value {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Instance.prototype.defineProperty = function(name, value) {
-    Object.defineProperty(this, name, {
-      configurable: false,
-      enumerable: false,
-      get: function() {
-        return value;
-      },
-      set: function(newValue) {
-        this.model.emit({
-          event: &#x27;set&#x27;,
-          args: [this, name, newValue],
-          func: function() {
-            value = newValue;
-          }
-        });
-      }
-    });
-  };
-
-  return Prototype;
+  return MapIterator;
 });
 
     </pre>

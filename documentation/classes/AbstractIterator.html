@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>FilterIterator</title>
+    <title>AbstractIterator</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -112,19 +112,15 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>FilterIterator Class</h1>
+                        <h1>AbstractIterator Class</h1>
 <div class="box meta">
     
 
     
-        <div class="extends">
-            Extends <a href="../classes/StatefulIterator.html" class="crosslink">StatefulIterator</a>
-        </div>
-    
 
     
         <div class="foundat">
-            Defined in: <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_FilterIterator.js.html#l2"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;FilterIterator.js:2</code></a>
+            Defined in: <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l19"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:19</code></a>
         </div>
     
 
@@ -138,14 +134,14 @@
 
 
 <div class="box intro">
-    <p>The FilterIterator class.</p>
+    <p>The AbstractIterator class.</p>
 </div>
 
 
     <div class="constructor">
         <h2>Constructor</h2>
-        <div id="method_FilterIterator" class="method item private">
-    <h3 class="name"><code>FilterIterator</code></h3>
+        <div id="method_AbstractIterator" class="method item">
+    <h3 class="name"><code>AbstractIterator</code></h3>
 
     
         <span class="paren">()</span>
@@ -155,8 +151,6 @@
 
     
 
-    
-        <span class="flag private">private</span>
     
 
     
@@ -178,7 +172,7 @@
             
         
         
-        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_FilterIterator.js.html#l2"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;FilterIterator.js:2</code></a>
+        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l19"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:19</code></a>
         
         </p>
 
@@ -212,6 +206,8 @@
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
         
         
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
+        
         
         
     </ul>
@@ -224,107 +220,129 @@
                 <div class="index-section methods">
                     <h3>Methods</h3>
 
-                    <ul class="index-list methods extends">
+                    <ul class="index-list methods">
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
+                                <a href="#method_array">array</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_collect">collect</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_each">each</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
+                                <a href="#method_empty">empty</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_filter">filter</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
-                                <a href="#method_finished">finished</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_fold">fold</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
-                                <a href="#method_getNext">getNext</a>
-
-                                
-                                
-                            </li>
-                        
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_hasNext">hasNext</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_map">map</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_max">max</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_min">min</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_next">next</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
+                                <a href="#method_range">range</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_reduce">reduce</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
+                                <a href="#method_repeat">repeat</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                            <li class="index-item method">
                                 <a href="#method_sort">sort</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_sum">sum</a>
 
                                 
                                 
                             </li>
                         
-                            <li class="index-item method inherited">
+                            <li class="index-item method">
                                 <a href="#method_zip">zip</a>
 
                                 
@@ -335,6 +353,23 @@
                 </div>
             
 
+            
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties">
+                        
+                            <li class="index-item property private">
+                                <a href="#property_defaultComparator">defaultComparator</a>
+
+                                
+                                    <span class="flag static">static</span>
+                                
+                                
+                            </li>
+                        
+                    </ul>
+                </div>
             
 
             
@@ -347,7 +382,81 @@
                 <h2 class="off-left">Methods</h2>
 
                 
-                    <div id="method_collect" class="method item inherited">
+                    <div id="method_array" class="method item">
+    <h3 class="name"><code>array</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/ArrayIterator.html" class="crosslink">ArrayIterator</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l173"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:173</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/ArrayIterator.html" class="crosslink">ArrayIterator</a></span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_collect" class="method item">
     <h3 class="name"><code>collect</code></h3>
 
     
@@ -375,8 +484,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_collect">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -416,7 +528,7 @@
 </div>
 
                 
-                    <div id="method_each" class="method item inherited">
+                    <div id="method_each" class="method item">
     <h3 class="name"><code>each</code></h3>
 
     
@@ -440,8 +552,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_each">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -469,7 +584,81 @@
 </div>
 
                 
-                    <div id="method_filter" class="method item inherited">
+                    <div id="method_empty" class="method item">
+    <h3 class="name"><code>empty</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/EmptyIterator.html" class="crosslink">EmptyIterator</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l137"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:137</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/EmptyIterator.html" class="crosslink">EmptyIterator</a></span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_filter" class="method item">
     <h3 class="name"><code>filter</code></h3>
 
     
@@ -497,8 +686,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_filter">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -538,76 +730,7 @@
 </div>
 
                 
-                    <div id="method_finished" class="method item inherited">
-    <h3 class="name"><code>finished</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Any</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;StatefulIterator.html#method_finished">StatefulIterator</a>:
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_StatefulIterator.js.html#l27"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;StatefulIterator.js:27</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Any</span>:
-                    
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_fold" class="method item inherited">
+                    <div id="method_fold" class="method item">
     <h3 class="name"><code>fold</code></h3>
 
     
@@ -635,8 +758,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_fold">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -676,76 +802,7 @@
 </div>
 
                 
-                    <div id="method_getNext" class="method item inherited">
-    <h3 class="name"><code>getNext</code></h3>
-
-    
-        <span class="paren">()</span>
-    
-
-    
-        <span class="returns-inline">
-            <span class="type">Any</span>
-        </span>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    <div class="meta">
-        
-            
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;StatefulIterator.html#method_getNext">StatefulIterator</a>:
-            
-        
-        
-        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_StatefulIterator.js.html#l39"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;StatefulIterator.js:39</code></a>
-        
-        </p>
-
-
-        
-
-        
-            <p>Available since 1.0.0</p>
-        
-    </div>
-
-    <div class="description">
-        
-    </div>
-
-    
-
-    
-        <div class="returns">
-            <h4>Returns:</h4>
-
-            <div class="returns-description">
-                
-                    
-                        <span class="type">Any</span>:
-                    
-                
-            </div>
-        </div>
-    
-
-    
-</div>
-
-                
-                    <div id="method_hasNext" class="method item inherited">
+                    <div id="method_hasNext" class="method item">
     <h3 class="name"><code>hasNext</code></h3>
 
     
@@ -773,8 +830,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_hasNext">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -814,7 +874,7 @@
 </div>
 
                 
-                    <div id="method_map" class="method item inherited">
+                    <div id="method_map" class="method item">
     <h3 class="name"><code>map</code></h3>
 
     
@@ -842,8 +902,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_map">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -883,7 +946,7 @@
 </div>
 
                 
-                    <div id="method_max" class="method item inherited">
+                    <div id="method_max" class="method item">
     <h3 class="name"><code>max</code></h3>
 
     
@@ -911,8 +974,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_max">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -952,7 +1018,7 @@
 </div>
 
                 
-                    <div id="method_min" class="method item inherited">
+                    <div id="method_min" class="method item">
     <h3 class="name"><code>min</code></h3>
 
     
@@ -980,8 +1046,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_min">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -1021,7 +1090,7 @@
 </div>
 
                 
-                    <div id="method_next" class="method item inherited">
+                    <div id="method_next" class="method item">
     <h3 class="name"><code>next</code></h3>
 
     
@@ -1049,8 +1118,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_next">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -1090,7 +1162,81 @@
 </div>
 
                 
-                    <div id="method_reduce" class="method item inherited">
+                    <div id="method_range" class="method item">
+    <h3 class="name"><code>range</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/RangeIterator.html" class="crosslink">RangeIterator</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l161"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:161</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/RangeIterator.html" class="crosslink">RangeIterator</a></span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_reduce" class="method item">
     <h3 class="name"><code>reduce</code></h3>
 
     
@@ -1118,8 +1264,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_reduce">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -1159,7 +1308,81 @@
 </div>
 
                 
-                    <div id="method_sort" class="method item inherited">
+                    <div id="method_repeat" class="method item">
+    <h3 class="name"><code>repeat</code></h3>
+
+    
+        <span class="paren">()</span>
+    
+
+    
+        <span class="returns-inline">
+            <span class="type"><a href="../classes/RepeatIterator.html" class="crosslink">RepeatIterator</a></span>
+        </span>
+    
+
+    
+
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    
+
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l149"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:149</code></a>
+        
+        </p>
+
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                
+                    
+                        <span class="type"><a href="../classes/RepeatIterator.html" class="crosslink">RepeatIterator</a></span>:
+                    
+                
+            </div>
+        </div>
+    
+
+    
+</div>
+
+                
+                    <div id="method_sort" class="method item">
     <h3 class="name"><code>sort</code></h3>
 
     
@@ -1187,8 +1410,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_sort">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -1228,7 +1454,7 @@
 </div>
 
                 
-                    <div id="method_sum" class="method item inherited">
+                    <div id="method_sum" class="method item">
     <h3 class="name"><code>sum</code></h3>
 
     
@@ -1256,8 +1482,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_sum">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -1297,7 +1526,7 @@
 </div>
 
                 
-                    <div id="method_zip" class="method item inherited">
+                    <div id="method_zip" class="method item">
     <h3 class="name"><code>zip</code></h3>
 
     
@@ -1325,8 +1554,11 @@
     <div class="meta">
         
             
-                <p>Inherited from
-                <a href="..&#x2F;classes&#x2F;AbstractIterator.html#method_zip">AbstractIterator</a>:
+                
+                <p>
+                
+                Defined in
+                
             
         
         
@@ -1369,6 +1601,62 @@
             </div>
         
 
+        
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+                
+                    <div id="property_defaultComparator" class="property item private">
+    <h3 class="name"><code>defaultComparator</code></h3>
+    <span class="type">Unknown</span>
+
+    
+
+    
+        <span class="flag private">private</span>
+    
+
+    
+
+    
+        <span class="flag static">static</span>
+    
+
+    <div class="meta">
+        
+            
+                
+                <p>
+                
+                Defined in
+                
+            
+        
+        
+        <a href="..&#x2F;files&#x2F;.._active-persistence_iterators_Iterator.js.html#l71"><code>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js:71</code></a>
+        
+        </p>
+
+        
+
+        
+            <p>Available since 1.0.0</p>
+        
+    </div>
+
+    <div class="description">
+        
+    </div>
+
+    
+
+    
+
+    
+</div>
+
+                
+            </div>
         
 
         

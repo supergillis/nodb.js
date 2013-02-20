@@ -1,8 +1,96 @@
 {
     "project": {},
     "files": {
-        "../active-persistence/active-persistence.js": {
-            "name": "../active-persistence/active-persistence.js",
+        "../active-persistence/iterators/AbstractIterator.js": {
+            "name": "../active-persistence/iterators/AbstractIterator.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/ArrayIterator.js": {
+            "name": "../active-persistence/iterators/ArrayIterator.js",
+            "modules": {},
+            "classes": {
+                "ArrayIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/EmptyIterator.js": {
+            "name": "../active-persistence/iterators/EmptyIterator.js",
+            "modules": {},
+            "classes": {
+                "EmptyIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/FilterIterator.js": {
+            "name": "../active-persistence/iterators/FilterIterator.js",
+            "modules": {},
+            "classes": {
+                "FilterIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/Iterator.js": {
+            "name": "../active-persistence/iterators/Iterator.js",
+            "modules": {},
+            "classes": {
+                "AbstractIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/MapIterator.js": {
+            "name": "../active-persistence/iterators/MapIterator.js",
+            "modules": {},
+            "classes": {
+                "MapIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/RangeIterator.js": {
+            "name": "../active-persistence/iterators/RangeIterator.js",
+            "modules": {},
+            "classes": {
+                "RangeIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/RepeatIterator.js": {
+            "name": "../active-persistence/iterators/RepeatIterator.js",
+            "modules": {},
+            "classes": {
+                "RepeatIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/StatefulIterator.js": {
+            "name": "../active-persistence/iterators/StatefulIterator.js",
+            "modules": {},
+            "classes": {
+                "StatefulIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/iterators/ZipIterator.js": {
+            "name": "../active-persistence/iterators/ZipIterator.js",
+            "modules": {},
+            "classes": {
+                "ZipIterator": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "../active-persistence/ActivePersistence.js": {
+            "name": "../active-persistence/ActivePersistence.js",
             "modules": {},
             "classes": {
                 "ActivePersistence": 1
@@ -10,8 +98,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "../active-persistence/eventable.js": {
-            "name": "../active-persistence/eventable.js",
+        "../active-persistence/Eventable.js": {
+            "name": "../active-persistence/Eventable.js",
             "modules": {},
             "classes": {
                 "Eventable": 1
@@ -19,8 +107,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "../active-persistence/index.js": {
-            "name": "../active-persistence/index.js",
+        "../active-persistence/Index.js": {
+            "name": "../active-persistence/Index.js",
             "modules": {},
             "classes": {
                 "BucketIterator": 1,
@@ -29,21 +117,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "../active-persistence/iterator.js": {
-            "name": "../active-persistence/iterator.js",
-            "modules": {},
-            "classes": {
-                "Iterator": 1,
-                "EmptyIterator": 1,
-                "ArrayIterator": 1,
-                "MapIterator": 1,
-                "FilterIterator": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
-        "../active-persistence/model.js": {
-            "name": "../active-persistence/model.js",
+        "../active-persistence/Model.js": {
+            "name": "../active-persistence/Model.js",
             "modules": {},
             "classes": {
                 "Model": 1
@@ -51,8 +126,8 @@
             "fors": {},
             "namespaces": {}
         },
-        "../active-persistence/prototype.js": {
-            "name": "../active-persistence/prototype.js",
+        "../active-persistence/Prototype.js": {
+            "name": "../active-persistence/Prototype.js",
             "modules": {},
             "classes": {
                 "Prototype": 1,
@@ -64,6 +139,165 @@
     },
     "modules": {},
     "classes": {
+        "AbstractIterator": {
+            "name": "AbstractIterator",
+            "shortname": "AbstractIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 19,
+            "description": "The AbstractIterator class.",
+            "is_constructor": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "ArrayIterator": {
+            "name": "ArrayIterator",
+            "shortname": "ArrayIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/ArrayIterator.js",
+            "line": 2,
+            "description": "The ArrayIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "EmptyIterator": {
+            "name": "EmptyIterator",
+            "shortname": "EmptyIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/EmptyIterator.js",
+            "line": 2,
+            "description": "The EmptyIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "FilterIterator": {
+            "name": "FilterIterator",
+            "shortname": "FilterIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/FilterIterator.js",
+            "line": 2,
+            "description": "The FilterIterator class.",
+            "extends": "StatefulIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "MapIterator": {
+            "name": "MapIterator",
+            "shortname": "MapIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/MapIterator.js",
+            "line": 2,
+            "description": "The MapIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "RangeIterator": {
+            "name": "RangeIterator",
+            "shortname": "RangeIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/RangeIterator.js",
+            "line": 2,
+            "description": "The RangeIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "RepeatIterator": {
+            "name": "RepeatIterator",
+            "shortname": "RepeatIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/RepeatIterator.js",
+            "line": 2,
+            "description": "The RepeatIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "StatefulIterator": {
+            "name": "StatefulIterator",
+            "shortname": "StatefulIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/StatefulIterator.js",
+            "line": 2,
+            "description": "The StatefulIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
+        "ZipIterator": {
+            "name": "ZipIterator",
+            "shortname": "ZipIterator",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "file": "../active-persistence/iterators/ZipIterator.js",
+            "line": 2,
+            "description": "The ZipIterator class.",
+            "extends": "AbstractIterator",
+            "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0"
+        },
         "ActivePersistence": {
             "name": "ActivePersistence",
             "shortname": "ActivePersistence",
@@ -72,7 +306,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/active-persistence.js",
+            "file": "../active-persistence/ActivePersistence.js",
             "line": 2,
             "is_constructor": 1,
             "author": "Gillis Van Ginderachter",
@@ -86,7 +320,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/eventable.js",
+            "file": "../active-persistence/Eventable.js",
             "line": 2,
             "description": "The Eventable class.",
             "is_constructor": 1,
@@ -101,11 +335,13 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/index.js",
+            "file": "../active-persistence/Index.js",
             "line": 2,
             "description": "The BucketIterator class.",
-            "extends": "Iterator",
+            "extends": "AbstractIterator",
             "is_constructor": 1,
+            "access": "private",
+            "tagname": "",
             "author": "Gillis Van Ginderachter",
             "since": "1.0.0"
         },
@@ -117,8 +353,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/index.js",
-            "line": 40,
+            "file": "../active-persistence/Index.js",
+            "line": 35,
             "description": "The Index class.",
             "extends": "Iterator",
             "is_constructor": 1,
@@ -134,85 +370,6 @@
             "author": "Gillis Van Ginderachter",
             "since": "1.0.0"
         },
-        "Iterator": {
-            "name": "Iterator",
-            "shortname": "Iterator",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "../active-persistence/iterator.js",
-            "line": 2,
-            "description": "The Iterator class.",
-            "is_constructor": 1,
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0"
-        },
-        "EmptyIterator": {
-            "name": "EmptyIterator",
-            "shortname": "EmptyIterator",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "../active-persistence/iterator.js",
-            "line": 160,
-            "description": "The EmptyIterator class.",
-            "extends": "Iterator",
-            "is_constructor": 1,
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0"
-        },
-        "ArrayIterator": {
-            "name": "ArrayIterator",
-            "shortname": "ArrayIterator",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "../active-persistence/iterator.js",
-            "line": 189,
-            "description": "The ArrayIterator class.",
-            "extends": "Iterator",
-            "is_constructor": 1,
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0"
-        },
-        "MapIterator": {
-            "name": "MapIterator",
-            "shortname": "MapIterator",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "../active-persistence/iterator.js",
-            "line": 224,
-            "description": "The MapIterator class.",
-            "extends": "Iterator",
-            "is_constructor": 1,
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0"
-        },
-        "FilterIterator": {
-            "name": "FilterIterator",
-            "shortname": "FilterIterator",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "file": "../active-persistence/iterator.js",
-            "line": 265,
-            "description": "The FilterIterator class.",
-            "extends": "Iterator",
-            "is_constructor": 1,
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0"
-        },
         "Model": {
             "name": "Model",
             "shortname": "Model",
@@ -221,8 +378,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/model.js",
-            "line": 3,
+            "file": "../active-persistence/Model.js",
+            "line": 8,
             "description": "A model specifies a specific data type. It is currently possible to\nspecify its prototype, properties and indexes.\n\nThe model tracks all the instances\n{{#crossLink \"Model/create:method\"}}{{/crossLink}}d so we can\neasily query {{#crossLink \"Model/all:method\"}}{{/crossLink}} the\ncreated instances.",
             "extends": "Eventable",
             "is_constructor": 1,
@@ -270,7 +427,7 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/prototype.js",
+            "file": "../active-persistence/Prototype.js",
             "line": 2,
             "description": "This class represents the prototype of an instance of a model.",
             "is_constructor": 1,
@@ -304,8 +461,8 @@
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
-            "file": "../active-persistence/prototype.js",
-            "line": 61,
+            "file": "../active-persistence/Prototype.js",
+            "line": 64,
             "description": "This class represents an instance of a model. It is used as\nprototype for instances of models.",
             "is_constructor": 1,
             "params": [
@@ -321,7 +478,266 @@
     },
     "classitems": [
         {
-            "file": "../active-persistence/active-persistence.js",
+            "file": "../active-persistence/iterators/AbstractIterator.js",
+            "line": 14,
+            "itemtype": "method",
+            "name": "hasNext",
+            "return": {
+                "description": "",
+                "type": "Boolean"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/AbstractIterator.js",
+            "line": 25,
+            "itemtype": "method",
+            "name": "next",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 23,
+            "itemtype": "method",
+            "name": "each",
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 34,
+            "itemtype": "method",
+            "name": "fold",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 47,
+            "itemtype": "method",
+            "name": "reduce",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 58,
+            "itemtype": "method",
+            "name": "sum",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 71,
+            "itemtype": "property",
+            "name": "defaultComparator",
+            "access": "private",
+            "tagname": "",
+            "static": 1,
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 83,
+            "itemtype": "method",
+            "name": "min",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 97,
+            "itemtype": "method",
+            "name": "max",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 111,
+            "itemtype": "method",
+            "name": "collect",
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 126,
+            "itemtype": "method",
+            "name": "sort",
+            "return": {
+                "description": "",
+                "type": "ArrayIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 137,
+            "itemtype": "method",
+            "name": "empty",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "EmptyIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 149,
+            "itemtype": "method",
+            "name": "repeat",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "RepeatIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 161,
+            "itemtype": "method",
+            "name": "range",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "RangeIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 173,
+            "itemtype": "method",
+            "name": "array",
+            "static": 1,
+            "return": {
+                "description": "",
+                "type": "ArrayIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 185,
+            "itemtype": "method",
+            "name": "filter",
+            "return": {
+                "description": "",
+                "type": "FilterIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 196,
+            "itemtype": "method",
+            "name": "map",
+            "return": {
+                "description": "",
+                "type": "MapIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/Iterator.js",
+            "line": 207,
+            "itemtype": "method",
+            "name": "zip",
+            "return": {
+                "description": "",
+                "type": "ZipIterator"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "AbstractIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/StatefulIterator.js",
+            "line": 27,
+            "itemtype": "method",
+            "name": "finished",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "StatefulIterator"
+        },
+        {
+            "file": "../active-persistence/iterators/StatefulIterator.js",
+            "line": 39,
+            "itemtype": "method",
+            "name": "getNext",
+            "return": {
+                "description": "",
+                "type": "Any"
+            },
+            "author": "Gillis Van Ginderachter",
+            "since": "1.0.0",
+            "class": "StatefulIterator"
+        },
+        {
+            "file": "../active-persistence/ActivePersistence.js",
             "line": 13,
             "description": "Creates a new model. See {{#crossLink \"Model\"}}{{/crossLink}}.",
             "itemtype": "method",
@@ -367,7 +783,7 @@
             "class": "ActivePersistence"
         },
         {
-            "file": "../active-persistence/eventable.js",
+            "file": "../active-persistence/Eventable.js",
             "line": 16,
             "description": "Bind a callback that is called when an event occurs.",
             "itemtype": "method",
@@ -402,7 +818,7 @@
             "class": "Eventable"
         },
         {
-            "file": "../active-persistence/eventable.js",
+            "file": "../active-persistence/Eventable.js",
             "line": 38,
             "description": "Bind a callback that is called after an event occurred.",
             "itemtype": "method",
@@ -437,7 +853,7 @@
             "class": "Eventable"
         },
         {
-            "file": "../active-persistence/eventable.js",
+            "file": "../active-persistence/Eventable.js",
             "line": 60,
             "description": "Notify the corresponding callbacks that the event has occured. The\n_on_ callbacks will always be called. The given `func` function\nwill automatically be executed. When it finishes successfully the\ncorresponding _after_ callbacks will be called.",
             "itemtype": "method",
@@ -480,8 +896,8 @@
             "class": "Eventable"
         },
         {
-            "file": "../active-persistence/index.js",
-            "line": 57,
+            "file": "../active-persistence/Index.js",
+            "line": 52,
             "itemtype": "method",
             "name": "all",
             "params": [
@@ -500,8 +916,8 @@
             "class": "Index"
         },
         {
-            "file": "../active-persistence/index.js",
-            "line": 70,
+            "file": "../active-persistence/Index.js",
+            "line": 65,
             "itemtype": "method",
             "name": "insert",
             "access": "protected",
@@ -511,8 +927,8 @@
             "class": "Index"
         },
         {
-            "file": "../active-persistence/index.js",
-            "line": 85,
+            "file": "../active-persistence/Index.js",
+            "line": 80,
             "itemtype": "method",
             "name": "remove",
             "access": "protected",
@@ -522,166 +938,8 @@
             "class": "Index"
         },
         {
-            "file": "../active-persistence/iterator.js",
-            "line": 14,
-            "itemtype": "method",
-            "name": "reset",
-            "return": {
-                "description": "",
-                "type": "Iterator"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 25,
-            "itemtype": "method",
-            "name": "hasNext",
-            "return": {
-                "description": "",
-                "type": "Boolean"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 36,
-            "itemtype": "method",
-            "name": "next",
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 47,
-            "itemtype": "method",
-            "name": "filter",
-            "return": {
-                "description": "",
-                "type": "Iterator"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 58,
-            "itemtype": "method",
-            "name": "map",
-            "return": {
-                "description": "",
-                "type": "Iterator"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 69,
-            "itemtype": "method",
-            "name": "reduce",
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 83,
-            "itemtype": "method",
-            "name": "sum",
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 96,
-            "itemtype": "method",
-            "name": "min",
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 109,
-            "itemtype": "method",
-            "name": "max",
-            "return": {
-                "description": "",
-                "type": "Any"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 122,
-            "itemtype": "method",
-            "name": "collect",
-            "return": {
-                "description": "",
-                "type": "Array"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 136,
-            "static": 1,
-            "itemtype": "method",
-            "name": "forNothing",
-            "return": {
-                "description": "",
-                "type": "Iterator"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/iterator.js",
-            "line": 148,
-            "static": 1,
-            "itemtype": "method",
-            "name": "forArray",
-            "return": {
-                "description": "",
-                "type": "Iterator"
-            },
-            "author": "Gillis Van Ginderachter",
-            "since": "1.0.0",
-            "class": "Iterator"
-        },
-        {
-            "file": "../active-persistence/model.js",
-            "line": 124,
+            "file": "../active-persistence/Model.js",
+            "line": 129,
             "itemtype": "property",
             "name": "emptyIndex",
             "type": "{Index}",
@@ -693,8 +951,8 @@
             "class": "Model"
         },
         {
-            "file": "../active-persistence/model.js",
-            "line": 135,
+            "file": "../active-persistence/Model.js",
+            "line": 140,
             "description": "Create a new instance of this model. This instance will inherit the\nprototype given as parameter to the model. You can specify initial\nvalues for the instance being created.",
             "itemtype": "method",
             "name": "create",
@@ -715,8 +973,8 @@
             "class": "Model"
         },
         {
-            "file": "../active-persistence/model.js",
-            "line": 153,
+            "file": "../active-persistence/Model.js",
+            "line": 158,
             "itemtype": "method",
             "name": "all",
             "return": {
@@ -728,8 +986,8 @@
             "class": "Model"
         },
         {
-            "file": "../active-persistence/model.js",
-            "line": 164,
+            "file": "../active-persistence/Model.js",
+            "line": 169,
             "itemtype": "method",
             "name": "index",
             "params": [
@@ -748,7 +1006,7 @@
             "class": "Model"
         },
         {
-            "file": "../active-persistence/prototype.js",
+            "file": "../active-persistence/Prototype.js",
             "line": 23,
             "description": "Create an instance of this prototype.",
             "itemtype": "method",
@@ -769,19 +1027,21 @@
             "class": "Prototype"
         },
         {
-            "file": "../active-persistence/prototype.js",
-            "line": 73,
+            "file": "../active-persistence/Prototype.js",
+            "line": 76,
             "itemtype": "property",
             "name": "model",
             "type": "{Model}",
             "class": "Instance"
         },
         {
-            "file": "../active-persistence/prototype.js",
-            "line": 80,
+            "file": "../active-persistence/Prototype.js",
+            "line": 83,
             "description": "Define a property that will be tracked by the\n{{#crossLink \"ActivePersistence\"}}{{/crossLink}} of the\n{{#crossLink \"Model\"}}{{/crossLink}}.",
             "itemtype": "method",
             "name": "defineProperty",
+            "access": "private",
+            "tagname": "",
             "params": [
                 {
                     "name": "name",

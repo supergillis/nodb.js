@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>..&#x2F;active-persistence&#x2F;iterator.js</title>
+    <title>..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/AbstractIterator.html">AbstractIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/ActivePersistence.html">ActivePersistence</a></li>
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
@@ -57,13 +59,19 @@
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
-                <li><a href="..&#x2F;classes/Iterator.html">Iterator</a></li>
-            
                 <li><a href="..&#x2F;classes/MapIterator.html">MapIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Model.html">Model</a></li>
             
                 <li><a href="..&#x2F;classes/Prototype.html">Prototype</a></li>
+            
+                <li><a href="..&#x2F;classes/RangeIterator.html">RangeIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/RepeatIterator.html">RepeatIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/StatefulIterator.html">StatefulIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/ZipIterator.html">ZipIterator</a></li>
             
             </ul>
 
@@ -104,76 +112,54 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;iterator.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;iterators&#x2F;Iterator.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define(function() {
+define([
+    &#x27;.&#x2F;AbstractIterator&#x27;,
+    &#x27;.&#x2F;ArrayIterator&#x27;,
+    &#x27;.&#x2F;EmptyIterator&#x27;,
+    &#x27;.&#x2F;FilterIterator&#x27;,
+    &#x27;.&#x2F;MapIterator&#x27;,
+    &#x27;.&#x2F;RangeIterator&#x27;,
+    &#x27;.&#x2F;RepeatIterator&#x27;,
+    &#x27;.&#x2F;ZipIterator&#x27;],
+  function(
+    AbstractIterator,
+    ArrayIterator,
+    EmptyIterator,
+    FilterIterator,
+    MapIterator,
+    RangeIterator,
+    RepeatIterator,
+    ZipIterator) {
   &#x2F;**
-   * The Iterator class.
-   *
-   * @class Iterator
-   * @constructor
+   * @class AbstractIterator
+   *&#x2F;
+
+  &#x2F;**
+   * @method each
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  var Iterator = function() {
+  AbstractIterator.prototype.each = function(callback) {
+    while (this.hasNext())
+      callback(this.next());
   };
 
   &#x2F;**
-   * @method reset
-   * @return {Iterator}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Iterator.prototype.reset = function() {
-    throw &#x27;not implemented&#x27;;
-  };
-
-  &#x2F;**
-   * @method hasNext
-   * @return {Boolean}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Iterator.prototype.hasNext = function() {
-    throw &#x27;not implemented&#x27;;
-  };
-
-  &#x2F;**
-   * @method next
+   * @method fold
    * @return {Any}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.prototype.next = function() {
-    throw &#x27;not implemented&#x27;;
-  };
-
-  &#x2F;**
-   * @method filter
-   * @return {Iterator}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Iterator.prototype.filter = function(filter) {
-    return new FilterIterator(this, filter);
-  };
-
-  &#x2F;**
-   * @method map
-   * @return {Iterator}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  Iterator.prototype.map = function(mapper) {
-    return new MapIterator(this, mapper);
+  AbstractIterator.prototype.fold = function(seed, folder) {
+    while (this.hasNext())
+      seed = folder(seed, this.next());
+    return seed;
   };
 
   &#x2F;**
@@ -183,11 +169,8 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.prototype.reduce = function(reducer, initialValue) {
-    var value = initialValue;
-    while (this.hasNext())
-      value = reducer(value, this.next());
-    return value;
+  AbstractIterator.prototype.reduce = function(reducer) {
+    return this.fold(this.next(), reducer);
   };
 
   &#x2F;**
@@ -197,10 +180,22 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.prototype.sum = function() {
-    return this.reduce(function(sum, value) {
+  AbstractIterator.prototype.sum = function() {
+    return this.fold(0, function(sum, value) {
       return sum + value;
-    }, 0);
+    });
+  };
+
+  &#x2F;**
+   * @property defaultComparator
+   * @private
+   * @static
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  AbstractIterator.defaultComparator = function(a, b) {
+    return a - b;
   };
 
   &#x2F;**
@@ -210,10 +205,11 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.prototype.min = function() {
-    return this.reduce(function(min, value) {
-      return !!min &amp;&amp; min &lt; value ? min : value;
-    }, undefined);
+  AbstractIterator.prototype.min = function(comparator) {
+    comparator = comparator || AbstractIterator.defaultComparator;
+    return this.fold(undefined, function(min, value) {
+      return min &amp;&amp; comparator(min, value) &lt; 0 ? min : value;
+    });
   };
 
   &#x2F;**
@@ -223,10 +219,11 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.prototype.max = function() {
-    return this.reduce(function(max, value) {
-      return !!max &amp;&amp; max &gt; value ? max : value;
-    }, undefined);
+  AbstractIterator.prototype.max = function(comparator) {
+    comparator = comparator || AbstractIterator.defaultComparator;
+    return this.fold(undefined, function(max, value) {
+      return max &amp;&amp; comparator(max, value) &gt; 0 ? max : value;
+    });
   };
 
   &#x2F;**
@@ -236,184 +233,109 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.prototype.collect = function() {
-    var collection = [];
-    while (this.hasNext())
-      collection.push(this.next());
-    return collection;
+  AbstractIterator.prototype.collect = function() {
+    var array = [];
+    this.each(function(value) {
+      array.push(value);
+    });
+    return array;
   };
 
   &#x2F;**
-   * @static
-   * @method forNothing
-   * @return {Iterator}
+   * @method sort
+   * @return {ArrayIterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.forNothing = function() {
+  AbstractIterator.prototype.sort = function(sorter) {
+    return AbstractIterator.array(this.collect().sort(sorter));
+  };
+
+  &#x2F;**
+   * @method empty
+   * @static
+   * @return {EmptyIterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  AbstractIterator.empty = function() {
     return new EmptyIterator();
   };
 
   &#x2F;**
+   * @method repeat
    * @static
-   * @method forArray
-   * @return {Iterator}
+   * @return {RepeatIterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  Iterator.forArray = function(array) {
-    return new ArrayIterator(array);
+  AbstractIterator.repeat = function(value) {
+    return new RepeatIterator(value);
   };
 
   &#x2F;**
-   * The EmptyIterator class.
-   *
-   * @class EmptyIterator
-   * @extends Iterator
-   * @constructor
+   * @method range
+   * @static
+   * @return {RangeIterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  EmptyIterator = function() {
-    Iterator.call(this);
-  };
-
-  EmptyIterator.prototype = Object.create(Iterator.prototype);
-  EmptyIterator.prototype.constructor = EmptyIterator;
-
-  EmptyIterator.prototype.reset = function() {
-    return this;
-  };
-
-  EmptyIterator.prototype.hasNext = function() {
-    return false;
-  };
-
-  EmptyIterator.prototype.next = function() {
-      throw StopIteration;
+  AbstractIterator.range = function(start, step, end) {
+    return new RangeIterator(start, step, end);
   };
 
   &#x2F;**
-   * The ArrayIterator class.
-   *
-   * @class ArrayIterator
-   * @extends Iterator
-   * @constructor
+   * @method array
+   * @static
+   * @return {ArrayIterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  ArrayIterator = function(array) {
-    Iterator.call(this);
-
-    this.array = array;
-    this.index = 0;
-  };
-
-  ArrayIterator.prototype = Object.create(Iterator.prototype);
-  ArrayIterator.prototype.constructor = ArrayIterator;
-
-  ArrayIterator.prototype.reset = function() {
-    this.index = 0;
-    return this;
-  };
-
-  ArrayIterator.prototype.hasNext = function() {
-    return this.index &lt; this.array.length;
-  };
-
-  ArrayIterator.prototype.next = function() {
-    if (!this.hasNext())
-      throw StopIteration;
-    return this.array[this.index++];
+  AbstractIterator.array = function(array, index) {
+    return new ArrayIterator(array, index);
   };
 
   &#x2F;**
-   * The MapIterator class.
-   *
-   * @class MapIterator
-   * @extends Iterator
-   * @constructor
+   * @method filter
+   * @return {FilterIterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  MapIterator = function(wrapped, mapper) {
-    Iterator.call(this);
-
-    this.wrapped = wrapped;
-    this.mapper = mapper;
-  };
-
-  MapIterator.prototype = Object.create(Iterator.prototype);
-  MapIterator.prototype.constructor = MapIterator;
-
-  MapIterator.prototype.reset = function() {
-    this.wrapped.reset();
-    return this;
-  };
-
-  MapIterator.prototype.hasNext = function() {
-    return this.wrapped.hasNext();
-  };
-
-  MapIterator.prototype.next = function() {
-    return this.mapper(this.wrapped.next());
-  };
-
-  FilterIterator = function(wrapped, filter) {
-    Iterator.call(this);
-
-    this.wrapped = wrapped;
-    this.filter = filter;
-    this.findNext();
+  AbstractIterator.prototype.filter = function(filter) {
+    return new FilterIterator(this, filter);
   };
 
   &#x2F;**
-   * The FilterIterator class.
-   *
-   * @class FilterIterator
-   * @extends Iterator
-   * @constructor
+   * @method map
+   * @return {MapIterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  FilterIterator.prototype = Object.create(Iterator.prototype);
-  FilterIterator.prototype.constructor = FilterIterator;
-
-  FilterIterator.prototype.reset = function() {
-    this.wrapped.reset();
-    return this;
+  AbstractIterator.prototype.map = function(mapper) {
+    return new MapIterator(this, mapper);
   };
 
-  FilterIterator.prototype.hasNext = function() {
-    return this._hasNext;
+  &#x2F;**
+   * @method zip
+   * @return {ZipIterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   *&#x2F;
+  AbstractIterator.prototype.zip = function() {
+    var iterators = Array.prototype.slice.call(arguments);
+    iterators.unshift(this);
+    return new ZipIterator(iterators);
   };
 
-  FilterIterator.prototype.next = function() {
-    var next = this._next;
-    this.findNext();
-    return next;
-  };
-
-  FilterIterator.prototype.findNext = function() {
-    while (this.wrapped.hasNext()) {
-       var next = this.wrapped.next();
-       if (this.filter(next)) {
-         this._hasNext = true;
-         this._next = next;
-         return;
-       }
-    }
-    this._hasNext = false;
-    this._next = undefined;
-  };
-
-  return Iterator;
+  return AbstractIterator;
 });
 
     </pre>

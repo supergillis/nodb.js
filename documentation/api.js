@@ -1,6 +1,7 @@
 YUI.add("yuidoc-meta", function(Y) {
    Y.YUIDoc = { meta: {
     "classes": [
+        "AbstractIterator",
         "ActivePersistence",
         "ArrayIterator",
         "BucketIterator",
@@ -9,10 +10,13 @@ YUI.add("yuidoc-meta", function(Y) {
         "FilterIterator",
         "Index",
         "Instance",
-        "Iterator",
         "MapIterator",
         "Model",
-        "Prototype"
+        "Prototype",
+        "RangeIterator",
+        "RepeatIterator",
+        "StatefulIterator",
+        "ZipIterator"
     ],
     "modules": [],
     "allModules": []

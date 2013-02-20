@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>..&#x2F;active-persistence&#x2F;active-persistence.js</title>
+    <title>..&#x2F;active-persistence&#x2F;iterators&#x2F;ZipIterator.js</title>
     <link rel="stylesheet" href="http:&#x2F;&#x2F;yui.yahooapis.com&#x2F;3.8.0pr2&#x2F;build&#x2F;cssgrids&#x2F;cssgrids-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="..&#x2F;assets/css/main.css" id="site_styles">
@@ -41,6 +41,8 @@
         <div id="api-tabview-panel">
             <ul id="api-classes" class="apis classes">
             
+                <li><a href="..&#x2F;classes/AbstractIterator.html">AbstractIterator</a></li>
+            
                 <li><a href="..&#x2F;classes/ActivePersistence.html">ActivePersistence</a></li>
             
                 <li><a href="..&#x2F;classes/ArrayIterator.html">ArrayIterator</a></li>
@@ -57,13 +59,19 @@
             
                 <li><a href="..&#x2F;classes/Instance.html">Instance</a></li>
             
-                <li><a href="..&#x2F;classes/Iterator.html">Iterator</a></li>
-            
                 <li><a href="..&#x2F;classes/MapIterator.html">MapIterator</a></li>
             
                 <li><a href="..&#x2F;classes/Model.html">Model</a></li>
             
                 <li><a href="..&#x2F;classes/Prototype.html">Prototype</a></li>
+            
+                <li><a href="..&#x2F;classes/RangeIterator.html">RangeIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/RepeatIterator.html">RepeatIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/StatefulIterator.html">StatefulIterator</a></li>
+            
+                <li><a href="..&#x2F;classes/ZipIterator.html">ZipIterator</a></li>
             
             </ul>
 
@@ -104,45 +112,51 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;active-persistence.js</h1>
+                        <h1 class="file-heading">File: ..&#x2F;active-persistence&#x2F;iterators&#x2F;ZipIterator.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-define([&#x27;model&#x27;], function(Model) {
+define([&#x27;.&#x2F;AbstractIterator&#x27;], function(AbstractIterator) {
   &#x2F;**
-   * @class ActivePersistence
+   * The ZipIterator class.
+   *
+   * @class ZipIterator
+   * @extends AbstractIterator
    * @constructor
+   * @private
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    *&#x2F;
-  var ActivePersistence = function() {
-    this.models = {};
+  var ZipIterator = function(iterators) {
+    AbstractIterator.call(this);
+
+    this.iterators = iterators;
   };
 
-  &#x2F;**
-   * Creates a new model. See {{#crossLink &quot;Model&quot;}}{{&#x2F;crossLink}}.
-   *
-   * @method create
-   * @param args {Object}
-   * @param args.name {String} The name of the model.
-   * @param [args.proto] {Object} The properties for the instances of
-   *   the model.
-   * @param [args.properties] {Object} The prototype for the instances
-   *   of the model.
-   * @param [args.indexes] {Object} The indexes of the model.
-   * @return {Model} A model with given name, prototype, properties and
-   *   indexes.
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   *&#x2F;
-  ActivePersistence.prototype.create = function(args) {
-    return this.models[args.name] = new Model(this, args.name,
-      args.proto, args.properties, args.indexes);
+  ZipIterator.prototype = Object.create(AbstractIterator.prototype);
+  ZipIterator.prototype.constructor = ZipIterator;
+
+  ZipIterator.prototype.hasNext = function() {
+    for (var index in this.iterators)
+      if (this.iterators[index].hasNext())
+        return true;
+    return false;
   };
 
-  return ActivePersistence;
+  ZipIterator.prototype.next = function() {
+    if (!this.hasNext())
+      throw StopIteration;
+
+    var nexts = [];
+    for (var index in this.iterators) {
+      var iterator = this.iterators[index];
+      nexts.push(iterator.hasNext() ? iterator.next() : undefined);
+    }
+    return nexts;
+  };
+
+  return ZipIterator;
 });
 
     </pre>
