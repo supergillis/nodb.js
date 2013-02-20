@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The StatefulIterator class.
    *
    * @class StatefulIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,13 +11,13 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var StatefulIterator = function() {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.state = StatefulIterator.StateReady;
     this.current = undefined;
   };
 
-  StatefulIterator.prototype = Object.create(Iterator.prototype);
+  StatefulIterator.prototype = Object.create(AbstractIterator.prototype);
   StatefulIterator.prototype.constructor = StatefulIterator;
 
   StatefulIterator.StateReady = 0;

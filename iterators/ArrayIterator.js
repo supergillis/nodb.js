@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The ArrayIterator class.
    *
    * @class ArrayIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,13 +11,13 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var ArrayIterator = function(array, index) {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.array = array;
     this.index = index || 0;
   };
 
-  ArrayIterator.prototype = Object.create(Iterator.prototype);
+  ArrayIterator.prototype = Object.create(AbstractIterator.prototype);
   ArrayIterator.prototype.constructor = ArrayIterator;
 
   ArrayIterator.prototype.clone = function() {

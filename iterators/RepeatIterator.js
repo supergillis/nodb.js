@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The RepeatIterator class.
    *
    * @class RepeatIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,12 +11,12 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var RepeatIterator = function(value) {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.value = value;
   };
 
-  RepeatIterator.prototype = Object.create(Iterator.prototype);
+  RepeatIterator.prototype = Object.create(AbstractIterator.prototype);
   RepeatIterator.prototype.constructor = RepeatIterator;
 
   RepeatIterator.prototype.hasNext = function() {

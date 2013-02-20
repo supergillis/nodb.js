@@ -1,14 +1,14 @@
 define([
-    'iterators/IteratorImplementation',
-    'iterators/ArrayIterator',
-    'iterators/EmptyIterator',
-    'iterators/FilterIterator',
-    'iterators/MapIterator',
-    'iterators/RangeIterator',
-    'iterators/RepeatIterator',
-    'iterators/ZipIterator'],
+    './AbstractIterator',
+    './ArrayIterator',
+    './EmptyIterator',
+    './FilterIterator',
+    './MapIterator',
+    './RangeIterator',
+    './RepeatIterator',
+    './ZipIterator'],
   function(
-    Iterator,
+    AbstractIterator,
     ArrayIterator,
     EmptyIterator,
     FilterIterator,
@@ -17,8 +17,122 @@ define([
     RepeatIterator,
     ZipIterator) {
   /**
-   * @class Iterator
+   * @class AbstractIterator
    */
+
+  /**
+   * @method each
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.each = function(callback) {
+    while (this.hasNext())
+      callback(this.next());
+  };
+
+  /**
+   * @method fold
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.fold = function(seed, folder) {
+    while (this.hasNext())
+      seed = folder(seed, this.next());
+    return seed;
+  };
+
+  /**
+   * @method reduce
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.reduce = function(reducer) {
+    return this.fold(this.next(), reducer);
+  };
+
+  /**
+   * @method sum
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.sum = function() {
+    return this.fold(0, function(sum, value) {
+      return sum + value;
+    });
+  };
+
+  /**
+   * @property defaultComparator
+   * @private
+   * @static
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.defaultComparator = function(a, b) {
+    return a - b;
+  };
+
+  /**
+   * @method min
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.min = function(comparator) {
+    comparator = comparator || AbstractIterator.defaultComparator;
+    return this.fold(undefined, function(min, value) {
+      return min && comparator(min, value) < 0 ? min : value;
+    });
+  };
+
+  /**
+   * @method max
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.max = function(comparator) {
+    comparator = comparator || AbstractIterator.defaultComparator;
+    return this.fold(undefined, function(max, value) {
+      return max && comparator(max, value) > 0 ? max : value;
+    });
+  };
+
+  /**
+   * @method collect
+   * @return {Array}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.collect = function() {
+    var array = [];
+    this.each(function(value) {
+      array.push(value);
+    });
+    return array;
+  };
+
+  /**
+   * @method sort
+   * @return {ArrayIterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  AbstractIterator.prototype.sort = function(sorter) {
+    return AbstractIterator.array(this.collect().sort(sorter));
+  };
 
   /**
    * @method empty
@@ -28,7 +142,7 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.empty = function() {
+  AbstractIterator.empty = function() {
     return new EmptyIterator();
   };
 
@@ -40,7 +154,7 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.repeat = function(value) {
+  AbstractIterator.repeat = function(value) {
     return new RepeatIterator(value);
   };
 
@@ -52,7 +166,7 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.range = function(start, step, end) {
+  AbstractIterator.range = function(start, step, end) {
     return new RangeIterator(start, step, end);
   };
 
@@ -64,7 +178,7 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.array = function(array, index) {
+  AbstractIterator.array = function(array, index) {
     return new ArrayIterator(array, index);
   };
 
@@ -75,7 +189,7 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.prototype.filter = function(filter) {
+  AbstractIterator.prototype.filter = function(filter) {
     return new FilterIterator(this, filter);
   };
 
@@ -86,7 +200,7 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.prototype.map = function(mapper) {
+  AbstractIterator.prototype.map = function(mapper) {
     return new MapIterator(this, mapper);
   };
 
@@ -97,11 +211,11 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.prototype.zip = function() {
+  AbstractIterator.prototype.zip = function() {
     var iterators = Array.prototype.slice.call(arguments);
     iterators.unshift(this);
     return new ZipIterator(iterators);
   };
 
-  return Iterator;
+  return AbstractIterator;
 });

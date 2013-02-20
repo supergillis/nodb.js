@@ -1,9 +1,9 @@
-define(['iterators/Iterator'], function(Iterator) {
+define(['./iterators/AbstractIterator'], function(AbstractIterator) {
   /**
    * The BucketIterator class.
    *
    * @class BucketIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,12 +11,12 @@ define(['iterators/Iterator'], function(Iterator) {
    * @since 1.0.0
    */
   var BucketIterator = function(bucket) {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.bucket = bucket;
   };
 
-  BucketIterator.prototype = Object.create(Iterator.prototype);
+  BucketIterator.prototype = Object.create(AbstractIterator.prototype);
   BucketIterator.prototype.constructor = BucketIterator;
 
   BucketIterator.prototype.hasNext = function() {

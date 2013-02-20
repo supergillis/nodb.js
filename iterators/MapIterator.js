@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The MapIterator class.
    *
    * @class MapIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,13 +11,13 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var MapIterator = function(wrapped, mapper) {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.wrapped = wrapped;
     this.mapper = mapper;
   };
 
-  MapIterator.prototype = Object.create(Iterator.prototype);
+  MapIterator.prototype = Object.create(AbstractIterator.prototype);
   MapIterator.prototype.constructor = MapIterator;
 
   MapIterator.prototype.hasNext = function() {

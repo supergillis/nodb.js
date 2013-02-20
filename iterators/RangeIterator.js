@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The RangeIterator class.
    *
    * @class RangeIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,14 +11,14 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var RangeIterator = function(start, step, end) {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.current = start || 0;
     this.step = step || 1;
     this.end = end;
   };
 
-  RangeIterator.prototype = Object.create(Iterator.prototype);
+  RangeIterator.prototype = Object.create(AbstractIterator.prototype);
   RangeIterator.prototype.constructor = RangeIterator;
 
   RangeIterator.prototype.hasNext = function() {

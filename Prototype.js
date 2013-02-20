@@ -1,4 +1,4 @@
-define(['Utilities'], function(µ) {
+define(['./Utilities'], function(µ) {
   /**
    * This class represents the prototype of an instance of a model.
    *

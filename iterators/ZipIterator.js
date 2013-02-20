@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The ZipIterator class.
    *
    * @class ZipIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,12 +11,12 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var ZipIterator = function(iterators) {
-    Iterator.call(this);
+    AbstractIterator.call(this);
 
     this.iterators = iterators;
   };
 
-  ZipIterator.prototype = Object.create(Iterator.prototype);
+  ZipIterator.prototype = Object.create(AbstractIterator.prototype);
   ZipIterator.prototype.constructor = ZipIterator;
 
   ZipIterator.prototype.hasNext = function() {

@@ -1,4 +1,9 @@
-define(['Utilities', 'Eventable', 'Prototype', 'Index', 'iterators/Iterator'],
+define([
+    './Utilities',
+    './Eventable',
+    './Prototype',
+    './Index',
+    './iterators/Iterator'],
   function(µ, Eventable, Prototype, Index, Iterator) {
   /**
    * A model specifies a specific data type. It is currently possible to

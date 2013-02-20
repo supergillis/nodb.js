@@ -1,9 +1,9 @@
-define(['iterators/IteratorImplementation'], function(Iterator) {
+define(['./AbstractIterator'], function(AbstractIterator) {
   /**
    * The EmptyIterator class.
    *
    * @class EmptyIterator
-   * @extends Iterator
+   * @extends AbstractIterator
    * @constructor
    * @private
    *
@@ -11,10 +11,10 @@ define(['iterators/IteratorImplementation'], function(Iterator) {
    * @since 1.0.0
    */
   var EmptyIterator = function() {
-    Iterator.call(this);
+    AbstractIterator.call(this);
   };
 
-  EmptyIterator.prototype = Object.create(Iterator.prototype);
+  EmptyIterator.prototype = Object.create(AbstractIterator.prototype);
   EmptyIterator.prototype.constructor = EmptyIterator;
 
   EmptyIterator.prototype.hasNext = function() {

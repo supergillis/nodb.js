@@ -1,4 +1,4 @@
-define(['iterators/StatefulIterator'], function(StatefulIterator) {
+define(['./StatefulIterator'], function(StatefulIterator) {
   /**
    * The FilterIterator class.
    *
