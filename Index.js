@@ -1,4 +1,4 @@
-define(['./iterators/AbstractIterator'], function(AbstractIterator) {
+define(['iterators'], function(AbstractIterator) {
   /**
    * The BucketIterator class.
    *

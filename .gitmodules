@@ -1,0 +1,3 @@
+[submodule "iterators"]
+	path = iterators
+	url = git@github.com:supergillis/iterators.js.git

@@ -1,10 +1,10 @@
 define([
+    'iterators',
     './Utilities',
     './Eventable',
     './Prototype',
-    './Index',
-    './iterators/Iterator'],
-  function(µ, Eventable, Prototype, Index, Iterator) {
+    './Index'],
+  function(Iterator, µ, Eventable, Prototype, Index) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.

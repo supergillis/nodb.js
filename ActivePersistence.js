@@ -1,3 +1,7 @@
+require.config({
+  'packages': ['iterators']
+});
+
 define(['./Model'], function(Model) {
   /**
    * @class ActivePersistence
