@@ -2,9 +2,9 @@ define([
     'iterators',
     './Utilities',
     './Eventable',
-    './Prototype',
+    './Instance',
     './Index'],
-  function(Iterator, µ, Eventable, Prototype, Index) {
+  function(Iterator, µ, Eventable, Instance, Index) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -16,6 +16,7 @@ define([
    *
    * @class Model
    * @extends Eventable
+   *
    * @constructor
    * @param persistence {ActivePersistence} The ActivePersistence object
    *   that is notified about creations, changes, ...
@@ -74,68 +75,78 @@ define([
   var Model = function(persistence, name, proto, properties, indexes) {
     Eventable.call(this);
 
+    /**
+     * @property persistence
+     * @type {ActivePersistence}
+     * @private
+     *
+     * @author Gillis Van Ginderachter
+     * @since 1.0.0
+     */
     this.persistence = persistence;
-    this.name = name;
-    this.proto = new Prototype(this, proto, properties);
 
+    /**
+     * @property name
+     * @type {String}
+     * @private
+     *
+     * @author Gillis Van Ginderachter
+     * @since 1.0.0
+     */
+    this.name = name;
+
+    /**
+     * @property instanceBase
+     * @type {Instance}
+     * @private
+     *
+     * @author Gillis Van Ginderachter
+     * @since 1.0.0
+     */
+    this.instanceBase = new Instance(this, proto, properties);
+
+    /**
+     * @property instances
+     * @type {Instance[]}
+     * @private
+     *
+     * @author Gillis Van Ginderachter
+     * @since 1.0.0
+     */
     this.instances = [];
+
+    /**
+     * @property emptyIndex
+     * @type {Index}
+     * @private
+     *
+     * @author Gillis Van Ginderachter
+     * @since 1.0.0
+     */
+    this.emptyIndex = new Index(this, null);
+
+    /**
+     * @property indexes
+     * @type {Index[]}
+     * @private
+     *
+     * @author Gillis Van Ginderachter
+     * @since 1.0.0
+     */
     this.indexes = {};
 
-    µ.mapped(indexes || {}, this.indexes, function(name, hasher) {
-      if (Object.prototype.toString.call(hasher) ===
-            '[object Function]')
-        return new Index(hasher);
+    µ.mapped(indexes || {}, this.indexes, µ.bind(this, function(name, hasher) {
+      if (µ.isFunction(hasher))
+        return new Index(this, hasher);
 
-      return new Index(function() {
-        return this[hasher];
+      return new Index(this, function(instance) {
+        return instance[hasher];
       });
-    });
-
-    this.on({
-      event: 'create',
-      caller: this,
-      callback: function(instance) {
-        // Insert index and add to instances
-        for (var i in this.indexes)
-          this.indexes[i].insert(instance);
-        this.instances.push(instance);
-      }
-    });
-
-    this.on({
-      event: 'set',
-      caller: this,
-      callback: function(instance, property, value) {
-        // Remove old index
-        for (var i in this.indexes)
-          this.indexes[i].remove(instance);
-      }
-    });
-
-    this.after({
-      event: 'set',
-      caller: this,
-      callback: function(instance, property, value) {
-        // Insert new index
-        for (var i in this.indexes)
-          this.indexes[i].insert(instance);
-      }
-    });
+    }));
   };
 
   Model.prototype = Object.create(Eventable.prototype);
   Model.prototype.constructor = Model;
-
-  /**
-   * @property emptyIndex
-   * @type {Index}
-   * @private
-   * @static
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Model.emptyIndex = new Index(function() {});
 
   /**
    * Create a new instance of this model. This instance will inherit the
@@ -152,7 +163,18 @@ define([
    * @since 1.0.0
    */
   Model.prototype.create = function(values) {
-    return this.proto.create(values);
+    var instance = Instance.create(this.instanceBase, values);
+
+    // Track this instance
+    this.instances.push(instance);
+
+    // Notify callbacks
+    this.emit({
+      event: 'create',
+      args: [instance]
+    });
+
+    return instance;
   };
 
   /**
@@ -176,7 +198,7 @@ define([
    * @since 1.0.0
    */
   Model.prototype.index = function(name) {
-    return this.indexes[name] || Model.emptyIndex;
+    return this.indexes[name] || this.emptyIndex;
   };
 
   return Model;

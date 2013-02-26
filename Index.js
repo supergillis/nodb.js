@@ -4,6 +4,7 @@ define(['iterators'], function(AbstractIterator) {
    *
    * @class BucketIterator
    * @extends AbstractIterator
+   *
    * @constructor
    * @private
    *
@@ -36,7 +37,7 @@ define(['iterators'], function(AbstractIterator) {
    * The Index class.
    *
    * @class Index
-   * @extends Iterator
+   *
    * @constructor
    * @protected
    * @param generator {Function}
@@ -44,13 +45,46 @@ define(['iterators'], function(AbstractIterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var Index = function(generator) {
+  var Index = function(model, generator) {
     this.generator = generator;
     this.buckets = {};
+
+    if (!this.generator)
+      return;
+
+    // Create index for existing instances
+    var instances = model.all();
+    while (instances.hasNext())
+      this.insert(instances.next());
+
+    // Create index for new instances
+    model.on({
+      event: 'create',
+      caller: this,
+      callback: function(instance) {
+        this.insert(instance);
+      }
+    });
+
+    model.on({
+      event: 'set',
+      caller: this,
+      callback: function(instance, property, value) {
+        this.remove(instance);
+      }
+    });
+
+    model.after({
+      event: 'set',
+      caller: this,
+      callback: function(instance, property, value) {
+        this.insert(instance);
+      }
+    });
   };
 
   /**
-   * @method all
+   * @method find
    * @param key {Any}
    * @return {Iterator} An iterator for all the instances of the
    *   corresponding model for which the key of the index equals `key`.
@@ -58,7 +92,7 @@ define(['iterators'], function(AbstractIterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Index.prototype.all = function(key) {
+  Index.prototype.find = function(key) {
     return new BucketIterator(this.buckets[key]);
   };
 
@@ -70,7 +104,7 @@ define(['iterators'], function(AbstractIterator) {
    * @since 1.0.0
    */
   Index.prototype.insert = function(value) {
-    var key = this.generator.call(value);
+    var key = this.generator(value);
     this.buckets[key] = {
       value: value,
       next: this.buckets[key]
@@ -85,7 +119,7 @@ define(['iterators'], function(AbstractIterator) {
    * @since 1.0.0
    */
   Index.prototype.remove = function(value) {
-    var key = this.generator.call(value);
+    var key = this.generator(value);
     var previous = undefined;
     var current = this.buckets[key];
 
