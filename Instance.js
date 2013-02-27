@@ -1,5 +1,4 @@
 define(['./Utilities'], function(µ) {
-
   /**
    * This class represents an instance of a model. It is used as
    * prototype for instances of models.
@@ -25,37 +24,24 @@ define(['./Utilities'], function(µ) {
     µ.copy(proto || {}, this);
 
     // Add properties
-    µ.each(this.properties, µ.bind(this, function(name, property) {
-      this.defineProperty(name, property);
+    µ.each(this.properties, µ.bind(this, function(name, type) {
+      defineProperty(this, name, type);
     }));
   };
 
-  /**
-   * Define a property that will be tracked by the
-   * {{#crossLink "ActivePersistence"}}{{/crossLink}} of the
-   * {{#crossLink "Model"}}{{/crossLink}}.
-   *
-   * @method defineProperty
-   * @private
-   * @param name {String}
-   * @param value {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Instance.prototype.defineProperty = function(name, property) {
-    Object.defineProperty(this, name, {
+  var defineProperty = function(instance, name, type) {
+    Object.defineProperty(instance, name, {
       configurable: false,
       enumerable: true,
       get: function() {
-        return property.get(this, name);
+        return type.get(this, name);
       },
       set: function(newValue) {
         this.model.emit({
           event: 'set',
           args: [this, name, newValue],
           func: µ.bind(this, function() {
-            property.set(this, name, newValue);
+            type.set(this, name, newValue);
           })
         });
       }

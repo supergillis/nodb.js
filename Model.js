@@ -1,10 +1,11 @@
 define([
     'iterators',
+    'collections',
     './Utilities',
     './Eventable',
     './Instance',
     './Index'],
-  function(Iterator, µ, Eventable, Instance, Index) {
+  function(Iterator, Collection, µ, Eventable, Instance, Index) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -15,6 +16,7 @@ define([
    * created instances.
    *
    * @class Model
+   * @extends Collection
    * @extends Eventable
    *
    * @constructor
@@ -73,6 +75,7 @@ define([
    * @since 1.0.0
    */
   var Model = function(persistence, name, proto, properties, indexes) {
+    Collection.call(this);
     Eventable.call(this);
 
     /**
@@ -144,8 +147,14 @@ define([
       });
     }));
   };
+  
+  var ModelPrototype = {};
+  
+  // Inherit from Collection and Eventable
+  µ.copy(Collection.prototype, ModelPrototype);
+  µ.copy(Eventable.prototype, ModelPrototype);
 
-  Model.prototype = Object.create(Eventable.prototype);
+  Model.prototype = Object.create(ModelPrototype);
   Model.prototype.constructor = Model;
 
   /**
@@ -184,21 +193,36 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Model.prototype.all = function() {
+  Model.prototype.iterator = function() {
     return Iterator.array(this.instances);
   };
 
   /**
    * @method index
    * @param name {String} The name of the index to return.
-   * @return {Index} The index with name `name`. If no such index exists
-   *   then an empty index is returned.
+   * @return {Index|undefined} The index with name `name`.
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
   Model.prototype.index = function(name) {
-    return this.indexes[name] || this.emptyIndex;
+    return this.indexes[name];
+  };
+
+  /**
+   * @method find
+   * @param name {String} The name of the index to search.
+   * @param key {Any}
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Model.prototype.find = function(name, key) {
+    var index = this.index(name);
+    if (index)
+      return this.index(name).find(key);
+    return Iterator.empty();
   };
 
   return Model;
