@@ -6,28 +6,39 @@ define(function() {
   };
 
   var copy = function(source, destination) {
-    for (var name in source) {
-      var descriptor = Object.getOwnPropertyDescriptor(source, name);
+    var keys = Object.keys(source);
+    for (var index in keys) {
+      var key = keys[index];
+      var descriptor = Object.getOwnPropertyDescriptor(source, key);
       if (descriptor)
-        Object.defineProperty(destination, name, descriptor);
+        Object.defineProperty(destination, key, descriptor);
       else
-        destination[name] = source[name];
+        destination[key] = source[key];
     }
   };
 
-  var each = function(object, mapper) {
-    for (var index in object)
-      mapper(index, object[index]);
+  var each = function(object, callback) {
+    var keys = Object.keys(object);
+    for (var index in keys) {
+      var key = keys[index];
+      callback(key, object[key]);
+    }
   };
 
   var map = function(object, mapper) {
-    for (var index in object)
-      object[index] = mapper(index, object[index]);
+    var keys = Object.keys(object);
+    for (var index in keys) {
+      var key = keys[index];
+      object[key] = mapper(key, object[key]);
+    }
   };
 
   var mapped = function(source, destination, mapper) {
-    for (var index in source)
-      destination[index] = mapper(index, source[index]);
+    var keys = Object.keys(source);
+    for (var index in keys) {
+      var key = keys[index];
+      destination[key] = mapper(key, source[key]);
+    }
   };
 
   var isDate = function(object) {
