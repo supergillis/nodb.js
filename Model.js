@@ -164,10 +164,8 @@ define([
     var instance = Instance.create(this.instancePrototype, values);
 
     // Track this instance
+    // TODO Check for transaction
     this.instances.add(instance);
-
-    if (this.persistence.transaction)
-      this.persistence.transaction.trackCreatedInstance(instance);
 
     // Notify callbacks
     this.emit({

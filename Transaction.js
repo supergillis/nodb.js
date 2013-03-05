@@ -52,7 +52,13 @@ define(['./Utilities'], function(µ) {
    */
   var Transaction = function() {
     // Committing clears the transaction
-    this.commit();
+    this.reset();
+  };
+
+  Transaction.prototype.reset = function() {
+    this.createdInstances = [];
+    this.deletedInstances = [];
+    this.storedValues = new ObjectMap();
   };
 
   /**
@@ -62,9 +68,13 @@ define(['./Utilities'], function(µ) {
    * @since 1.0.0
    */
   Transaction.prototype.commit = function() {
-    this.createdInstances = [];
-    this.deletedInstances = [];
-    this.storedValues = new ObjectMap();
+    // Revert property values
+    this.storedValues.each(function(instance, values) {
+      for (var index in values)
+        instance[index] = values[index];
+    });
+
+    this.reset();
   };
 
   /**
@@ -77,14 +87,7 @@ define(['./Utilities'], function(µ) {
     // TODO Undelete deleted instances
     // TODO Uncreate created instances
 
-    // Revert property values
-    this.storedValues.each(function(instance, values) {
-      for (var index in values)
-        instance[index] = values[index];
-    });
-
-    // Committing clears the transaction
-    this.commit();
+    this.reset();
   };
 
   /**
@@ -107,24 +110,29 @@ define(['./Utilities'], function(µ) {
     this.deletedInstances.push(instance);
   };
 
+  Transaction.prototype.hasValueFor = function(instance, name) {
+    if (!this.storedValues.has(instance))
+      return false;
+
+    var values = this.storedValues.get(instance);
+    return values.hasOwnProperty(name);
+  };
+
+  Transaction.prototype.getValueFor = function(instance, name) {
+    var values = this.storedValues.get(instance);
+    return values[name];
+  };
+
   /**
-   * This method stores the given value for given instance and property
-   * name. If a value for that instance and property name already
-   * exists, it will not be replaced. In other words, the oldest value
-   * is stored.
-   *
-   * @method storeValue
+   * @method setValueFor
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Transaction.prototype.storeValue = function(instance, name, value) {
+  Transaction.prototype.setValueFor = function(instance, name, value) {
     if (this.storedValues.has(instance)) {
       var values = this.storedValues.get(instance);
-
-      // Don't replace value if we already have one
-      if (!values.hasOwnProperty(name))
-        values[name] = value;
+      values[name] = value;
     }
     else {
       var values = {};

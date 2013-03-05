@@ -25,6 +25,10 @@ define(['./Utilities', './Collection', './Instance'],
   };
 
   Type.prototype.get = function(instance, name) {
+    if (this.persistence.transaction &&
+        this.persistence.transaction.hasValueFor(instance, name))
+      return this.persistence.transaction.getValueFor(instance, name);
+
     return instance['_' + name];
   };
 
@@ -34,8 +38,8 @@ define(['./Utilities', './Collection', './Instance'],
         this.model.name + '\'!';
 
     if (this.persistence.transaction)
-      this.persistence.transaction.storeValue(instance, name,
-        instance['_' + name]);
+      return this.persistence.transaction.setValueFor(instance, name,
+        value);
 
     return instance['_' + name] = value;
   };
