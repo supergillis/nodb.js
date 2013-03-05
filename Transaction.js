@@ -1,4 +1,46 @@
 define(['./Utilities'], function(µ) {
+  var ObjectMap = function() {
+    this.items = [];
+  };
+
+  ObjectMap.prototype.each = function(callback) {
+    for (var index in this.items) {
+      var entry = this.items[index];
+      callback(entry[0], entry[1]);
+    };
+  };
+
+  ObjectMap.prototype.has = function(key) {
+    for (var index in this.items) {
+      var entry = this.items[index];
+      if (entry[0] === key)
+        return true;
+    };
+    return false;
+  };
+
+  ObjectMap.prototype.get = function(key) {
+    for (var index in this.items) {
+      var entry = this.items[index];
+      if (entry[0] === key)
+        return entry[1];
+    };
+    return undefined;
+  };
+
+  ObjectMap.prototype.set = function(key, value) {
+    for (var index in this.items) {
+      var entry = this.items[index];
+      if (entry[0] === key) {
+        entry[1] = value;
+        return;
+      }
+    }
+
+    // No such key exists, so add new entry
+    this.items.push([key, value]);
+  };
+
   /**
    * The Transaction class.
    *
@@ -9,12 +51,8 @@ define(['./Utilities'], function(µ) {
    * @since 1.0.0
    */
   var Transaction = function() {
-    this.createdInstances = [];
-    this.deletedInstances = [];
-
-    this.updatedInstanceId = 0;
-    this.updatedInstances = {};
-    this.updatedInstanceValues = {};
+    // Committing clears the transaction
+    this.commit();
   };
 
   /**
@@ -26,21 +64,7 @@ define(['./Utilities'], function(µ) {
   Transaction.prototype.commit = function() {
     this.createdInstances = [];
     this.deletedInstances = [];
-
-    // Commit property updates
-    for (var id in this.updatedInstanceValues) {
-      var instance = this.updatedInstances[id];
-      var values = this.updatedInstanceValues[id];
-      for (var index in values)
-        instance[index] = values[index];
-
-      // Remove transaction property
-      delete instance.__transactionId;
-    }
-
-    this.updatedInstanceId = 0;
-    this.updatedInstances = {};
-    this.updatedInstanceValues = {};
+    this.storedValues = new ObjectMap();
   };
 
   /**
@@ -52,12 +76,15 @@ define(['./Utilities'], function(µ) {
   Transaction.prototype.revert = function() {
     // TODO Undelete deleted instances
     // TODO Uncreate created instances
-    this.createdInstances = [];
-    this.deletedInstances = [];
 
-    this.updatedInstanceId = 0;
-    this.updatedInstances = {};
-    this.updatedInstanceValues = {};
+    // Revert property values
+    this.storedValues.each(function(instance, values) {
+      for (var index in values)
+        instance[index] = values[index];
+    });
+
+    // Committing clears the transaction
+    this.commit();
   };
 
   /**
@@ -81,55 +108,29 @@ define(['./Utilities'], function(µ) {
   };
 
   /**
-   * @method hasValueFor
+   * This method stores the given value for given instance and property
+   * name. If a value for that instance and property name already
+   * exists, it will not be replaced. In other words, the oldest value
+   * is stored.
+   *
+   * @method storeValue
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Transaction.prototype.hasValueFor = function(instance, name) {
-    if (instance.__transactionId === undefined)
-      return false;
+  Transaction.prototype.storeValue = function(instance, name, value) {
+    if (this.storedValues.has(instance)) {
+      var values = this.storedValues.get(instance);
 
-    var values = this.updatedInstanceValues[instance.__transactionId];
-    return values && values.hasOwnProperty(name);
-  };
-
-  /**
-   * @method getValueFor
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Transaction.prototype.getValueFor = function(instance, name) {
-    if (instance.__transactionId === undefined)
-      return undefined;
-
-    return this.updatedInstanceValues[instance.__transactionId][name];
-  };
-
-  /**
-   * @method setValueFor
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Transaction.prototype.setValueFor = function(instance, name, value) {
-    var transactionId = instance.__transactionId;
-
-    // Create a transaction id if not set
-    if (transactionId === undefined) {
-      instance.__transactionId = transactionId =
-        this.updatedInstanceId++;
-      this.updatedInstances[transactionId] = instance;
+      // Don't replace value if we already have one
+      if (!values.hasOwnProperty(name))
+        values[name] = value;
     }
-
-    // Create values for this instance
-    var values = this.updatedInstanceValues[transactionId];
-    if (!values)
-      this.updatedInstanceValues[transactionId] = values = {};
-
-    // Update value for this instance
-    return values[name] = value;
+    else {
+      var values = {};
+      values[name] = value;
+      this.storedValues.set(instance, values);
+    }
   };
 
   return Transaction;

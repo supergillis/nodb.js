@@ -1,5 +1,10 @@
-define(['./Eventable', './Model', './Transaction', './Type'],
-    function(Eventable, Model, Transaction, Type) {
+define([
+      './Utilities',
+      './Eventable',
+      './Model',
+      './Transaction',
+      './Type'],
+    function(µ, Eventable, Model, Transaction, Type) {
   /**
    * @class ActivePersistence
    * @constructor
@@ -75,7 +80,7 @@ define(['./Eventable', './Model', './Transaction', './Type'],
       this.transaction = null;
       transaction.revert();
 
-      console.error('Exception in transaction:', exception);
+      console.error('Unhandled exception in transaction:', exception);
     }
   };
 
