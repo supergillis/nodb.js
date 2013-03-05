@@ -1,4 +1,4 @@
-define(['./Utilities'], function(µ) {
+define(['./Utilities', './Type'], function(µ, Type) {
   /**
    * This class represents an instance of a model. It is used as
    * prototype for instances of models.
@@ -25,11 +25,14 @@ define(['./Utilities'], function(µ) {
 
     // Add properties
     µ.each(this.properties, µ.bind(this, function(name, type) {
-      defineProperty(this, name, type);
+      if (!(type instanceof Type))
+        throw 'The property \'' + name + '\' must have a valid type!';
+
+      Instance.defineProperty(this, name, type);
     }));
   };
 
-  var defineProperty = function(instance, name, type) {
+  Instance.defineProperty = function(instance, name, type) {
     Object.defineProperty(instance, name, {
       configurable: false,
       enumerable: true,
@@ -55,6 +58,7 @@ define(['./Utilities'], function(µ) {
     for (var index in base.properties) {
       var value = values.hasOwnProperty(index) ?
         values[index] : undefined;
+
       base.properties[index].initialize(instance, index, value);
     }
 

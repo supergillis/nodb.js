@@ -18,11 +18,13 @@ define(function() {
   };
 
   var each = function(object, callback) {
+    var last = undefined;
     var keys = Object.keys(object);
     for (var index in keys) {
       var key = keys[index];
-      callback(key, object[key]);
+      last = callback(key, object[key]);
     }
+    return last;
   };
 
   var map = function(object, mapper) {
@@ -33,7 +35,13 @@ define(function() {
     }
   };
 
-  var mapped = function(source, destination, mapper) {
+  var mapped = function(source, mapper) {
+    var destination = {};
+    mappedIn(source, destination, mapper);
+    return destination;
+  };
+
+  var mappedIn = function(source, destination, mapper) {
     var keys = Object.keys(source);
     for (var index in keys) {
       var key = keys[index];
@@ -58,14 +66,27 @@ define(function() {
     return Object.prototype.toString.call(object) === '[object String]';
   };
 
+  var getPropertyDescriptor = function(object, name) {
+    if (!object)
+      return undefined;
+
+    var descriptor = Object.getOwnPropertyDescriptor(object, name);
+    if (descriptor)
+      return descriptor;
+
+    return getPropertyDescriptor(Object.getPrototypeOf(object), name);
+  };
+
   return {
     bind: bind,
     copy: copy,
     each: each,
     map: map,
     mapped: mapped,
+    mappedIn: mappedIn,
     isDate: isDate,
     isFunction: isFunction,
-    isString: isString
+    isString: isString,
+    getPropertyDescriptor: getPropertyDescriptor
   };
 });

@@ -1,11 +1,11 @@
 define([
-    'iterators',
-    'collections',
     './Utilities',
+    './Collection',
     './Eventable',
+    './Index',
     './Instance',
-    './Index'],
-  function(Iterator, Collection, µ, Eventable, Instance, Index) {
+    './Iterator'],
+  function(µ, Collection, Eventable, Index, Instance, Iterator) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -99,16 +99,6 @@ define([
     this.name = name;
 
     /**
-     * @property instanceBase
-     * @type {Instance}
-     * @private
-     *
-     * @author Gillis Van Ginderachter
-     * @since 1.0.0
-     */
-    this.instanceBase = new Instance(this, proto, properties);
-
-    /**
      * @property instances
      * @type {Instance[]}
      * @private
@@ -116,17 +106,17 @@ define([
      * @author Gillis Van Ginderachter
      * @since 1.0.0
      */
-    this.instances = [];
+    this.instances = new Collection.LinkedList();
 
     /**
-     * @property emptyIndex
-     * @type {Index}
+     * @property instancePrototype
+     * @type {Instance}
      * @private
      *
      * @author Gillis Van Ginderachter
      * @since 1.0.0
      */
-    this.emptyIndex = new Index(this, null);
+    this.instancePrototype = new Instance(this, proto, properties);
 
     /**
      * @property indexes
@@ -136,9 +126,8 @@ define([
      * @author Gillis Van Ginderachter
      * @since 1.0.0
      */
-    this.indexes = {};
-
-    µ.mapped(indexes || {}, this.indexes, µ.bind(this, function(name, hasher) {
+    this.indexes = µ.mapped(indexes || {}, µ.bind(this, function(name,
+        hasher) {
       if (µ.isFunction(hasher))
         return new Index(this, hasher);
 
@@ -147,9 +136,9 @@ define([
       });
     }));
   };
-  
+
   var ModelPrototype = {};
-  
+
   // Inherit from Collection and Eventable
   µ.copy(Collection.prototype, ModelPrototype);
   µ.copy(Eventable.prototype, ModelPrototype);
@@ -172,10 +161,13 @@ define([
    * @since 1.0.0
    */
   Model.prototype.create = function(values) {
-    var instance = Instance.create(this.instanceBase, values);
+    var instance = Instance.create(this.instancePrototype, values);
 
     // Track this instance
-    this.instances.push(instance);
+    this.instances.add(instance);
+
+    if (this.persistence.transaction)
+      this.persistence.transaction.trackCreatedInstance(instance);
 
     // Notify callbacks
     this.emit({
@@ -187,14 +179,24 @@ define([
   };
 
   /**
-   * @method all
+   * @method add
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Model.prototype.add = function(object) {
+    throw 'You can not manually add an instance to a model!';
+  };
+
+  /**
+   * @method iterator
    * @return {Iterator} An iterator for all the instances of this model.
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
   Model.prototype.iterator = function() {
-    return Iterator.array(this.instances);
+    return this.instances.iterator();
   };
 
   /**
@@ -220,9 +222,10 @@ define([
    */
   Model.prototype.find = function(name, key) {
     var index = this.index(name);
-    if (index)
-      return this.index(name).find(key);
-    return Iterator.empty();
+    if (!index)
+      return new Iterator.Empty();
+
+    return index.find(key);
   };
 
   return Model;

@@ -1,38 +1,4 @@
-define(['iterators'], function(AbstractIterator) {
-  /**
-   * The BucketIterator class.
-   *
-   * @class BucketIterator
-   * @extends AbstractIterator
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var BucketIterator = function(bucket) {
-    AbstractIterator.call(this);
-
-    this.bucket = bucket;
-  };
-
-  BucketIterator.prototype = Object.create(AbstractIterator.prototype);
-  BucketIterator.prototype.constructor = BucketIterator;
-
-  BucketIterator.prototype.hasNext = function() {
-    return this.bucket !== undefined;
-  };
-
-  BucketIterator.prototype.next = function() {
-    if (!this.hasNext())
-      throw StopIteration;
-
-    var value = this.bucket.value;
-    this.bucket = this.bucket.next;
-    return value;
-  };
-
+define(['./Iterator'], function(Iterator) {
   /**
    * The Index class.
    *
@@ -47,7 +13,7 @@ define(['iterators'], function(AbstractIterator) {
    */
   var Index = function(model, generator) {
     this.generator = generator;
-    this.buckets = {};
+    this.collections = {};
 
     if (!this.generator)
       return;
@@ -93,7 +59,11 @@ define(['iterators'], function(AbstractIterator) {
    * @since 1.0.0
    */
   Index.prototype.find = function(key) {
-    return new BucketIterator(this.buckets[key]);
+    var collection = this.collections[key];
+    if (!collection)
+      return new Iterator.Empty();
+
+    return collection.iterator();
   };
 
   /**
@@ -103,12 +73,14 @@ define(['iterators'], function(AbstractIterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Index.prototype.insert = function(value) {
-    var key = this.generator(value);
-    this.buckets[key] = {
-      value: value,
-      next: this.buckets[key]
-    };
+  Index.prototype.insert = function(object) {
+    var key = this.generator(object);
+    var collection = this.collections[key];
+    if (!collection)
+      this.collections[key] = collection = new Collection.LinkedList();
+
+    // Add value to the collection with corresponding key
+    collection.add(object);
   };
 
   /**
@@ -118,23 +90,14 @@ define(['iterators'], function(AbstractIterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Index.prototype.remove = function(value) {
-    var key = this.generator(value);
-    var previous = undefined;
-    var current = this.buckets[key];
+  Index.prototype.remove = function(object) {
+    var key = this.generator(object);
+    var collection = this.collections[key];
+    if (!collection)
+      return;
 
-    while (current) {
-      if (current.value === value) {
-        if (previous === undefined)
-          this.buckets[key] = current.next;
-        else
-          previous.next = current.next;
-        return true;
-      }
-      previous = current;
-      current = current.next;
-    }
-    return false;
+    // Remove value from the collection with corresponding key
+    collection.remove(object);
   };
 
   return Index;

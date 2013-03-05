@@ -1,9 +1,5 @@
-require.config({
-  'packages': ['iterators', 'collections']
-});
-
-define(['./Eventable', './Model', './Type'],
-    function(Eventable, Model, Type) {
+define(['./Eventable', './Model', './Transaction', './Type'],
+    function(Eventable, Model, Transaction, Type) {
   /**
    * @class ActivePersistence
    * @constructor
@@ -15,8 +11,14 @@ define(['./Eventable', './Model', './Type'],
     Eventable.call(this);
 
     this.models = {};
+    this.transaction = null;
+
+    this.any = new Type.Any(this);
+    this.boolean = new Type.Boolean(this);
+    this.integer = new Type.Integer(this);
+    this.string = new Type.String(this);
   };
-  
+
   ActivePersistence.prototype = Object.create(Eventable.prototype);
   ActivePersistence.prototype.constructor = ActivePersistence;
 
@@ -42,10 +44,10 @@ define(['./Eventable', './Model', './Type'],
       args.indexes);
 
     this.models[args.name] = model;
-    
+
     // Define types
-    model.One = new Type.One(model);
-    model.Many = new Type.Many(model);
+    model.one = new Type.One(this, model);
+    model.many = new Type.Many(this, model);
 
     // Notify callbacks
     this.emit({
@@ -56,11 +58,27 @@ define(['./Eventable', './Model', './Type'],
     return model;
   };
 
-  ActivePersistence.prototype.Any = new Type.Any;
-  ActivePersistence.prototype.Boolean = new Type.Boolean;
-  ActivePersistence.prototype.Integer = new Type.Integer;
-  ActivePersistence.prototype.String = new Type.String;
-  
+  ActivePersistence.prototype.transact = function(callback) {
+    var transaction = new Transaction();
+
+    try {
+      // Execute callback with transaction set
+      this.transaction = transaction;
+      callback();
+
+      // Unset transaction and commit it
+      this.transaction = null;
+      transaction.commit();
+    }
+    catch (exception) {
+      // Unset transaction and revert it
+      this.transaction = null;
+      transaction.revert();
+
+      console.error('Exception in transaction:', exception);
+    }
+  };
+
   var instance = new ActivePersistence();
 
   return instance;

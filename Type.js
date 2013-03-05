@@ -1,5 +1,5 @@
-define(['./Utilities', './Instance', 'collections'],
-  function(µ, Instance, Collection) {
+define(['./Utilities', './Collection', './Instance'],
+  function(µ, Collection, Instance) {
   /**
    * @class Type
    * @constructor
@@ -7,7 +7,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var Type = function() {
+  var Type = function(persistence) {
+    this.persistence = persistence;
   };
 
   Type.prototype.initialize = function(instance, name, value) {
@@ -24,6 +25,10 @@ define(['./Utilities', './Instance', 'collections'],
   };
 
   Type.prototype.get = function(instance, name) {
+    if (this.persistence.transaction &&
+        this.persistence.transaction.hasValueFor(instance, name))
+      return this.persistence.transaction.getValueFor(instance, name);
+
     return instance['_' + name];
   };
 
@@ -32,7 +37,11 @@ define(['./Utilities', './Instance', 'collections'],
       throw 'Invalid value for property \'' + name + '\' for model \'' +
         this.model.name + '\'!';
 
-    instance['_' + name] = value;
+    if (this.persistence.transaction)
+      return this.persistence.transaction.setValueFor(instance, name,
+        value);
+
+    return instance['_' + name] = value;
   };
 
   /**
@@ -45,8 +54,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var AnyType = function() {
-    Type.call(this);
+  var AnyType = function(persistence) {
+    Type.call(this, persistence);
   };
 
   AnyType.prototype = Object.create(Type.prototype);
@@ -66,8 +75,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var BooleanType = function() {
-    Type.call(this);
+  var BooleanType = function(persistence) {
+    Type.call(this, persistence);
   };
 
   BooleanType.prototype = Object.create(Type.prototype);
@@ -87,8 +96,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var IntegerType = function() {
-    Type.call(this);
+  var IntegerType = function(persistence) {
+    Type.call(this, persistence);
   };
 
   IntegerType.prototype = Object.create(Type.prototype);
@@ -108,8 +117,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var StringType = function() {
-    Type.call(this);
+  var StringType = function(persistence) {
+    Type.call(this, persistence);
   };
 
   StringType.prototype = Object.create(Type.prototype);
@@ -129,8 +138,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var DateType = function() {
-    Type.call(this);
+  var DateType = function(persistence) {
+    Type.call(this, persistence);
   };
 
   DateType.prototype = Object.create(Type.prototype);
@@ -150,8 +159,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var OneType = function(model) {
-    Type.call(this);
+  var OneType = function(model, persistence) {
+    Type.call(this, persistence);
 
     this.model = model;
   };
@@ -174,8 +183,8 @@ define(['./Utilities', './Instance', 'collections'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var ManyType = function(model) {
-    Type.call(this);
+  var ManyType = function(model, persistence) {
+    Type.call(this, persistence);
 
     this.model = model;
   };
@@ -184,21 +193,22 @@ define(['./Utilities', './Instance', 'collections'],
   ManyType.prototype.constructor = ManyType;
 
   ManyType.prototype.initialize = function(instance, name, value) {
-    // Use custom value
-    Type.prototype.initialize.call(this, instance, name,
-      Collection.array());
+    // Override default value with a collection
+    value = new Collection.Array();
+
+    Type.prototype.initialize.call(this, instance, name, value);
   };
 
   ManyType.prototype.set = function(instance, name, value) {
     throw 'Unable to change collection property \'' + name + '\'!';
   };
-  
+
   Type.Any = AnyType;
   Type.Boolean = BooleanType;
   Type.Date = DateType;
   Type.Integer = IntegerType;
   Type.String = StringType;
-  
+
   Type.One = OneType;
   Type.Many = ManyType;
 
