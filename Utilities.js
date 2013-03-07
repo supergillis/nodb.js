@@ -86,6 +86,7 @@ define(function() {
     mappedIn: mappedIn,
     isDate: isDate,
     isFunction: isFunction,
+    isInt: isInt,
     isString: isString,
     getPropertyDescriptor: getPropertyDescriptor
   };

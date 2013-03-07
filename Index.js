@@ -1,4 +1,8 @@
-define(['./Iterator'], function(Iterator) {
+define([
+    './Utilities',
+    './Collection',
+    './Iterator'],
+  function(µ, Collection, Iterator) {
   /**
    * The Index class.
    *
@@ -12,8 +16,14 @@ define(['./Iterator'], function(Iterator) {
    * @since 1.0.0
    */
   var Index = function(model, generator) {
-    this.generator = generator;
-    this.collections = {};
+    Object.defineProperties(this, {
+      'generator': {
+        value: generator
+      },
+      'collections': {
+        value: {}
+      }
+    });
 
     if (!this.generator)
       return;
@@ -26,26 +36,23 @@ define(['./Iterator'], function(Iterator) {
     // Create index for new instances
     model.on({
       event: 'create',
-      caller: this,
-      callback: function(instance) {
+      callback: µ.bind(this, function(instance) {
         this.insert(instance);
-      }
+      })
     });
 
     model.on({
       event: 'set',
-      caller: this,
-      callback: function(instance, property, value) {
+      callback: µ.bind(this, function(instance) {
         this.remove(instance);
-      }
+      })
     });
 
     model.after({
       event: 'set',
-      caller: this,
-      callback: function(instance, property, value) {
+      callback: µ.bind(this, function(instance) {
         this.insert(instance);
-      }
+      })
     });
   };
 

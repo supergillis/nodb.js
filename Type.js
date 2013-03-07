@@ -8,10 +8,16 @@ define(['./Utilities', './Collection', './Instance'],
    * @since 1.0.0
    */
   var Type = function(persistence) {
-    this.persistence = persistence;
+    Object.defineProperty(this, 'persistence', {
+      value: persistence
+    });
   };
 
   Type.prototype.initialize = function(instance, name, value) {
+    if (!this.validate(instance, name, value))
+      throw 'Invalid value for property \'' + name + '\' for model \'' +
+        this.model.name + '\'!';
+
     Object.defineProperty(instance, '_' + name, {
       configurable: false,
       enumerable: false,
@@ -159,18 +165,23 @@ define(['./Utilities', './Collection', './Instance'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var OneType = function(model, persistence) {
+  var OneType = function(persistence, model) {
     Type.call(this, persistence);
 
-    this.model = model;
+    Object.defineProperty(this, 'model', {
+      value: model
+    });
   };
 
   OneType.prototype = Object.create(Type.prototype);
   OneType.prototype.constructor = OneType;
 
   OneType.prototype.validate = function(instance, name, value) {
-    return !value || (value instanceof Instance && value.model ===
-      this.model);
+    // Allow null and undefined
+    if (!value)
+      return true;
+
+    return value instanceof Instance && value.model === this.model;
   };
 
   /**
@@ -183,10 +194,12 @@ define(['./Utilities', './Collection', './Instance'],
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var ManyType = function(model, persistence) {
+  var ManyType = function(persistence, model) {
     Type.call(this, persistence);
 
-    this.model = model;
+    Object.defineProperty(this, 'model', {
+      value: model
+    });
   };
 
   ManyType.prototype = Object.create(Type.prototype);
@@ -194,13 +207,36 @@ define(['./Utilities', './Collection', './Instance'],
 
   ManyType.prototype.initialize = function(instance, name, value) {
     // Override default value with a collection
-    value = new Collection.Array();
-
-    Type.prototype.initialize.call(this, instance, name, value);
+    Type.prototype.initialize.call(this, instance, name,
+      new Collection.Array());
   };
 
   ManyType.prototype.set = function(instance, name, value) {
     throw 'Unable to change collection property \'' + name + '\'!';
+  };
+
+  ManyType.prototype.validate = function(instance, name, value) {
+    // Allow null and undefined
+    if (!value)
+      return true;
+
+    if (!(value instanceof Collection))
+      return false;
+
+    var iterator = value.iterator();
+    while (iterator.hasNext()) {
+      var subvalue = iterator.next();
+
+      // Allow null and undefined
+      if (!subvalue)
+        continue;
+
+      if (!(subvalue instanceof Instance) || subvalue.model !==
+          this.model)
+        return false;
+    }
+
+    return true;
   };
 
   Type.Any = AnyType;

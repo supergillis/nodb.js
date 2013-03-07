@@ -1,10 +1,11 @@
 define([
       './Utilities',
+      './Collection',
       './Eventable',
       './Model',
       './Transaction',
       './Type'],
-    function(µ, Eventable, Model, Transaction, Type) {
+    function(µ, Collection, Eventable, Model, Transaction, Type) {
   /**
    * @class ActivePersistence
    * @constructor
@@ -15,13 +16,27 @@ define([
   var ActivePersistence = function() {
     Eventable.call(this);
 
-    this.models = {};
-    this.transaction = null;
-
-    this.any = new Type.Any(this);
-    this.boolean = new Type.Boolean(this);
-    this.integer = new Type.Integer(this);
-    this.string = new Type.String(this);
+    Object.defineProperties(this, {
+      'models': {
+        value: new Collection.LinkedList()
+      },
+      'transaction': {
+        value: null,
+        writeable: true
+      },
+      'any': {
+        value: new Type.Any(this)
+      },
+      'boolean': {
+        value: new Type.Boolean(this)
+      },
+      'integer': {
+        value: new Type.Integer(this)
+      },
+      'string': {
+        value: new Type.String(this)
+      }
+    });
   };
 
   ActivePersistence.prototype = Object.create(Eventable.prototype);
@@ -48,11 +63,18 @@ define([
     var model = new Model(this, args.name, args.proto, args.properties,
       args.indexes);
 
-    this.models[args.name] = model;
+    // Track this model
+    this.models.add(model);
 
-    // Define types
-    model.one = new Type.One(this, model);
-    model.many = new Type.Many(this, model);
+    // Define association types
+    Object.defineProperties(model, {
+      'one': {
+        value: new Type.One(this, model)
+      },
+      'many': {
+        value: new Type.Many(this, model)
+      }
+    });
 
     // Notify callbacks
     this.emit({
@@ -80,7 +102,7 @@ define([
       this.transaction = null;
       transaction.revert();
 
-      console.error('Unhandled exception in transaction:', exception);
+      console.error('Exception in transaction:', exception);
     }
   };
 

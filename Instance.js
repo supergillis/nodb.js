@@ -1,4 +1,4 @@
-define(['./Utilities', './Type'], function(µ, Type) {
+define(['./Utilities'], function(µ) {
   /**
    * This class represents an instance of a model. It is used as
    * prototype for instances of models.
@@ -12,19 +12,24 @@ define(['./Utilities', './Type'], function(µ, Type) {
    * @since 1.0.0
    */
   var Instance = function(model, proto, properties) {
-    Object.defineProperty(this, 'model', {
-      value: model
-    });
-
-    Object.defineProperty(this, 'properties', {
-      value: properties || {}
+    Object.defineProperties(this, {
+      'model': {
+        value: model
+      },
+      'proto': {
+        value: proto || {}
+      },
+      'properties': {
+        value: properties || {}
+      }
     });
 
     // Copy prototype stuff, including getters and setters
-    µ.copy(proto || {}, this);
+    µ.copy(this.proto, this);
 
     // Add properties
     µ.each(this.properties, µ.bind(this, function(name, type) {
+      var Type = require('./Type');
       if (!(type instanceof Type))
         throw 'The property \'' + name + '\' must have a valid type!';
 

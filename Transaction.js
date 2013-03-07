@@ -1,4 +1,4 @@
-define(['./Utilities'], function(µ) {
+define(['./Utilities', './Iterator'], function(µ, Iterator) {
   var ObjectMap = function() {
     this.items = [];
   };
@@ -51,13 +51,12 @@ define(['./Utilities'], function(µ) {
    * @since 1.0.0
    */
   var Transaction = function() {
-    // Committing clears the transaction
     this.reset();
   };
 
   Transaction.prototype.reset = function() {
-    this.createdInstances = [];
-    this.deletedInstances = [];
+    this.created = [];
+    this.deleted = [];
     this.storedValues = new ObjectMap();
   };
 
@@ -74,6 +73,9 @@ define(['./Utilities'], function(µ) {
         instance[index] = values[index];
     });
 
+    // TODO Add created instances to model
+    // TODO Remove delete instances from model
+
     this.reset();
   };
 
@@ -84,32 +86,47 @@ define(['./Utilities'], function(µ) {
    * @since 1.0.0
    */
   Transaction.prototype.revert = function() {
-    // TODO Undelete deleted instances
-    // TODO Uncreate created instances
-
     this.reset();
   };
 
   /**
-   * @method trackCreatedInstance
+   * @method createInstance
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Transaction.prototype.trackCreatedInstance = function(instance) {
-    this.createdInstances.push(instance);
+  Transaction.prototype.createInstance = function(instance) {
+    this.created.push(instance);
   };
 
   /**
-   * @method trackDeletedInstance
+   * @method createdInstances
+   * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Transaction.prototype.trackDeletedInstance = function(instance) {
-    this.deletedInstances.push(instance);
+  Transaction.prototype.createdInstances = function() {
+    return new Iterator.Array(this.created);
   };
 
+  /**
+   * @method deletedInstances
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Transaction.prototype.deletedInstances = function() {
+    return new Iterator.Array(this.deleted);
+  };
+
+  /**
+   * @method hasValueFor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Transaction.prototype.hasValueFor = function(instance, name) {
     if (!this.storedValues.has(instance))
       return false;
@@ -118,6 +135,12 @@ define(['./Utilities'], function(µ) {
     return values.hasOwnProperty(name);
   };
 
+  /**
+   * @method getValueFor
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
   Transaction.prototype.getValueFor = function(instance, name) {
     var values = this.storedValues.get(instance);
     return values[name];

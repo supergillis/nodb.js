@@ -9,8 +9,14 @@ define(function() {
    * @since 1.0.0
    */
   var Eventable = function() {
-    this.onListeners = {};
-    this.afterListeners = {};
+    Object.defineProperties(this, {
+      'onListeners': {
+        value: {}
+      },
+      'afterListeners': {
+        value: {}
+      }
+    });
   };
 
   /**

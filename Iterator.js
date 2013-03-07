@@ -263,7 +263,7 @@ define(function() {
   var ArrayIterator = function(array, index) {
     Iterator.call(this);
 
-    this.array = array;
+    this.array = array.slice(0);
     this.index = index || 0;
   };
 
@@ -279,6 +279,44 @@ define(function() {
       throw StopIteration;
 
     return this.array[this.index++];
+  };
+
+  /**
+   * The ConcatenateIterator class.
+   *
+   * @class ConcatenateIterator
+   * @extends Iterator
+   * @constructor
+   * @private
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  var ConcatenateIterator = function() {
+    Iterator.call(this);
+
+    this.iterators = Array.prototype.slice.call(arguments, 0);
+    this.index = 0;
+  };
+
+  ConcatenateIterator.prototype = Object.create(Iterator.prototype);
+  ConcatenateIterator.prototype.constructor = ConcatenateIterator;
+
+  ConcatenateIterator.prototype.hasNext = function() {
+    var iterator;
+    while (iterator = this.iterators[this.index]) {
+      if (iterator.hasNext())
+        return true;
+      this.index++;
+    }
+    return false;
+  };
+
+  ConcatenateIterator.prototype.next = function() {
+    if (!this.hasNext())
+      throw StopIteration;
+
+    return this.iterators[this.index].next();
   };
 
   /**
@@ -508,6 +546,15 @@ define(function() {
    * @since 1.0.0
    */
   Iterator.Array = ArrayIterator;
+
+  /**
+   * @property Concatenate
+   * @static
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.Concatenate = ConcatenateIterator;
 
   /**
    * @property Empty

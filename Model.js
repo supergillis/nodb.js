@@ -78,45 +78,52 @@ define([
     Collection.call(this);
     Eventable.call(this);
 
-    /**
-     * @property persistence
-     * @type {ActivePersistence}
-     * @private
-     *
-     * @author Gillis Van Ginderachter
-     * @since 1.0.0
-     */
-    this.persistence = persistence;
-
-    /**
-     * @property name
-     * @type {String}
-     * @private
-     *
-     * @author Gillis Van Ginderachter
-     * @since 1.0.0
-     */
-    this.name = name;
-
-    /**
-     * @property instances
-     * @type {Instance[]}
-     * @private
-     *
-     * @author Gillis Van Ginderachter
-     * @since 1.0.0
-     */
-    this.instances = new Collection.LinkedList();
-
-    /**
-     * @property instancePrototype
-     * @type {Instance}
-     * @private
-     *
-     * @author Gillis Van Ginderachter
-     * @since 1.0.0
-     */
-    this.instancePrototype = new Instance(this, proto, properties);
+    Object.defineProperties(this, {
+      /**
+       * @property persistence
+       * @type {ActivePersistence}
+       * @private
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      'persistence': {
+        value: persistence
+      },
+      /**
+       * @property name
+       * @type {String}
+       * @private
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      'name': {
+        value: name
+      },
+      /**
+       * @property instances
+       * @type {Instance[]}
+       * @private
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      'instances': {
+        value: new Collection.LinkedList()
+      },
+      /**
+       * @property instancePrototype
+       * @type {Instance}
+       * @private
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      'instancePrototype': {
+        value: new Instance(this, proto, properties)
+      }
+    });
 
     /**
      * @property indexes
@@ -126,15 +133,26 @@ define([
      * @author Gillis Van Ginderachter
      * @since 1.0.0
      */
-    this.indexes = µ.mapped(indexes || {}, µ.bind(this, function(name,
-        hasher) {
-      if (µ.isFunction(hasher))
-        return new Index(this, hasher);
+    /*
+     * Use a separate to define indexes because the mapping creates new
+     * indexes which use (some of) the above defined properties.
+     */
+    Object.defineProperty(this, 'indexes', {
+      value: µ.mapped(indexes || {}, µ.bind(this, function(_, value) {
+        // The value is already an index, so copy its generator
+        if (value instanceof Index)
+          return new Index(this, value.generator);
 
-      return new Index(this, function(instance) {
-        return instance[hasher];
-      });
-    }));
+        // The value is a function to generate the key
+        if (µ.isFunction(value))
+          return new Index(this, value);
+
+        // The value is a property for the instance
+        return new Index(this, function(instance) {
+          return instance[value];
+        });
+      }))
+    });
   };
 
   var ModelPrototype = {};
@@ -145,6 +163,18 @@ define([
 
   Model.prototype = Object.create(ModelPrototype);
   Model.prototype.constructor = Model;
+
+  Model.prototype.extend = function(args) {
+    // Copy our properties
+    µ.copy(this.instancePrototype.properties,
+      args.properties = args.properties || {});
+
+    // Copy our prototype
+    µ.copy(this.instancePrototype.proto,
+      args.proto = args.proto || {});
+
+    return this.persistence.create(args);
+  };
 
   /**
    * Create a new instance of this model. This instance will inherit the
@@ -164,8 +194,10 @@ define([
     var instance = Instance.create(this.instancePrototype, values);
 
     // Track this instance
-    // TODO Check for transaction
-    this.instances.add(instance);
+    if (this.persistence.transaction)
+      this.persistence.transaction.createInstance(instance);
+    else
+      this.instances.add(instance);
 
     // Notify callbacks
     this.emit({
@@ -194,7 +226,12 @@ define([
    * @since 1.0.0
    */
   Model.prototype.iterator = function() {
-    return this.instances.iterator();
+    if (!this.persistence.transaction)
+      return this.instances.iterator();
+
+    return new Iterator.Concatenate(
+      this.instances.iterator(),
+      this.persistence.transaction.createdInstances());
   };
 
   /**
