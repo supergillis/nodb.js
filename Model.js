@@ -102,17 +102,6 @@ define([
         value: name
       },
       /**
-       * @property instances
-       * @type {Instance[]}
-       * @private
-       *
-       * @author Gillis Van Ginderachter
-       * @since 1.0.0
-       */
-      'instances': {
-        value: new Collection.LinkedList()
-      },
-      /**
        * @property instancePrototype
        * @type {Instance}
        * @private
@@ -194,10 +183,7 @@ define([
     var instance = Instance.create(this.instancePrototype, values);
 
     // Track this instance
-    if (this.persistence.transaction)
-      this.persistence.transaction.createInstance(instance);
-    else
-      this.instances.add(instance);
+    this.persistence.revision.add(instance);
 
     // Notify callbacks
     this.emit({
@@ -210,12 +196,24 @@ define([
 
   /**
    * @method add
+   * @protected
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
   Model.prototype.add = function(object) {
     throw 'You can not manually add an instance to a model!';
+  };
+
+  /**
+   * @method remove
+   * @protected
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Model.prototype.remove = function(object) {
+    throw 'You can not manually remove an instance from a model!';
   };
 
   /**
@@ -226,12 +224,9 @@ define([
    * @since 1.0.0
    */
   Model.prototype.iterator = function() {
-    if (!this.persistence.transaction)
-      return this.instances.iterator();
-
-    return new Iterator.Concatenate(
-      this.instances.iterator(),
-      this.persistence.transaction.createdInstances());
+    return this.persistence.revision.filter(µ.bind(this, function(instance) {
+      return instance.model === this;
+    }));
   };
 
   /**

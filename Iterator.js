@@ -148,6 +148,17 @@ define(function() {
   };
 
   /**
+   * @method concat
+   * @return {ConcatenateIterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.concat = function(other) {
+    return new ConcatenateIterator(this, other);
+  };
+
+  /**
    * @method filter
    * @return {FilterIterator}
    *
@@ -238,7 +249,7 @@ define(function() {
 
       this.state = StatefulIterator.StateLoaded;
     }
-    return this.state !== StatefulIterator.Finished;
+    return this.state !== StatefulIterator.StateFinished;
   };
 
   StatefulIterator.prototype.next = function() {
@@ -356,11 +367,11 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var FilterIterator = function(wrapped, filter) {
+  var FilterIterator = function(wrapped, callback) {
     StatefulIterator.call(this);
 
     this.wrapped = wrapped;
-    this.filter = filter;
+    this.callback = callback;
   };
 
   FilterIterator.prototype = Object.create(StatefulIterator.prototype);
@@ -369,7 +380,7 @@ define(function() {
   FilterIterator.prototype.getNext = function() {
     while (this.wrapped.hasNext()) {
        var next = this.wrapped.next();
-       if (this.filter(next))
+       if (this.callback(next))
         return next;
     }
     return this.finished();

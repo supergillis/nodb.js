@@ -13,41 +13,28 @@ define(['./Utilities', './Collection', './Instance'],
     });
   };
 
-  Type.prototype.initialize = function(instance, name, value) {
-    if (!this.validate(instance, name, value))
-      throw 'Invalid value for property \'' + name + '\' for model \'' +
-        this.model.name + '\'!';
-
-    Object.defineProperty(instance, '_' + name, {
-      configurable: false,
-      enumerable: false,
-      writable: true,
-      value: value
-    });
-  };
-
-  Type.prototype.validate = function(instance, name, value) {
+  Type.prototype.validate = function(instance, key, value) {
     throw 'The function \'validate\' is not implemented in the subclass!';
   };
 
-  Type.prototype.get = function(instance, name) {
-    if (this.persistence.transaction &&
-        this.persistence.transaction.hasValueFor(instance, name))
-      return this.persistence.transaction.getValueFor(instance, name);
-
-    return instance['_' + name];
-  };
-
-  Type.prototype.set = function(instance, name, value) {
-    if (!this.validate(instance, name, value))
-      throw 'Invalid value for property \'' + name + '\' for model \'' +
+  Type.prototype.initialize = function(instance, key, value) {
+    if (!this.validate(instance, key, value))
+      throw 'Invalid value for property \'' + key + '\' for model \'' +
         this.model.name + '\'!';
 
-    if (this.persistence.transaction)
-      return this.persistence.transaction.setValueFor(instance, name,
-        value);
+    this.persistence.revision.setValueFor(instance, key, value);
+  };
 
-    return instance['_' + name] = value;
+  Type.prototype.get = function(instance, key) {
+    return this.persistence.revision.getValueFor(instance, key);
+  };
+
+  Type.prototype.set = function(instance, key, value) {
+    if (!this.validate(instance, key, value))
+      throw 'Invalid value for property \'' + key + '\' for model \'' +
+        this.model.name + '\'!';
+
+    this.persistence.revision.setValueFor(instance, key, value);
   };
 
   /**

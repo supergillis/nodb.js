@@ -29,6 +29,16 @@ define(['./Iterator'], function(Iterator) {
   };
 
   /**
+   * @method contains
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.contains = function(object) {
+    throw 'The function \'contains\' is not implemented in the subclass!';
+  };
+
+  /**
    * @method iterator
    *
    * @author Gillis Van Ginderachter
@@ -199,6 +209,10 @@ define(['./Iterator'], function(Iterator) {
     return this;
   };
 
+  ArrayCollection.prototype.contains = function(object) {
+    return this.array.indexOf(object) !== -1;
+  };
+
   ArrayCollection.prototype.iterator = function() {
     return new Iterator.Array(this.array);
   };
@@ -297,6 +311,14 @@ define(['./Iterator'], function(Iterator) {
       current = current.next;
     }
     return this;
+  };
+
+  LinkedListCollection.prototype.contains = function(object) {
+    var current = this.current;
+    while (current)
+      if (current.value === object)
+        return true;
+    return false;
   };
 
   LinkedListCollection.prototype.iterator = function() {

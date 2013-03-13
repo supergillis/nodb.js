@@ -3,9 +3,9 @@ define([
       './Collection',
       './Eventable',
       './Model',
-      './Transaction',
+      './Revision',
       './Type'],
-    function(µ, Collection, Eventable, Model, Transaction, Type) {
+    function(µ, Collection, Eventable, Model, Revision, Type) {
   /**
    * @class ActivePersistence
    * @constructor
@@ -20,9 +20,11 @@ define([
       'models': {
         value: new Collection.LinkedList()
       },
-      'transaction': {
-        value: null,
-        writeable: true
+      'top': {
+        value: new Revision(),
+      },
+      'revision': {
+        writable: true
       },
       'any': {
         value: new Type.Any(this)
@@ -37,6 +39,9 @@ define([
         value: new Type.String(this)
       }
     });
+    
+    // The current revision equals the top revision
+    this.revision = this.top;
   };
 
   ActivePersistence.prototype = Object.create(Eventable.prototype);
@@ -83,27 +88,6 @@ define([
     });
 
     return model;
-  };
-
-  ActivePersistence.prototype.transact = function(callback) {
-    var transaction = new Transaction();
-
-    try {
-      // Execute callback with transaction set
-      this.transaction = transaction;
-      callback();
-
-      // Unset transaction and commit it
-      this.transaction = null;
-      transaction.commit();
-    }
-    catch (exception) {
-      // Unset transaction and revert it
-      this.transaction = null;
-      transaction.revert();
-
-      console.error('Exception in transaction:', exception);
-    }
   };
 
   var instance = new ActivePersistence();
