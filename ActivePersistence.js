@@ -16,32 +16,85 @@ define([
   var ActivePersistence = function() {
     Eventable.call(this);
 
+    var topRevision = new Revision();
+    var currentRevision = topRevision;
+
     Object.defineProperties(this, {
+      /**
+       * @property models
+       * @type {Collection}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'models': {
         value: new Collection.LinkedList()
       },
+      /**
+       * @property top
+       * @type {Revision}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'top': {
-        value: new Revision(),
+        get: function() {
+          return topRevision;
+        }
       },
+      /**
+       * @property revision
+       * @type {Revision}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'revision': {
-        writable: true
+        get: function() {
+          return currentRevision;
+        }
       },
+      /**
+       * @property any
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'any': {
         value: new Type.Any(this)
       },
+      /**
+       * @property boolean
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'boolean': {
         value: new Type.Boolean(this)
       },
+      /**
+       * @property integer
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'integer': {
         value: new Type.Integer(this)
       },
+      /**
+       * @property string
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
       'string': {
         value: new Type.String(this)
       }
     });
-    
-    // The current revision equals the top revision
-    this.revision = this.top;
   };
 
   ActivePersistence.prototype = Object.create(Eventable.prototype);
@@ -65,8 +118,12 @@ define([
    * @since 1.0.0
    */
   ActivePersistence.prototype.create = function(args) {
-    var model = new Model(this, args.name, args.proto, args.properties,
-      args.indexes);
+    var model = new Model({
+      persistence: this,
+      name: args.name,
+      proto: args.proto,
+      properties: args.properties
+    });
 
     // Track this model
     this.models.add(model);

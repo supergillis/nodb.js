@@ -1,11 +1,10 @@
 define([
     './Utilities',
     './Collection',
-    './Eventable',
     './Index',
-    './Instance',
+    './InstancePrototype',
     './Iterator'],
-  function(µ, Collection, Eventable, Index, Instance, Iterator) {
+  function(µ, Collection, Index, InstancePrototype, Iterator) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -17,7 +16,6 @@ define([
    *
    * @class Model
    * @extends Collection
-   * @extends Eventable
    *
    * @constructor
    * @param persistence {ActivePersistence} The ActivePersistence object
@@ -74,95 +72,58 @@ define([
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var Model = function(persistence, name, proto, properties, indexes) {
+  var Model = function(args) {
     Collection.call(this);
-    Eventable.call(this);
+    
+    // Create a new instance prototyp if none is given
+    var instancePrototype = args.instancePrototype ? args.instancePrototype :
+      new InstancePrototype(this, args.proto, args.properties);
 
     Object.defineProperties(this, {
       /**
        * @property persistence
        * @type {ActivePersistence}
-       * @private
        *
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
       'persistence': {
-        value: persistence
+        value: args.persistence
       },
       /**
        * @property name
        * @type {String}
-       * @private
        *
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
       'name': {
-        value: name
+        value: args.name
       },
       /**
-       * @property instancePrototype
-       * @type {Instance}
+       * @property __instancePrototype
+       * @type {InstancePrototype}
        * @private
        *
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'instancePrototype': {
-        value: new Instance(this, proto, properties)
+      '__instancePrototype': {
+        value: instancePrototype
       }
-    });
-
-    /**
-     * @property indexes
-     * @type {Index[]}
-     * @private
-     *
-     * @author Gillis Van Ginderachter
-     * @since 1.0.0
-     */
-    /*
-     * Use a separate to define indexes because the mapping creates new
-     * indexes which use (some of) the above defined properties.
-     */
-    Object.defineProperty(this, 'indexes', {
-      value: µ.mapped(indexes || {}, µ.bind(this, function(_, value) {
-        // The value is already an index, so copy its generator
-        if (value instanceof Index)
-          return new Index(this, value.generator);
-
-        // The value is a function to generate the key
-        if (µ.isFunction(value))
-          return new Index(this, value);
-
-        // The value is a property for the instance
-        return new Index(this, function(instance) {
-          return instance[value];
-        });
-      }))
     });
   };
 
-  var ModelPrototype = {};
-
-  // Inherit from Collection and Eventable
-  µ.copy(Collection.prototype, ModelPrototype);
-  µ.copy(Eventable.prototype, ModelPrototype);
-
-  Model.prototype = Object.create(ModelPrototype);
+  Model.prototype = Object.create(Collection.prototype);
   Model.prototype.constructor = Model;
 
   Model.prototype.extend = function(args) {
-    // Copy our properties
-    µ.copy(this.instancePrototype.properties,
-      args.properties = args.properties || {});
-
-    // Copy our prototype
-    µ.copy(this.instancePrototype.proto,
-      args.proto = args.proto || {});
-
-    return this.persistence.create(args);
+    return new Model({
+      persistence: this.persistence,
+      name: args.name,
+      instancePrototype: InstancePrototype.extend(this.__instancePrototype,
+        args.proto, args.properties)
+    });
   };
 
   /**
@@ -180,16 +141,11 @@ define([
    * @since 1.0.0
    */
   Model.prototype.create = function(values) {
-    var instance = Instance.create(this.instancePrototype, values);
+    var instance = InstancePrototype.instantiate(this.__instancePrototype,
+      values);
 
     // Track this instance
     this.persistence.revision.add(instance);
-
-    // Notify callbacks
-    this.emit({
-      event: 'create',
-      args: [instance]
-    });
 
     return instance;
   };
@@ -224,9 +180,10 @@ define([
    * @since 1.0.0
    */
   Model.prototype.iterator = function() {
-    return this.persistence.revision.filter(µ.bind(this, function(instance) {
-      return instance.model === this;
-    }));
+    var model = this;
+    return this.persistence.revision.filter(function(instance) {
+      return instance.model === model;
+    });
   };
 
   /**

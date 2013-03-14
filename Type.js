@@ -1,5 +1,8 @@
-define(['./Utilities', './Collection', './Instance'],
-  function(µ, Collection, Instance) {
+define([
+    './Utilities',
+    './Collection',
+    './InstancePrototype'],
+  function(µ, Collection, InstancePrototype) {
   /**
    * @class Type
    * @constructor
@@ -54,7 +57,7 @@ define(['./Utilities', './Collection', './Instance'],
   AnyType.prototype = Object.create(Type.prototype);
   AnyType.prototype.constructor = AnyType;
 
-  AnyType.prototype.validate = function(instance, name, value) {
+  AnyType.prototype.validate = function(instance, key, value) {
     return true;
   };
 
@@ -75,7 +78,7 @@ define(['./Utilities', './Collection', './Instance'],
   BooleanType.prototype = Object.create(Type.prototype);
   BooleanType.prototype.constructor = BooleanType;
 
-  BooleanType.prototype.validate = function(instance, name, value) {
+  BooleanType.prototype.validate = function(instance, key, value) {
     return !!value == value;
   };
 
@@ -96,7 +99,7 @@ define(['./Utilities', './Collection', './Instance'],
   IntegerType.prototype = Object.create(Type.prototype);
   IntegerType.prototype.constructor = IntegerType;
 
-  IntegerType.prototype.validate = function(instance, name, value) {
+  IntegerType.prototype.validate = function(instance, key, value) {
     return !value || µ.isInt(value);
   };
 
@@ -117,7 +120,7 @@ define(['./Utilities', './Collection', './Instance'],
   StringType.prototype = Object.create(Type.prototype);
   StringType.prototype.constructor = StringType;
 
-  StringType.prototype.validate = function(instance, name, value) {
+  StringType.prototype.validate = function(instance, key, value) {
     return !value || µ.isString(value);
   };
 
@@ -138,7 +141,7 @@ define(['./Utilities', './Collection', './Instance'],
   DateType.prototype = Object.create(Type.prototype);
   DateType.prototype.constructor = DateType;
 
-  DateType.prototype.validate = function(instance, name, value) {
+  DateType.prototype.validate = function(instance, key, value) {
     return !value || µ.isDate(value);
   };
 
@@ -163,12 +166,12 @@ define(['./Utilities', './Collection', './Instance'],
   OneType.prototype = Object.create(Type.prototype);
   OneType.prototype.constructor = OneType;
 
-  OneType.prototype.validate = function(instance, name, value) {
+  OneType.prototype.validate = function(instance, key, value) {
     // Allow null and undefined
     if (!value)
       return true;
 
-    return value instanceof Instance && value.model === this.model;
+    return value instanceof InstancePrototype && value.model === this.model;
   };
 
   /**
@@ -192,17 +195,17 @@ define(['./Utilities', './Collection', './Instance'],
   ManyType.prototype = Object.create(Type.prototype);
   ManyType.prototype.constructor = ManyType;
 
-  ManyType.prototype.initialize = function(instance, name, value) {
+  ManyType.prototype.initialize = function(instance, key, value) {
     // Override default value with a collection
-    Type.prototype.initialize.call(this, instance, name,
+    Type.prototype.initialize.call(this, instance, key,
       new Collection.Array());
   };
 
-  ManyType.prototype.set = function(instance, name, value) {
-    throw 'Unable to change collection property \'' + name + '\'!';
+  ManyType.prototype.set = function(instance, key, value) {
+    throw 'Unable to change collection property \'' + key + '\'!';
   };
 
-  ManyType.prototype.validate = function(instance, name, value) {
+  ManyType.prototype.validate = function(instance, key, value) {
     // Allow null and undefined
     if (!value)
       return true;
@@ -218,7 +221,7 @@ define(['./Utilities', './Collection', './Instance'],
       if (!subvalue)
         continue;
 
-      if (!(subvalue instanceof Instance) || subvalue.model !==
+      if (!(subvalue instanceof InstancePrototype) || subvalue.model !==
           this.model)
         return false;
     }
