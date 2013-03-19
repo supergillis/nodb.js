@@ -10,10 +10,10 @@ define(function() {
    */
   var Eventable = function() {
     Object.defineProperties(this, {
-      'onListeners': {
+      onListeners: {
         value: {}
       },
-      'afterListeners': {
+      afterListeners: {
         value: {}
       }
     });

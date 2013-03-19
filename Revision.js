@@ -3,7 +3,7 @@ define([
     './Collection',
     './Iterator',
     './Map'],
-    function(µ, Collection, Iterator, Map) {
+  function(µ, Collection, Iterator, Map) {
   /**
    * The Revision class.
    *
@@ -15,22 +15,40 @@ define([
    * @since 1.0.0
    */
   var Revision = function(parent) {
-    Object.defineProperty(this, 'parent', {
-      value: parent
-    });
-    Object.defineProperty(this, 'created', {
-      value: new Collection.LinkedList()
-    });
-    Object.defineProperty(this, 'deleted', {
-      value: new Collection.LinkedList()
-    });
-    Object.defineProperty(this, 'values', {
-      value: new Map()
+    Object.defineProperties(this, {
+      parent: {
+        value: parent
+      },
+      created: {
+        value: new Collection.LinkedList()
+      },
+      deleted: {
+        value: new Collection.LinkedList()
+      },
+      values: {
+        value: new Map()
+      }
     });
   };
-  
+
   Revision.prototype = Object.create(Collection.prototype);
   Revision.prototype.constructor = Revision;
+
+  var rootRevision = new Revision();
+  var currentRevision = rootRevision;
+
+  Object.defineProperties(Revision, {
+    root: {
+      get: function() {
+        return rootRevision;
+      }
+    },
+    current: {
+      get: function() {
+        return currentRevision;
+      }
+    }
+  });
 
   /**
    * @method sprout
@@ -40,6 +58,19 @@ define([
    */
   Revision.prototype.sprout = function() {
     return new Revision(this);
+  };
+
+  /**
+   * @method in
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Revision.prototype.in = function(callback) {
+    var previous = currentRevision;
+    currentRevision = this;
+    callback();
+    currentRevision = previous;
   };
 
   /**
@@ -98,7 +129,7 @@ define([
 
     if (this.parent)
       iterator = iterator.concat(this.parent.iterator());
-    
+
     return iterator.filter(µ.bind(this, function(instance) {
       return !this.deleted.contains(instance);
     }));

@@ -1,13 +1,14 @@
 define([
-      './Utilities',
-      './Collection',
-      './Eventable',
-      './Model',
-      './Revision',
-      './Type'],
-    function(µ, Collection, Eventable, Model, Revision, Type) {
+    './Utilities',
+    './Collection',
+    './Eventable',
+    './Model',
+    './Revision',
+    './Type'],
+  function(µ, Collection, Eventable, Model, Revision, Type) {
   /**
    * @class ActivePersistence
+   * @extends Eventable
    * @constructor
    *
    * @author Gillis Van Ginderachter
@@ -15,9 +16,6 @@ define([
    */
   var ActivePersistence = function() {
     Eventable.call(this);
-
-    var topRevision = new Revision();
-    var currentRevision = topRevision;
 
     Object.defineProperties(this, {
       /**
@@ -27,20 +25,8 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'models': {
+      models: {
         value: new Collection.LinkedList()
-      },
-      /**
-       * @property top
-       * @type {Revision}
-       *
-       * @author Gillis Van Ginderachter
-       * @since 1.0.0
-       */
-      'top': {
-        get: function() {
-          return topRevision;
-        }
       },
       /**
        * @property revision
@@ -49,9 +35,9 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'revision': {
+      revision: {
         get: function() {
-          return currentRevision;
+          return Revision.current;
         }
       },
       /**
@@ -61,7 +47,7 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'any': {
+      any: {
         value: new Type.Any(this)
       },
       /**
@@ -71,7 +57,7 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'boolean': {
+      boolean: {
         value: new Type.Boolean(this)
       },
       /**
@@ -81,7 +67,7 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'integer': {
+      integer: {
         value: new Type.Integer(this)
       },
       /**
@@ -91,7 +77,7 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'string': {
+      string: {
         value: new Type.String(this)
       }
     });
@@ -128,26 +114,8 @@ define([
     // Track this model
     this.models.add(model);
 
-    // Define association types
-    Object.defineProperties(model, {
-      'one': {
-        value: new Type.One(this, model)
-      },
-      'many': {
-        value: new Type.Many(this, model)
-      }
-    });
-
-    // Notify callbacks
-    this.emit({
-      event: 'create',
-      args: [model]
-    });
-
     return model;
   };
 
-  var instance = new ActivePersistence();
-
-  return instance;
+  return new ActivePersistence();
 });

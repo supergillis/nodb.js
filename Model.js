@@ -3,8 +3,9 @@ define([
     './Collection',
     './Index',
     './InstancePrototype',
-    './Iterator'],
-  function(µ, Collection, Index, InstancePrototype, Iterator) {
+    './Iterator',
+    './Type'],
+  function(µ, Collection, Index, InstancePrototype, Iterator, Type) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -74,10 +75,20 @@ define([
    */
   var Model = function(args) {
     Collection.call(this);
-    
-    // Create a new instance prototyp if none is given
-    var instancePrototype = args.instancePrototype ? args.instancePrototype :
-      new InstancePrototype(this, args.proto, args.properties);
+
+    // If an instance prototype is given, then we extend it
+    var instancePrototype = args.instancePrototype ?
+      InstancePrototype.extend({
+        model: this,
+        proto: args.proto,
+        properties: args.properties,
+        instancePrototype: args.instancePrototype
+      }):
+      InstancePrototype.create({
+        model: this,
+        proto: args.proto,
+        properties: args.properties
+      });
 
     Object.defineProperties(this, {
       /**
@@ -87,7 +98,7 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'persistence': {
+      persistence: {
         value: args.persistence
       },
       /**
@@ -97,58 +108,132 @@ define([
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      'name': {
+      name: {
         value: args.name
       },
       /**
-       * @property __instancePrototype
-       * @type {InstancePrototype}
-       * @private
+       * @property proto
+       * @type {Object}
        *
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      '__instancePrototype': {
-        value: instancePrototype
+      proto: {
+        value: args.proto
+      },
+      /**
+       * @property properties
+       * @type {String[]}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      properties: {
+        value: args.properties
+      },
+      /**
+       * @property parent
+       * @type {Model}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      parent: {
+        value: args.parent
+      },
+      /**
+       * @property one
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      one: {
+        value: new Type.One(args.persistence, this)
+      },
+      /**
+       * @property many
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      many: {
+        value: new Type.Many(args.persistence, this)
+      },
+      /**
+       * Create a new instance of this model. This instance will inherit
+       * from the given prototype. You can specify initial values for
+       * the instance being created.
+       *
+       * @method create
+       * @param [values] {Object} Initial values for the instance being
+       *   created.
+       * @return {Instance} An instance of the model with the prototype
+       *   of given as parameter to constructor of the model.
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      create: {
+        value: function(values) {
+          var instance = instancePrototype.instantiate(values);
+
+          // Track this instance
+          this.persistence.revision.add(instance);
+
+          return instance;
+        }
+      },
+      /**
+       * @method extend
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      extend: {
+        value: function(args) {
+          return new Model({
+            persistence: this.persistence,
+            name: args.name,
+            proto: args.proto,
+            properties: args.properties,
+            parent: this,
+            instancePrototype: instancePrototype
+          });
+        }
+      },
+      /**
+       * @method isModelOf
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      isModelOf: {
+        value: function(instance) {
+          return instancePrototype.isPrototypeOf(instance);
+        }
+      },
+      /**
+       * @method iterator
+       * @return {Iterator} An iterator for all the instances of this
+       *   model.
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      iterator: {
+        value: function() {
+          return this.persistence.revision.filter(function(instance) {
+            return instancePrototype.isPrototypeOf(instance);
+          });
+        }
       }
     });
   };
 
   Model.prototype = Object.create(Collection.prototype);
   Model.prototype.constructor = Model;
-
-  Model.prototype.extend = function(args) {
-    return new Model({
-      persistence: this.persistence,
-      name: args.name,
-      instancePrototype: InstancePrototype.extend(this.__instancePrototype,
-        args.proto, args.properties)
-    });
-  };
-
-  /**
-   * Create a new instance of this model. This instance will inherit the
-   * prototype given as parameter to the model. You can specify initial
-   * values for the instance being created.
-   *
-   * @method create
-   * @param [values] {Object} Initial values for the instance being
-   *   created.
-   * @return {Instance} An instance of the model with the prototype of
-   *   given as parameter to constructor of the model.
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Model.prototype.create = function(values) {
-    var instance = InstancePrototype.instantiate(this.__instancePrototype,
-      values);
-
-    // Track this instance
-    this.persistence.revision.add(instance);
-
-    return instance;
-  };
 
   /**
    * @method add
@@ -170,20 +255,6 @@ define([
    */
   Model.prototype.remove = function(object) {
     throw 'You can not manually remove an instance from a model!';
-  };
-
-  /**
-   * @method iterator
-   * @return {Iterator} An iterator for all the instances of this model.
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Model.prototype.iterator = function() {
-    var model = this;
-    return this.persistence.revision.filter(function(instance) {
-      return instance.model === model;
-    });
   };
 
   /**

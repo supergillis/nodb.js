@@ -1,8 +1,7 @@
 define([
     './Utilities',
-    './Collection',
-    './InstancePrototype'],
-  function(µ, Collection, InstancePrototype) {
+    './Collection'],
+  function(µ, Collection) {
   /**
    * @class Type
    * @constructor
@@ -23,7 +22,7 @@ define([
   Type.prototype.initialize = function(instance, key, value) {
     if (!this.validate(instance, key, value))
       throw 'Invalid value for property \'' + key + '\' for model \'' +
-        this.model.name + '\'!';
+        instance.model.name + '\'!';
 
     this.persistence.revision.setValueFor(instance, key, value);
   };
@@ -35,7 +34,7 @@ define([
   Type.prototype.set = function(instance, key, value) {
     if (!this.validate(instance, key, value))
       throw 'Invalid value for property \'' + key + '\' for model \'' +
-        this.model.name + '\'!';
+        instance.model.name + '\'!';
 
     this.persistence.revision.setValueFor(instance, key, value);
   };
@@ -79,7 +78,7 @@ define([
   BooleanType.prototype.constructor = BooleanType;
 
   BooleanType.prototype.validate = function(instance, key, value) {
-    return !!value == value;
+    return !value || !!value == value;
   };
 
   /**
@@ -167,11 +166,8 @@ define([
   OneType.prototype.constructor = OneType;
 
   OneType.prototype.validate = function(instance, key, value) {
-    // Allow null and undefined
-    if (!value)
-      return true;
-
-    return value instanceof InstancePrototype && value.model === this.model;
+    // Allow null, undefined and instances of the given model
+    return !value || this.model.isModelOf(value);
   };
 
   /**
@@ -206,7 +202,8 @@ define([
   };
 
   ManyType.prototype.validate = function(instance, key, value) {
-    // Allow null and undefined
+    // Allow null, undefined and collections with instances of the given
+    // model
     if (!value)
       return true;
 
@@ -221,8 +218,7 @@ define([
       if (!subvalue)
         continue;
 
-      if (!(subvalue instanceof InstancePrototype) || subvalue.model !==
-          this.model)
+      if (this.model.isModelOf(value))
         return false;
     }
 

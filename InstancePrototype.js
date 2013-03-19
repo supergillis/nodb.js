@@ -1,85 +1,81 @@
-define(['./Utilities'], function(µ) {
+define([
+    './Utilities',
+    './Type'],
+  function(µ, Type) {
   /**
-   * This class is used as instance prototype for instances of a model.
+   * This class is used as prototype for instances of a model.
    *
    * @class InstancePrototype
    *
    * @constructor
-   * @param model {Model}
+   * @private
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var InstancePrototype = function(model, proto, properties) {
-    Object.defineProperties(this, {
-      'model': {
-        value: model
-      },
-      '__proto': {
-        value: proto || {}
-      },
-      '__properties': {
-        value: properties || {}
-      }
-    });
-
-    InstancePrototype.copyProto(this, this.__proto);
-    InstancePrototype.copyProperties(this, this.__properties);
-
-    // Prevent extensions to this instance prototype
-    Object.freeze(this);
+  var InstancePrototype = function() {
   };
 
-  InstancePrototype.instantiate = function(instancePrototype, values) {
-    var instance = Object.create(instancePrototype);
-
-    var keys = Object.keys(instancePrototype.__properties);
-    for (var index in keys) {
-      var key = keys[index];
-      var type = instancePrototype.__properties[key];
-      type.initialize(instance, key, values[key]);
-    }
-
-    return instance;
+  InstancePrototype.prototype.isInstanceOf = function(model) {
+    return model.isModelOf(this);
   };
 
-  InstancePrototype.extend = function(instancePrototype, proto, properties) {
-    var extendedPrototype = Object.create(instancePrototype);
-    InstancePrototype.copyProto(extendedPrototype, proto || {});
-    InstancePrototype.copyProperties(extendedPrototype, properties || {});
+  InstancePrototype.create = function(args) {
+    var instancePrototype = new InstancePrototype();
+    initialize(instancePrototype, args);
+    return instancePrototype;
+  };
+
+  InstancePrototype.extend = function(args) {
+    var extendedPrototype = Object.create(args.instancePrototype);
+    initialize(extendedPrototype, args);
     return extendedPrototype;
   };
 
-  InstancePrototype.copyProto = function(instancePrototype, proto) {
-    µ.copy(proto, instancePrototype);
-  };
+  var initialize = function(instancePrototype, args) {
+    var model = args.model;
+    var properties = args.properties || {};
 
-  InstancePrototype.copyProperties = function(instancePrototype, properties) {
-    var Type = require('./Type');
+    // Copy the given prototype to the instancePrototype
+    µ.copy(args.proto || {}, instancePrototype);
 
-    // Check if all values are instances of type
-    µ.each(properties, function(_, value) {
-      if (!(value instanceof Type))
+    // Add a descriptor for each property
+    µ.each(properties, function(name, type) {
+      if (!(type instanceof Type))
         throw 'The property \'' + name + '\' must have a valid type!';
-    });
 
-    // Map properties to property descriptors
-    var descriptors = µ.mapped(properties, function(name, type) {
-      return {
+      // Define the descriptor with getters and setters
+      Object.defineProperty(instancePrototype, name, {
         configurable: false,
         enumerable: true,
-        type: type,
-        get: function() {
-          return type.get(this, name);
-        },
-        set: function(newValue) {
-          type.set(this, name, newValue);
-        }
-      };
+        get: function() { return type.get(this, name); },
+        set: function(newValue) { type.set(this, name, newValue); }
+      });
     });
 
-    // Define the descriptors with getters and setters on this instance
-    Object.defineProperties(instancePrototype, descriptors);
+    // Add an instatiate function that creates a new instance
+    Object.defineProperty(instancePrototype, 'instantiate', {
+      value: function(values, instance) {
+        values = values || {};
+        instance = instance || Object.create(this);
+
+        var keys = Object.keys(properties);
+        for (var index in keys) {
+          var key = keys[index];
+          var type = properties[key];
+
+          type.initialize(instance, key,
+            values.hasOwnProperty(key) ? values[key] : undefined);
+        }
+
+        // Call the instantiate of the parent InstancePrototype
+        var parent = Object.getPrototypeOf(this);
+        if (parent && parent.instantiate)
+          parent.instantiate(values, instance);
+
+        return instance;
+      }
+    });
   };
 
   return InstancePrototype;

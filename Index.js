@@ -17,10 +17,10 @@ define([
    */
   var Index = function(model, generator) {
     Object.defineProperties(this, {
-      'generator': {
+      generator: {
         value: generator
       },
-      'collections': {
+      collections: {
         value: {}
       }
     });

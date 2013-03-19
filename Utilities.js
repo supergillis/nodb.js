@@ -77,6 +77,17 @@ define(function() {
     return getPropertyDescriptor(Object.getPrototypeOf(object), name);
   };
 
+  var keys = function(object) {
+    var keys = [];
+
+    while (object) {
+      result.concat(Object.keys(object));
+      object = Object.getPrototypeOf(object);
+    }
+
+    return result;
+  };
+
   return {
     bind: bind,
     copy: copy,
