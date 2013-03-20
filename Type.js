@@ -194,7 +194,7 @@ define([
   ManyType.prototype.initialize = function(instance, key, value) {
     // Override default value with a collection
     Type.prototype.initialize.call(this, instance, key,
-      new Collection.asArray());
+      Collection.asArray());
   };
 
   ManyType.prototype.set = function(instance, key, value) {
