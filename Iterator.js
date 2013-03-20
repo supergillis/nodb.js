@@ -13,6 +13,18 @@ define(['./Collection'],
   };
 
   /**
+   * @property defaultComparator
+   * @private
+   * @static
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.defaultComparator = function(a, b) {
+    return a - b;
+  };
+
+  /**
    * @method hasNext
    * @return {Boolean}
    *
@@ -50,97 +62,6 @@ define(['./Collection'],
   };
 
   /**
-   * @method each
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.each = function(callback) {
-    while (this.hasNext())
-      callback(this.next());
-  };
-
-  /**
-   * @method fold
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.fold = function(seed, folder) {
-    while (this.hasNext())
-      seed = folder(seed, this.next());
-
-    return seed;
-  };
-
-  /**
-   * @method reduce
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.reduce = function(reducer) {
-    return this.fold(this.next(), reducer);
-  };
-
-  /**
-   * @method sum
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.sum = function() {
-    return this.fold(0, function(sum, value) {
-      return sum + value;
-    });
-  };
-
-  /**
-   * @property defaultComparator
-   * @private
-   * @static
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.defaultComparator = function(a, b) {
-    return a - b;
-  };
-
-  /**
-   * @method min
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.min = function(comparator) {
-    comparator = comparator || Iterator.defaultComparator;
-
-    return this.fold(undefined, function(min, value) {
-      return min && comparator(min, value) < 0 ? min : value;
-    });
-  };
-
-  /**
-   * @method max
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.max = function(comparator) {
-    comparator = comparator || Iterator.defaultComparator;
-
-    return this.fold(undefined, function(max, value) {
-      return max && comparator(max, value) > 0 ? max : value;
-    });
-  };
-
-  /**
    * @method collect
    * @return {Any[]}
    *
@@ -153,40 +74,6 @@ define(['./Collection'],
       result.push(this.next());
 
     return result;
-  };
-
-  /**
-   * @method sort
-   * @return {Iterator}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.prototype.sort = function(sorter) {
-    var self = this;
-    var wrapped = null;
-
-    return Object.create(Iterator.prototype, {
-      hasNext: {
-        value: function() {
-          if (!wrapped) {
-            // Lazy load the sorted array
-            var sorted = self.collect().sort(sorter);
-            wrapped = Iterator.forArray(sorted);
-          }
-
-          return wrapped.hasNext();
-        }
-      },
-      next: {
-        value: function() {
-          if (!this.hasNext())
-            this.stop();
-
-          return wrapped.next();
-        }
-      }
-    });
   };
 
   /**
@@ -217,6 +104,17 @@ define(['./Collection'],
         }
       }
     });
+  };
+
+  /**
+   * @method each
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.each = function(callback) {
+    while (this.hasNext())
+      callback(this.next());
   };
 
   /**
@@ -262,6 +160,20 @@ define(['./Collection'],
   };
 
   /**
+   * @method fold
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.fold = function(seed, folder) {
+    while (this.hasNext())
+      seed = folder(seed, this.next());
+
+    return seed;
+  };
+
+  /**
    * @method map
    * @return {Iterator}
    *
@@ -289,6 +201,125 @@ define(['./Collection'],
   };
 
   /**
+   * @method max
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.max = function(comparator) {
+    comparator = comparator || Iterator.defaultComparator;
+
+    return this.fold(undefined, function(max, value) {
+      return max && comparator(max, value) > 0 ? max : value;
+    });
+  };
+
+  /**
+   * @method min
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.min = function(comparator) {
+    comparator = comparator || Iterator.defaultComparator;
+
+    return this.fold(undefined, function(min, value) {
+      return min && comparator(min, value) < 0 ? min : value;
+    });
+  };
+
+  /**
+   * @method reduce
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.reduce = function(reducer) {
+    return this.fold(this.next(), reducer);
+  };
+
+  /**
+   * @method sort
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.sort = function(sorter) {
+    var self = this;
+    var wrapped = null;
+
+    return Object.create(Iterator.prototype, {
+      hasNext: {
+        value: function() {
+          if (!wrapped) {
+            // Lazy load the sorted array
+            var sorted = self.collect().sort(sorter);
+            wrapped = Iterator.forArray(sorted);
+          }
+
+          return wrapped.hasNext();
+        }
+      },
+      next: {
+        value: function() {
+          if (!this.hasNext())
+            this.stop();
+
+          return wrapped.next();
+        }
+      }
+    });
+  };
+
+  /**
+   * @method sum
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.sum = function() {
+    return this.fold(0, function(sum, value) {
+      return sum + value;
+    });
+  };
+
+  /**
+   * @method forArray
+   * @static
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.forArray = function(array) {
+    var index = 0;
+
+    // Make shallow copy
+    array = array.slice(0);
+
+    return Object.create(Iterator.prototype, {
+      hasNext: {
+        value: function() {
+          return index < array.length;
+        }
+      },
+      next: {
+        value: function() {
+          if (!this.hasNext())
+            return this.stop();
+
+          return array[index++];
+        }
+      }
+    });
+  };
+
+  /**
    * @method forEmpty
    * @static
    * @return {Iterator}
@@ -306,29 +337,6 @@ define(['./Collection'],
       next: {
         value: function() {
           return this.stop();
-        }
-      }
-    });
-  };
-
-  /**
-   * @method forRepetition
-   * @static
-   * @return {Iterator}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Iterator.forRepetition = function(value) {
-    return Object.create(Iterator.prototype, {
-      hasNext: {
-        value: function() {
-          return true;
-        }
-      },
-      next: {
-        value: function() {
-          return value;
         }
       }
     });
@@ -364,31 +372,23 @@ define(['./Collection'],
   };
 
   /**
-   * @method forArray
+   * @method forRepetition
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.forArray = function(array) {
-    var index = 0;
-
-    // Make shallow copy
-    array = array.slice(0);
-
+  Iterator.forRepetition = function(value) {
     return Object.create(Iterator.prototype, {
       hasNext: {
         value: function() {
-          return index < array.length;
+          return true;
         }
       },
       next: {
         value: function() {
-          if (!this.hasNext())
-            return this.stop();
-
-          return array[index++];
+          return value;
         }
       }
     });

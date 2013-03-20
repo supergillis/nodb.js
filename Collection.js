@@ -39,6 +39,35 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
   };
 
   /**
+   * @method addAll
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.addAll = function(object) {
+    var self = this;
+
+    if (arguments.length > 1) {
+      µ.each(Array.prototype.slice(arguments), function(_, value) {
+        self.add(value);
+      });
+    }
+    else if (µ.isArray(object)) {
+      µ.each(object, function(_, value) {
+        self.add(value);
+      });
+    }
+    else if (Iterator.prototype.isPrototypeOf(object) ||
+        Collection.prototype.isPrototypeOf(object)) {
+      object.each(function(value) {
+        self.add(value);
+      });
+    }
+
+    return this;
+  };
+
+  /**
    * @method contains
    *
    * @author Gillis Van Ginderachter
@@ -64,71 +93,6 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
     return this.iterator();
   };
 
-    /**
-   * @method each
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.each = function(callback) {
-    return this.iterator().each(callback);
-  };
-
-  /**
-   * @method fold
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.fold = function(seed, folder) {
-    return this.iterator().fold(seed, folder);
-  };
-
-  /**
-   * @method reduce
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.reduce = function(reducer) {
-    return this.iterator().reduce(reducer);
-  };
-
-  /**
-   * @method sum
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.sum = function() {
-    return this.iterator().sum();
-  };
-
-  /**
-   * @method min
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.min = function(comparator) {
-    return this.iterator().min(comparator);
-  };
-
-  /**
-   * @method max
-   * @return {Any}
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.max = function(comparator) {
-    return this.iterator().max(comparator);
-  };
-
   /**
    * @method collect
    * @return {Any[]}
@@ -140,15 +104,14 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
     return this.iterator().collect();
   };
 
-  /**
-   * @method sort
-   * @return {Iterator}
+    /**
+   * @method each
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.prototype.sort = function(sorter) {
-    return this.iterator().sort(sorter);
+  Collection.prototype.each = function(callback) {
+    return this.iterator().each(callback);
   };
 
   /**
@@ -163,6 +126,17 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
   };
 
   /**
+   * @method fold
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.fold = function(seed, folder) {
+    return this.iterator().fold(seed, folder);
+  };
+
+  /**
    * @method map
    * @return {Iterator}
    *
@@ -174,7 +148,63 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
   };
 
   /**
+   * @method max
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.max = function(comparator) {
+    return this.iterator().max(comparator);
+  };
+
+  /**
+   * @method min
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.min = function(comparator) {
+    return this.iterator().min(comparator);
+  };
+
+  /**
+   * @method reduce
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.reduce = function(reducer) {
+    return this.iterator().reduce(reducer);
+  };
+
+  /**
+   * @method sort
+   * @return {Iterator}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.sort = function(sorter) {
+    return this.iterator().sort(sorter);
+  };
+
+  /**
+   * @method sum
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.sum = function() {
+    return this.iterator().sum();
+  };
+
+  /**
    * @method __iterator__
+   * @private
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
@@ -192,16 +222,10 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.asArray = function(object) {
+  Collection.asArray = function() {
     var array = [];
-    if (µ.isArray(object))
-      array = object.slice(0);
-    else if (Iterator.prototype.isPrototypeOf(object))
-      array = object.collect();
-    else if (Collection.prototype.isPrototypeOf(object))
-      array = object.collect();
 
-    return Object.create(Collection.prototype, {
+    var collection = Object.create(Collection.prototype, {
       add: {
         value: function(object) {
           array.push(object);
@@ -227,6 +251,11 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
         }
       }
     });
+
+    // Initialize the collection
+    Collection.prototype.addAll.apply(collection, arguments);
+
+    return collection;
   };
 
   /**
@@ -237,7 +266,7 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.asLinkedList = function(object) {
+  Collection.asLinkedList = function() {
     // First value is a dummy value
     var current = {};
     var last = current;
@@ -313,17 +342,7 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
     });
 
     // Initialize the collection
-    if (µ.isArray(object)) {
-      µ.each(object, function(_, value) {
-        collection.add(value);
-      });
-    }
-    else if (Iterator.prototype.isPrototypeOf(object) ||
-        Collection.prototype.isPrototypeOf(object)) {
-      object.each(function(value) {
-        collection.add(value);
-      })
-    }
+    Collection.prototype.addAll.apply(collection, arguments);
 
     return collection;
   };
