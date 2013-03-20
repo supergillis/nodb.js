@@ -26,7 +26,7 @@ define([
        * @since 1.0.0
        */
       models: {
-        value: Collection.asLinkedList()
+        value: Collection.linkedList()
       },
       /**
        * @property revision

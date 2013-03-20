@@ -258,7 +258,7 @@ define(['./Collection'],
           if (!wrapped) {
             // Lazy load the sorted array
             var sorted = self.collect().sort(sorter);
-            wrapped = Iterator.forArray(sorted);
+            wrapped = Iterator.array(sorted);
           }
 
           return wrapped.hasNext();
@@ -289,14 +289,14 @@ define(['./Collection'],
   };
 
   /**
-   * @method forArray
+   * @method array
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.forArray = function(array) {
+  Iterator.array = function(array) {
     var index = 0;
 
     // Make shallow copy
@@ -320,14 +320,14 @@ define(['./Collection'],
   };
 
   /**
-   * @method forEmpty
+   * @method empty
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.forEmpty = function() {
+  Iterator.empty = function() {
     return Object.create(Iterator.prototype, {
       hasNext: {
         value: function() {
@@ -343,14 +343,14 @@ define(['./Collection'],
   };
 
   /**
-   * @method forRange
+   * @method range
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.forRange = function(start, step, end) {
+  Iterator.range = function(start, step, end) {
     start = start || 0;
     step = step || 1;
 
@@ -372,14 +372,14 @@ define(['./Collection'],
   };
 
   /**
-   * @method forRepetition
+   * @method repeat
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.forRepetition = function(value) {
+  Iterator.repeat = function(value) {
     return Object.create(Iterator.prototype, {
       hasNext: {
         value: function() {

@@ -215,14 +215,14 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
   };
 
   /**
-   * @method asArray
+   * @method array
    * @static
    * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.asArray = function() {
+  Collection.array = function() {
     var array = [];
 
     var collection = Object.create(Collection.prototype, {
@@ -247,7 +247,7 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
       },
       iterator: {
         value: function() {
-          return Iterator.forArray(array);
+          return Iterator.array(array);
         }
       }
     });
@@ -259,14 +259,14 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
   };
 
   /**
-   * @method asLinkedList
+   * @method linkedList
    * @static
    * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.asLinkedList = function() {
+  Collection.linkedList = function() {
     // First value is a dummy value
     var current = {};
     var last = current;

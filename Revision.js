@@ -20,10 +20,10 @@ define([
         value: parent
       },
       created: {
-        value: Collection.asLinkedList()
+        value: Collection.linkedList()
       },
       deleted: {
-        value: Collection.asLinkedList()
+        value: Collection.linkedList()
       },
       values: {
         value: new Map()
