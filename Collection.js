@@ -1,4 +1,4 @@
-define(['./Iterator'], function(Iterator) {
+define(['./Utilities', './Iterator'], function(µ, Iterator) {
   /**
    * @class Collection
    *
@@ -29,16 +29,6 @@ define(['./Iterator'], function(Iterator) {
   };
 
   /**
-   * @method contains
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  Collection.prototype.contains = function(object) {
-    throw 'The function \'contains\' is not implemented in the subclass!';
-  };
-
-  /**
    * @method iterator
    *
    * @author Gillis Van Ginderachter
@@ -46,6 +36,22 @@ define(['./Iterator'], function(Iterator) {
    */
   Collection.prototype.iterator = function() {
     throw 'The function \'iterator\' is not implemented in the subclass!';
+  };
+
+  /**
+   * @method contains
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Collection.prototype.contains = function(object) {
+    var iterator = this.iterator();
+    while (iterator.hasNext()) {
+      var value = iterator.next();
+      if (value === object)
+        return true;
+    }
+    return false;
   };
 
   /**
@@ -125,7 +131,7 @@ define(['./Iterator'], function(Iterator) {
 
   /**
    * @method collect
-   * @return {Array}
+   * @return {Any[]}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
@@ -136,7 +142,7 @@ define(['./Iterator'], function(Iterator) {
 
   /**
    * @method sort
-   * @return {Iterator}
+   * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
@@ -179,154 +185,134 @@ define(['./Iterator'], function(Iterator) {
   };
 
   /**
-   * The ArrayCollection class.
-   *
-   * @class ArrayCollection
-   * @extends Collection
-   *
-   * @constructor
-   * @private
+   * @method asArray
+   * @static
+   * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var ArrayCollection = function(array) {
-    this.array = array || [];
-  };
+  Collection.asArray = function(object) {
+    if (µ.isArray(object))
+      array = object.slice(0);
+    else if (Iterator.isPrototypeOf(object))
+      array = object.collect();
+    else if (Collection.isPrototypeOf(object))
+      array = object.collect();
+    else
+      array = [];
 
-  ArrayCollection.prototype = Object.create(Collection.prototype);
-  ArrayCollection.prototype.constructor = ArrayCollection;
-
-  ArrayCollection.prototype.add = function(object) {
-    this.array.push(object);
-    return this;
-  };
-
-  ArrayCollection.prototype.remove = function(object) {
-    var index = this.array.indexOf(object);
-    if (index !== -1)
-      this.array.splice(index, 1);
-    return this;
-  };
-
-  ArrayCollection.prototype.contains = function(object) {
-    return this.array.indexOf(object) !== -1;
-  };
-
-  ArrayCollection.prototype.iterator = function() {
-    return new Iterator.Array(this.array);
+    return Object.create(Collection.prototype, {
+      add: {
+        value: function(object) {
+          array.push(object);
+          return this;
+        }
+      },
+      remove: {
+        value: function(object) {
+          var index = array.indexOf(object);
+          if (index !== -1)
+            array.splice(index, 1);
+          return this;
+        }
+      },
+      contains: {
+        value: function(object) {
+          return array.indexOf(object) !== -1;
+        }
+      },
+      iterator: {
+        value: function() {
+          return Iterator.forArray(array);
+        }
+      }
+    });
   };
 
   /**
-   * The LinkedListIterator class.
-   *
-   * @class LinkedListIterator
-   * @extends Iterator
-   *
-   * @constructor
-   * @private
+   * @method asLinkedList
+   * @static
+   * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var LinkedListIterator = function(current) {
-    Iterator.call(this);
+  Collection.asLinkedList = function() {
+    var current = undefined;
 
-    this.current = current;
-  };
+    return Object.create(Collection.prototype, {
+      add: {
+        value: function(object) {
+          current = {
+            value: object,
+            next: current
+          };
+          return this;
+        }
+      },
+      remove: {
+        value: function(value) {
+          var previous = undefined;
+          var iterating = current;
 
-  LinkedListIterator.prototype = Object.create(Iterator.prototype);
-  LinkedListIterator.prototype.constructor = LinkedListIterator;
+          while (iterating) {
+            if (iterating.value === object) {
+              if (previous === undefined)
+                current = iterating.next;
+              else
+                previous.next = iterating.next;
+              break;
+            }
+            previous = iterating;
+            iterating = iterating.next;
+          }
+          return this;
+        }
+      },
+      removeAll: {
+        value: function(value) {
+          var previous = undefined;
+          var iterating = current;
 
-  LinkedListIterator.prototype.hasNext = function() {
-    return !!this.current;
-  };
+          while (iterating) {
+            if (iterating.value === object) {
+              if (previous === undefined)
+                current = iterating.next;
+              else
+                previous.next = iterating.next;
+            }
+            previous = iterating;
+            iterating = iterating.next;
+          }
+          return this;
+        }
+      },
+      iterator: {
+        value: function() {
+          var iterating = current;
 
-  LinkedListIterator.prototype.next = function() {
-    if (!this.hasNext())
-      throw StopIteration;
+          return Object.create(Iterator.prototype, {
+            hasNext: {
+              value: function() {
+                return !!iterating;
+              }
+            },
+            next: {
+              value: function() {
+                if (!this.hasNext())
+                  throw StopIteration;
 
-    var value = this.current.value;
-    this.current = this.current.next;
-    return value;
-  };
-
-  /**
-   * The LinkedListCollection class.
-   *
-   * @class LinkedListCollection
-   * @extends Collection
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var LinkedListCollection = function(array) {
-    this.current = null;
-  };
-
-  LinkedListCollection.prototype = Object.create(Collection.prototype);
-  LinkedListCollection.prototype.constructor = LinkedListCollection;
-
-  LinkedListCollection.prototype.add = function(object) {
-    this.current = {
-      value: object,
-      next: this.current
-    };
-    return this;
-  };
-
-  LinkedListCollection.prototype.remove = function(object) {
-    var previous = undefined;
-    var current = this.current;
-
-    while (current) {
-      if (current.value === object) {
-        if (previous === undefined)
-          this.current = current.next;
-        else
-          previous.next = current.next;
-        break;
+                var value = iterating.value;
+                iterating = iterating.next;
+                return value;
+              }
+            }
+          });
+        }
       }
-      previous = current;
-      current = current.next;
-    }
-    return this;
+    });
   };
-
-  LinkedListCollection.prototype.removeAll = function(object) {
-    var previous = undefined;
-    var current = this.current;
-
-    while (current) {
-      if (current.value === object) {
-        if (previous === undefined)
-          this.current = current.next;
-        else
-          previous.next = current.next;
-      }
-      previous = current;
-      current = current.next;
-    }
-    return this;
-  };
-
-  LinkedListCollection.prototype.contains = function(object) {
-    var current = this.current;
-    while (current)
-      if (current.value === object)
-        return true;
-    return false;
-  };
-
-  LinkedListCollection.prototype.iterator = function() {
-    return new LinkedListIterator(this.current);
-  };
-
-  Collection.Array = ArrayCollection;
-  Collection.LinkedList = LinkedListCollection;
 
   return Collection;
 });

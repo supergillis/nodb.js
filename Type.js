@@ -194,7 +194,7 @@ define([
   ManyType.prototype.initialize = function(instance, key, value) {
     // Override default value with a collection
     Type.prototype.initialize.call(this, instance, key,
-      new Collection.Array());
+      new Collection.asArray());
   };
 
   ManyType.prototype.set = function(instance, key, value) {
@@ -202,21 +202,13 @@ define([
   };
 
   ManyType.prototype.validate = function(instance, key, value) {
-    // Allow null, undefined and collections with instances of the given
-    // model
-    if (!value)
-      return true;
-
+    // Allow collections with instances of the given model
     if (!(value instanceof Collection))
       return false;
 
     var iterator = value.iterator();
     while (iterator.hasNext()) {
       var subvalue = iterator.next();
-
-      // Allow null and undefined
-      if (!subvalue)
-        continue;
 
       if (this.model.isModelOf(value))
         return false;

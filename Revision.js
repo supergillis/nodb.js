@@ -20,10 +20,10 @@ define([
         value: parent
       },
       created: {
-        value: new Collection.LinkedList()
+        value: Collection.asLinkedList()
       },
       deleted: {
-        value: new Collection.LinkedList()
+        value: Collection.asLinkedList()
       },
       values: {
         value: new Map()
@@ -80,6 +80,7 @@ define([
    * @since 1.0.0
    */
   Revision.prototype.commit = function() {
+    console.log('commit');
   };
 
   /**

@@ -1,11 +1,10 @@
 define([
     './Utilities',
     './Collection',
-    './Index',
     './InstancePrototype',
     './Iterator',
     './Type'],
-  function(µ, Collection, Index, InstancePrototype, Iterator, Type) {
+  function(µ, Collection, InstancePrototype, Iterator, Type) {
   /**
    * A model specifies a specific data type. It is currently possible to
    * specify its prototype, properties and indexes.
@@ -258,32 +257,54 @@ define([
   };
 
   /**
-   * @method index
-   * @param name {String} The name of the index to return.
-   * @return {Index|undefined} The index with name `name`.
+   * @method select
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Model.prototype.index = function(name) {
-    return this.indexes[name];
+  Model.prototype.select = function(key) {
+    return this.iterator().map(function(instance) {
+      return instance[key];
+    });
   };
 
   /**
-   * @method find
-   * @param name {String} The name of the index to search.
-   * @param key {Any}
+   * @method where
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Model.prototype.find = function(name, key) {
-    var index = this.index(name);
-    if (!index)
-      return new Iterator.Empty();
+  Model.prototype.where = function(key, cmp, value) {
+    var conditions = [];
 
-    return index.find(key);
+    var filter = function(instance) {
+      for (var index in conditions) {
+        var condition = conditions[index];
+        if (!condition.cmp(instance[condition.key], condition.value))
+          return false;
+      }
+      return true;
+    };
+
+    var base = this.iterator().filter(filter);
+    var iterator = Object.create(base, {
+      and: {
+        value: function(key, cmp, value) {
+          conditions.push({
+            key: key,
+            cmp: arguments.length == 2 ? model.persistence.eq : cmp,
+            value: arguments.length == 2 ? operator : value
+          });
+          return this;
+        }
+      }
+    });
+
+    if (arguments.length === 2)
+      return iterator.and(key, cmp);
+
+    return iterator.and(key, cmp, value);
   };
 
   return Model;

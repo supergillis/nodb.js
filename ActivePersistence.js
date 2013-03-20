@@ -26,7 +26,7 @@ define([
        * @since 1.0.0
        */
       models: {
-        value: new Collection.LinkedList()
+        value: Collection.asLinkedList()
       },
       /**
        * @property revision
@@ -79,6 +79,90 @@ define([
        */
       string: {
         value: new Type.String(this)
+      },
+      /**
+       * @property eq
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      eq: {
+        value: function(a, b) {
+          return a === b;
+        }
+      },
+      /**
+       * @property eq
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      gt: {
+        value: function(a, b) {
+          return a > b;
+        }
+      },
+      /**
+       * @property gte
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      gte: {
+        value: function(a, b) {
+          return a >= b;
+        }
+      },
+      /**
+       * @property lt
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      lt: {
+        value: function(a, b) {
+          return a < b;
+        }
+      },
+      /**
+       * @property lte
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      lte: {
+        value: function(a, b) {
+          return a <= b;
+        }
+      },
+      /**
+       * @property startsWith
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      startsWith: {
+        value: function(a, b) {
+          return a && a.indexOf(b) === 0;
+        }
+      },
+      /**
+       * @property endsWith
+       * @type {Function}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      endsWith: {
+        value: function(a, b) {
+          return a && a.indexOf(b) + 1 === a.length;
+        }
       }
     });
   };
@@ -111,10 +195,37 @@ define([
       properties: args.properties
     });
 
-    // Track this model
     this.models.add(model);
 
     return model;
+  };
+
+  /**
+   * @method transact
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  ActivePersistence.prototype.transact = function(callback) {
+    var transactionRevision = this.revision.sprout();
+
+    var counter = 0;
+    var executor = Object.create(Object.prototype, {
+      exec: {
+        value: function(callback) {
+          counter += 1;
+          callback(this);
+          counter -= 1;
+
+          if (counter == 0)
+            transactionRevision.commit();
+        }
+      }
+    });
+
+    transactionRevision.in(function() {
+      executor.exec(callback);
+    });
   };
 
   return new ActivePersistence();

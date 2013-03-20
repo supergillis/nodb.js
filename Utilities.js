@@ -49,6 +49,10 @@ define(function() {
     }
   };
 
+  var isArray = function(object) {
+    return Object.prototype.toString.call(object) === '[object Array]';
+  };
+
   var isDate = function(object) {
     return Object.prototype.toString.call(object) === '[object Date]';
   };
@@ -95,6 +99,7 @@ define(function() {
     map: map,
     mapped: mapped,
     mappedIn: mappedIn,
+    isArray: isArray,
     isDate: isDate,
     isFunction: isFunction,
     isInt: isInt,
