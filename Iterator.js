@@ -35,6 +35,21 @@ define(['./Collection'],
   };
 
   /**
+   * @method stop
+   * @protected
+   * @return {Any}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Iterator.prototype.stop = function() {
+    if (typeof StopIteration !== 'undefined')
+      throw StopIteration;
+
+    throw 'There is no next!';
+  };
+
+  /**
    * @method each
    *
    * @author Gillis Van Ginderachter
@@ -55,6 +70,7 @@ define(['./Collection'],
   Iterator.prototype.fold = function(seed, folder) {
     while (this.hasNext())
       seed = folder(seed, this.next());
+
     return seed;
   };
 
@@ -103,6 +119,7 @@ define(['./Collection'],
    */
   Iterator.prototype.min = function(comparator) {
     comparator = comparator || Iterator.defaultComparator;
+
     return this.fold(undefined, function(min, value) {
       return min && comparator(min, value) < 0 ? min : value;
     });
@@ -117,6 +134,7 @@ define(['./Collection'],
    */
   Iterator.prototype.max = function(comparator) {
     comparator = comparator || Iterator.defaultComparator;
+
     return this.fold(undefined, function(max, value) {
       return max && comparator(max, value) > 0 ? max : value;
     });
@@ -133,18 +151,42 @@ define(['./Collection'],
     var result = [];
     while (this.hasNext())
       result.push(this.next());
+
     return result;
   };
 
   /**
    * @method sort
-   * @return {Any[]}
+   * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
   Iterator.prototype.sort = function(sorter) {
-    return this.collect().sort(sorter);
+    var self = this;
+    var wrapped = null;
+
+    return Object.create(Iterator.prototype, {
+      hasNext: {
+        value: function() {
+          if (!wrapped) {
+            // Lazy load the sorted array
+            var sorted = self.collect().sort(sorter);
+            wrapped = Iterator.forArray(sorted);
+          }
+
+          return wrapped.hasNext();
+        }
+      },
+      next: {
+        value: function() {
+          if (!this.hasNext())
+            this.stop();
+
+          return wrapped.next();
+        }
+      }
+    });
   };
 
   /**
@@ -166,7 +208,7 @@ define(['./Collection'],
       next: {
         value: function() {
           if (!this.hasNext())
-            throw StopIteration;
+            return this.stop();
 
           if (wrapped.hasNext())
             return wrapped.next();
@@ -210,7 +252,7 @@ define(['./Collection'],
       next: {
         value: function() {
           if (!this.hasNext())
-            throw StopIteration;
+            return this.stop();
 
           loaded = false;
           return current;
@@ -238,7 +280,7 @@ define(['./Collection'],
       next: {
         value: function() {
           if (!this.hasNext())
-            throw StopIteration;
+            return this.stop();
 
           return mapper(wrapped.next());
         }
@@ -263,7 +305,7 @@ define(['./Collection'],
       },
       next: {
         value: function() {
-          throw StopIteration;
+          return this.stop();
         }
       }
     });
@@ -313,7 +355,7 @@ define(['./Collection'],
       next: {
         value: function() {
           if (!this.hasNext())
-            throw StopIteration;
+            return this.stop();
 
           return current += step;
         }
@@ -344,7 +386,7 @@ define(['./Collection'],
       next: {
         value: function() {
           if (!this.hasNext())
-            throw StopIteration;
+            return this.stop();
 
           return array[index++];
         }

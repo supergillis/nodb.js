@@ -142,7 +142,7 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
 
   /**
    * @method sort
-   * @return {Collection}
+   * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
@@ -193,14 +193,13 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
    * @since 1.0.0
    */
   Collection.asArray = function(object) {
+    var array = [];
     if (µ.isArray(object))
       array = object.slice(0);
-    else if (Iterator.isPrototypeOf(object))
+    else if (Iterator.prototype.isPrototypeOf(object))
       array = object.collect();
-    else if (Collection.isPrototypeOf(object))
+    else if (Collection.prototype.isPrototypeOf(object))
       array = object.collect();
-    else
-      array = [];
 
     return Object.create(Collection.prototype, {
       add: {
@@ -238,32 +237,34 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.asLinkedList = function() {
-    var current = undefined;
+  Collection.asLinkedList = function(object) {
+    // First value is a dummy value
+    var current = {};
+    var last = current;
 
-    return Object.create(Collection.prototype, {
+    var collection = Object.create(Collection.prototype, {
       add: {
         value: function(object) {
-          current = {
+          last.next = {
             value: object,
-            next: current
+            next: undefined
           };
+          last = last.next;
           return this;
         }
       },
       remove: {
         value: function(value) {
-          var previous = undefined;
-          var iterating = current;
+          // Skip the dummy value
+          var previous = current;
+          var iterating = current.next;
 
           while (iterating) {
             if (iterating.value === object) {
-              if (previous === undefined)
-                current = iterating.next;
-              else
-                previous.next = iterating.next;
+              previous.next = iterating.next;
               break;
             }
+
             previous = iterating;
             iterating = iterating.next;
           }
@@ -272,16 +273,14 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
       },
       removeAll: {
         value: function(value) {
-          var previous = undefined;
-          var iterating = current;
+          // Skip the dummy value
+          var previous = current;
+          var iterating = current.next;
 
           while (iterating) {
-            if (iterating.value === object) {
-              if (previous === undefined)
-                current = iterating.next;
-              else
-                previous.next = iterating.next;
-            }
+            if (iterating.value === object)
+              previous.next = iterating.next;
+
             previous = iterating;
             iterating = iterating.next;
           }
@@ -290,7 +289,7 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
       },
       iterator: {
         value: function() {
-          var iterating = current;
+          var iterating = current.next;
 
           return Object.create(Iterator.prototype, {
             hasNext: {
@@ -312,6 +311,21 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
         }
       }
     });
+
+    // Initialize the collection
+    if (µ.isArray(object)) {
+      µ.each(object, function(_, value) {
+        collection.add(value);
+      });
+    }
+    else if (Iterator.prototype.isPrototypeOf(object) ||
+        Collection.prototype.isPrototypeOf(object)) {
+      object.each(function(value) {
+        collection.add(value);
+      })
+    }
+
+    return collection;
   };
 
   return Collection;
