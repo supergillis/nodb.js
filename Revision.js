@@ -1,9 +1,8 @@
 define([
     './Utilities',
     './Collection',
-    './Iterator',
-    './Map'],
-  function(µ, Collection, Iterator, Map) {
+    './Iterator'],
+  function(µ, Collection, Iterator) {
   /**
    * The Revision class.
    *
@@ -26,7 +25,7 @@ define([
         value: Collection.linkedList()
       },
       values: {
-        value: new Map()
+        value: new WeakMap()
       }
     });
   };
@@ -92,7 +91,7 @@ define([
   Revision.prototype.revert = function() {
     this.created = new Collection.LinkedList();
     this.deleted = new Collection.LinkedList();
-    this.values = new Map();
+    this.values = new WeakMap();
   };
 
   /**
