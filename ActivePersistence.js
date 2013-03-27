@@ -8,15 +8,12 @@ define([
   function(µ, Collection, Eventable, Model, Revision, Type) {
   /**
    * @class ActivePersistence
-   * @extends Eventable
    * @constructor
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
   var ActivePersistence = function() {
-    Eventable.call(this);
-
     Object.defineProperties(this, {
       /**
        * @property models
@@ -167,9 +164,6 @@ define([
     });
   };
 
-  ActivePersistence.prototype = Object.create(Eventable.prototype);
-  ActivePersistence.prototype.constructor = ActivePersistence;
-
   /**
    * Creates a new model. See {{#crossLink "Model"}}{{/crossLink}}.
    *
@@ -207,25 +201,19 @@ define([
    * @since 1.0.0
    */
   ActivePersistence.prototype.transact = function(callback) {
-    var transactionRevision = this.revision.sprout();
+    while (true) {
+      var transactionRevision = this.revision.sprout();
 
-    var counter = 0;
-    var executor = Object.create(Object.prototype, {
-      exec: {
-        value: function(callback) {
-          counter += 1;
-          callback(this);
-          counter -= 1;
+      transactionRevision.in(function() {
+        callback();
+      });
 
-          if (counter == 0)
-            transactionRevision.commit();
-        }
+      try {
+        transactionRevision.commit();
+        break;
       }
-    });
-
-    transactionRevision.in(function() {
-      executor.exec(callback);
-    });
+      catch (exception) {}
+    }
   };
 
   return new ActivePersistence();
