@@ -202,7 +202,7 @@ define([
    */
   ActivePersistence.prototype.transact = function(callback) {
     while (true) {
-      var transactionRevision = this.revision.sprout();
+      var transactionRevision = this.revision.branch();
 
       transactionRevision.in(function() {
         callback();

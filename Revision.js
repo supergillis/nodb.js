@@ -71,12 +71,12 @@ define([
   });
 
   /**
-   * @method sprout
+   * @method branch
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Revision.prototype.sprout = function() {
+  Revision.prototype.branch = function() {
     return new Revision(this);
   };
 
