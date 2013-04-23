@@ -47,12 +47,7 @@ define(['./Utilities', './Iterator'], function(µ, Iterator) {
   Collection.prototype.addAll = function(object) {
     var self = this;
 
-    if (arguments.length > 1) {
-      µ.each(Array.prototype.slice(arguments), function(_, value) {
-        self.add(value);
-      });
-    }
-    else if (µ.isArray(object)) {
+    if (µ.isArray(object)) {
       µ.each(object, function(_, value) {
         self.add(value);
       });
