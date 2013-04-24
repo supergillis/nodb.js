@@ -840,9 +840,16 @@ define(function() {
   };
 
   Type.prototype.initialize = function(instance, key, value) {
-    if (!this.validate(instance, key, value))
+    var valid = arguments.length === 2 ?
+      this.validate(instance, key) :
+      this.validate(instance, key, value);
+
+    if (!valid)
       throw 'Invalid value for property \'' + key + '\' for model \'' +
         instance.__model.name + '\'!';
+
+    if (arguments.length === 2)
+      value = null;
 
     this.nodb.revision.setValueFor(instance, key, value);
   };
@@ -889,7 +896,7 @@ define(function() {
     return Object.create(new Type(nodb), {
       validate: {
         value: function(instance, key, value) {
-          return !value || !!value == value;
+          return arguments.length === 2 || !!value === value;
         }
       }
     });
@@ -907,7 +914,7 @@ define(function() {
     return Object.create(new Type(nodb), {
       validate: {
         value: function(instance, key, value) {
-          return !value || µ.isNumber(value);
+          return arguments.length === 2 || µ.isNumber(value);
         }
       }
     });
@@ -925,7 +932,7 @@ define(function() {
     return Object.create(new Type(nodb), {
       validate: {
         value: function(instance, key, value) {
-          return !value || µ.isInteger(value);
+          return arguments.length === 2 || µ.isInteger(value);
         }
       }
     });
@@ -943,7 +950,7 @@ define(function() {
     return Object.create(new Type(nodb), {
       validate: {
         value: function(instance, key, value) {
-          return !value || µ.isString(value);
+          return arguments.length === 2 || µ.isString(value);
         }
       }
     });
@@ -961,7 +968,7 @@ define(function() {
     return Object.create(new Type(nodb), {
       validate: {
         value: function(instance, key, value) {
-          return !value || µ.isDate(value);
+          return arguments.length === 2 || µ.isDate(value);
         }
       }
     });
@@ -979,7 +986,7 @@ define(function() {
     return Object.create(new Type(nodb), {
       validate: {
         value: function(instance, key, value) {
-          return !value || model.isModelOf(value);
+          return arguments.length === 2 || model.isModelOf(value);
         }
       }
     });
@@ -996,10 +1003,41 @@ define(function() {
   Type.createModelManyType = function(nodb, model) {
     return Object.create(new Type(nodb), {
       initialize: {
-        value: function(instance, key, value) {        
-          // Collectionize the value
-          value = Collection.createArrayCollection(value);
-          Type.prototype.initialize.call(this, instance, key, value);
+        value: function(instance, key, value) {
+          // Create typed collection
+          var wrappedCollection = Collection.createArrayCollection();
+          var typedCollection = Object.create(Collection.prototype, {
+            add: {
+              value: function(object) {
+                if (!model.isModelOf(object))
+                  throw 'Cannot add object ' + object + ' to the typed ' +
+                    'collection for model ' + model.name;
+
+                return wrappedCollection.add(object);
+              }
+            },
+            remove: {
+              value: function(object) {
+                return wrappedCollection.remove(object);
+              }
+            },
+            contains: {
+              value: function(object) {
+                return wrappedCollection.contains(object);
+              }
+            },
+            iterator: {
+              value: function() {
+                return wrappedCollection.iterator();
+              }
+            }
+          });
+          
+          // Initialize the typed collection
+          typedCollection.addAll(value);
+          
+          // Call the super initialize
+          Type.prototype.initialize.call(this, instance, key, typedCollection);
         }
       },
       set: {
@@ -1009,39 +1047,10 @@ define(function() {
       },
       validate: {
         value: function(instance, key, value) {
-          if (!(value instanceof Collection))
-            return false;
-
-          // Allow collections with instances of the given model
-          var iterator = value.iterator();
-          while (iterator.hasNext()) {
-            var subvalue = iterator.next();
-
-            if (model.isModelOf(value))
-              return false;
-          }
-
-          return true;
+          // No need to check types here, this is done in initialize
+          return (value instanceof Collection);
         }
       }
-    });
-  };
-
-  /**
-   * @class ManyType
-   * @extends Type
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var ManyType = function(nodb, model) {
-    Type.call(this, nodb);
-
-    Object.defineProperty(this, 'model', {
-      value: model
     });
   };
 
@@ -1112,8 +1121,10 @@ define(function() {
           var key = keys[index];
           var type = properties[key];
 
-          type.initialize(instance, key,
-            values.hasOwnProperty(key) ? values[key] : undefined);
+          if (values.hasOwnProperty(key))
+            type.initialize(instance, key, values[key]);
+          else
+            type.initialize(instance, key);
         }
 
         // Call the instantiate of the parent InstancePrototype
