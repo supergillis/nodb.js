@@ -1111,7 +1111,7 @@ define(function() {
     });
 
     // Add an instatiate function that creates a new instance
-    Object.defineProperty(instancePrototype, 'instantiate', {
+    Object.defineProperty(instancePrototype, '__instantiate', {
       value: function(values, instance) {
         values = values || {};
         instance = instance || Object.create(this);
@@ -1129,8 +1129,8 @@ define(function() {
 
         // Call the instantiate of the parent InstancePrototype
         var parent = Object.getPrototypeOf(this);
-        if (parent && parent.instantiate)
-          parent.instantiate(values, instance);
+        if (parent && parent.__instantiate)
+          parent.__instantiate(values, instance);
 
         return instance;
       }
@@ -1308,7 +1308,7 @@ define(function() {
        */
       create: {
         value: function(values) {
-          var instance = instancePrototype.instantiate(values);
+          var instance = instancePrototype.__instantiate(values);
 
           // Track this instance
           this.nodb.revision.add(instance);
