@@ -47,15 +47,18 @@ define(function() {
     isArray: function(object) {
       return Object.prototype.toString.call(object) === '[object Array]';
     },
-    isDat: function(object) {
+    isDate: function(object) {
       return Object.prototype.toString.call(object) === '[object Date]';
     },
     isFunction: function(object) {
       return Object.prototype.toString.call(object) ===
         '[object Function]';
     },
-    isInt: function(object) {
-      return typeof object === 'number' && object % 1 == 0;
+    isNumber: function(object) {
+      return typeof object === 'number';
+    },
+    isInteger: function(object) {
+      return this.isNumber(object) && object % 1 == 0;
     },
     isString: function(object) {
       return Object.prototype.toString.call(object) === '[object String]';
@@ -371,14 +374,14 @@ define(function() {
   };
 
   /**
-   * @method array
+   * @method createArrayIterator
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.array = function(array) {
+  Iterator.createArrayIterator = function(array) {
     var index = 0;
 
     // Make shallow copy
@@ -402,14 +405,14 @@ define(function() {
   };
 
   /**
-   * @method empty
+   * @method createEmptyIterator
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.empty = function() {
+  Iterator.createEmptyIterator = function() {
     return Object.create(Iterator.prototype, {
       hasNext: {
         value: function() {
@@ -454,14 +457,14 @@ define(function() {
   };
 
   /**
-   * @method repeat
+   * @method createRepeatingIterator
    * @static
    * @return {Iterator}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Iterator.repeat = function(value) {
+  Iterator.createRepeatingIterator = function(value) {
     return Object.create(Iterator.prototype, {
       hasNext: {
         value: function() {
@@ -687,14 +690,14 @@ define(function() {
   };
 
   /**
-   * @method array
+   * @method createArrayCollection
    * @static
    * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.array = function() {
+  Collection.createArrayCollection = function() {
     var array = [];
 
     var collection = Object.create(Collection.prototype, {
@@ -719,7 +722,7 @@ define(function() {
       },
       iterator: {
         value: function() {
-          return Iterator.array(array);
+          return Iterator.createArrayIterator(array);
         }
       }
     });
@@ -731,14 +734,14 @@ define(function() {
   };
 
   /**
-   * @method linkedList
+   * @method createLinkedList
    * @static
    * @return {Collection}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  Collection.linkedList = function() {
+  Collection.createLinkedList = function() {
     // First value is a dummy value
     var current = {};
     var last = current;
@@ -826,9 +829,9 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var Type = function(persistence) {
-    Object.defineProperty(this, 'persistence', {
-      value: persistence
+  var Type = function(nodb) {
+    Object.defineProperty(this, 'nodb', {
+      value: nodb
     });
   };
 
@@ -839,152 +842,189 @@ define(function() {
   Type.prototype.initialize = function(instance, key, value) {
     if (!this.validate(instance, key, value))
       throw 'Invalid value for property \'' + key + '\' for model \'' +
-        instance.model.name + '\'!';
+        instance.__model.name + '\'!';
 
-    this.persistence.revision.setValueFor(instance, key, value);
+    this.nodb.revision.setValueFor(instance, key, value);
   };
 
   Type.prototype.get = function(instance, key) {
-    return this.persistence.revision.getValueFor(instance, key);
+    return this.nodb.revision.getValueFor(instance, key);
   };
 
   Type.prototype.set = function(instance, key, value) {
     if (!this.validate(instance, key, value))
       throw 'Invalid value for property \'' + key + '\' for model \'' +
-        instance.model.name + '\'!';
+        instance.__model.name + '\'!';
 
-    this.persistence.revision.setValueFor(instance, key, value);
+    this.nodb.revision.setValueFor(instance, key, value);
   };
-
+  
   /**
-   * @class AnyType
-   * @extends Type
-   *
-   * @constructor
-   * @private
+   * @method createAnyType
+   * @static
+   * @return {Type}
    *
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var AnyType = function(persistence) {
-    Type.call(this, persistence);
-  };
-
-  AnyType.prototype = Object.create(Type.prototype);
-  AnyType.prototype.constructor = AnyType;
-
-  AnyType.prototype.validate = function(instance, key, value) {
-    return true;
-  };
-
-  /**
-   * @class BooleanType
-   * @extends Type
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var BooleanType = function(persistence) {
-    Type.call(this, persistence);
-  };
-
-  BooleanType.prototype = Object.create(Type.prototype);
-  BooleanType.prototype.constructor = BooleanType;
-
-  BooleanType.prototype.validate = function(instance, key, value) {
-    return !value || !!value == value;
-  };
-
-  /**
-   * @class IntegerType
-   * @extends Type
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var IntegerType = function(persistence) {
-    Type.call(this, persistence);
-  };
-
-  IntegerType.prototype = Object.create(Type.prototype);
-  IntegerType.prototype.constructor = IntegerType;
-
-  IntegerType.prototype.validate = function(instance, key, value) {
-    return !value || µ.isInt(value);
-  };
-
-  /**
-   * @class StringType
-   * @extends Type
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var StringType = function(persistence) {
-    Type.call(this, persistence);
-  };
-
-  StringType.prototype = Object.create(Type.prototype);
-  StringType.prototype.constructor = StringType;
-
-  StringType.prototype.validate = function(instance, key, value) {
-    return !value || µ.isString(value);
-  };
-
-  /**
-   * @class DateType
-   * @extends Type
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var DateType = function(persistence) {
-    Type.call(this, persistence);
-  };
-
-  DateType.prototype = Object.create(Type.prototype);
-  DateType.prototype.constructor = DateType;
-
-  DateType.prototype.validate = function(instance, key, value) {
-    return !value || µ.isDate(value);
-  };
-
-  /**
-   * @class OneType
-   * @extends Type
-   *
-   * @constructor
-   * @private
-   *
-   * @author Gillis Van Ginderachter
-   * @since 1.0.0
-   */
-  var OneType = function(persistence, model) {
-    Type.call(this, persistence);
-
-    Object.defineProperty(this, 'model', {
-      value: model
+  Type.createAnyType = function(nodb) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return true;
+        }
+      }
     });
   };
+  
+  /**
+   * @method createBooleanType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createBooleanType = function(nodb) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return !value || !!value == value;
+        }
+      }
+    });
+  };
+  
+  /**
+   * @method createNumberType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createNumberType = function(nodb) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return !value || µ.isNumber(value);
+        }
+      }
+    });
+  };
+  
+  /**
+   * @method createIntegerType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createIntegerType = function(nodb) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return !value || µ.isInteger(value);
+        }
+      }
+    });
+  };
+  
+  /**
+   * @method createStringType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createStringType = function(nodb) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return !value || µ.isString(value);
+        }
+      }
+    });
+  };
+  
+  /**
+   * @method createDateType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createDateType = function(nodb) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return !value || µ.isDate(value);
+        }
+      }
+    });
+  };
+  
+  /**
+   * @method createOneType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createModelOneType = function(nodb, model) {
+    return Object.create(new Type(nodb), {
+      validate: {
+        value: function(instance, key, value) {
+          return !value || model.isModelOf(value);
+        }
+      }
+    });
+  };
+  
+  /**
+   * @method createModelManyType
+   * @static
+   * @return {Type}
+   *
+   * @author Gillis Van Ginderachter
+   * @since 1.0.0
+   */
+  Type.createModelManyType = function(nodb, model) {
+    return Object.create(new Type(nodb), {
+      initialize: {
+        value: function(instance, key, value) {        
+          // Collectionize the value
+          value = Collection.createArrayCollection(value);
+          Type.prototype.initialize.call(this, instance, key, value);
+        }
+      },
+      set: {
+        value: function(instance, key, value) {
+          throw 'Unable to change collection property \'' + key + '\'!';
+        }
+      },
+      validate: {
+        value: function(instance, key, value) {
+          if (!(value instanceof Collection))
+            return false;
 
-  OneType.prototype = Object.create(Type.prototype);
-  OneType.prototype.constructor = OneType;
+          // Allow collections with instances of the given model
+          var iterator = value.iterator();
+          while (iterator.hasNext()) {
+            var subvalue = iterator.next();
 
-  OneType.prototype.validate = function(instance, key, value) {
-    // Allow null, undefined and instances of the given model
-    return !value || this.model.isModelOf(value);
+            if (model.isModelOf(value))
+              return false;
+          }
+
+          return true;
+        }
+      }
+    });
   };
 
   /**
@@ -997,51 +1037,13 @@ define(function() {
    * @author Gillis Van Ginderachter
    * @since 1.0.0
    */
-  var ManyType = function(persistence, model) {
-    Type.call(this, persistence);
+  var ManyType = function(nodb, model) {
+    Type.call(this, nodb);
 
     Object.defineProperty(this, 'model', {
       value: model
     });
   };
-
-  ManyType.prototype = Object.create(Type.prototype);
-  ManyType.prototype.constructor = ManyType;
-
-  ManyType.prototype.initialize = function(instance, key, value) {
-    // Override default value with a collection
-    Type.prototype.initialize.call(this, instance, key,
-      Collection.array());
-  };
-
-  ManyType.prototype.set = function(instance, key, value) {
-    throw 'Unable to change collection property \'' + key + '\'!';
-  };
-
-  ManyType.prototype.validate = function(instance, key, value) {
-    // Allow collections with instances of the given model
-    if (!(value instanceof Collection))
-      return false;
-
-    var iterator = value.iterator();
-    while (iterator.hasNext()) {
-      var subvalue = iterator.next();
-
-      if (this.model.isModelOf(value))
-        return false;
-    }
-
-    return true;
-  };
-
-  Type.Any = AnyType;
-  Type.Boolean = BooleanType;
-  Type.Date = DateType;
-  Type.Integer = IntegerType;
-  Type.String = StringType;
-
-  Type.One = OneType;
-  Type.Many = ManyType;
 
   /**
    * This class is used as prototype for instances of a model.
@@ -1093,6 +1095,11 @@ define(function() {
         set: function(newValue) { type.set(this, name, newValue); }
       });
     });
+    
+    // The instancePrototype should know its model
+    Object.defineProperty(instancePrototype, '__model', {
+      value: model
+    });
 
     // Add an instatiate function that creates a new instance
     Object.defineProperty(instancePrototype, 'instantiate', {
@@ -1132,7 +1139,7 @@ define(function() {
    * @extends Collection
    *
    * @constructor
-   * @param persistence {ActivePersistence} The ActivePersistence object
+   * @param nodb {NoDB} The NoDB object
    *   that is notified about creations, changes, ...
    * @param name {String} The name of the model.
    * @param [proto] {Object} The prototype to be used by instances
@@ -1152,7 +1159,7 @@ define(function() {
    * full name is just the combination of the first name and the last
    * name.
    *
-   *     var Person = persistence.create({
+   *     var Person = nodb.create({
    *       name: 'Person',
    *       properties: {
    *         firstName: '',
@@ -1205,14 +1212,14 @@ define(function() {
 
     Object.defineProperties(this, {
       /**
-       * @property persistence
-       * @type {ActivePersistence}
+       * @property nodb
+       * @type {NoDB}
        *
        * @author Gillis Van Ginderachter
        * @since 1.0.0
        */
-      persistence: {
-        value: args.persistence
+      nodb: {
+        value: args.nodb
       },
       /**
        * @property name
@@ -1262,7 +1269,7 @@ define(function() {
        * @since 1.0.0
        */
       one: {
-        value: new Type.One(args.persistence, this)
+        value: Type.createModelOneType(args.nodb, this)
       },
       /**
        * @property many
@@ -1272,7 +1279,7 @@ define(function() {
        * @since 1.0.0
        */
       many: {
-        value: new Type.Many(args.persistence, this)
+        value: Type.createModelManyType(args.nodb, this)
       },
       /**
        * Create a new instance of this model. This instance will inherit
@@ -1293,7 +1300,7 @@ define(function() {
           var instance = instancePrototype.instantiate(values);
 
           // Track this instance
-          this.persistence.revision.add(instance);
+          this.nodb.revision.add(instance);
 
           return instance;
         }
@@ -1307,7 +1314,7 @@ define(function() {
       extend: {
         value: function(args) {
           return new Model({
-            persistence: this.persistence,
+            nodb: this.nodb,
             name: args.name,
             proto: args.proto,
             properties: args.properties,
@@ -1337,7 +1344,7 @@ define(function() {
        */
       iterator: {
         value: function() {
-          return this.persistence.revision.filter(function(instance) {
+          return this.nodb.revision.filter(function(instance) {
             return instancePrototype.isPrototypeOf(instance);
           });
         }
@@ -1407,7 +1414,7 @@ define(function() {
         value: function(key, cmp, value) {
           conditions.push({
             key: key,
-            cmp: arguments.length == 2 ? model.persistence.eq : cmp,
+            cmp: arguments.length == 2 ? model.nodb.eq : cmp,
             value: arguments.length == 2 ? operator : value
           });
           return this;
@@ -1437,10 +1444,10 @@ define(function() {
         value: parent
       },
       created: {
-        value: Collection.linkedList()
+        value: Collection.createArrayCollection()
       },
       deleted: {
-        value: Collection.linkedList()
+        value: Collection.createArrayCollection()
       },
       reads: {
         value: new Map()
@@ -1716,7 +1723,7 @@ define(function() {
        * @since 1.0.0
        */
       models: {
-        value: Collection.linkedList()
+        value: Collection.createArrayCollection()
       },
       /**
        * @property revision
@@ -1738,7 +1745,7 @@ define(function() {
        * @since 1.0.0
        */
       any: {
-        value: new Type.Any(this)
+        value: Type.createAnyType(this)
       },
       /**
        * @property boolean
@@ -1748,7 +1755,17 @@ define(function() {
        * @since 1.0.0
        */
       boolean: {
-        value: new Type.Boolean(this)
+        value: Type.createBooleanType(this)
+      },
+      /**
+       * @property number
+       * @type {Type}
+       *
+       * @author Gillis Van Ginderachter
+       * @since 1.0.0
+       */
+      number: {
+        value: Type.createNumberType(this)
       },
       /**
        * @property integer
@@ -1758,7 +1775,7 @@ define(function() {
        * @since 1.0.0
        */
       integer: {
-        value: new Type.Integer(this)
+        value: Type.createIntegerType(this)
       },
       /**
        * @property string
@@ -1768,7 +1785,7 @@ define(function() {
        * @since 1.0.0
        */
       string: {
-        value: new Type.String(this)
+        value: Type.createStringType(this)
       },
       /**
        * @property eq
@@ -1876,7 +1893,7 @@ define(function() {
    */
   NoDB.prototype.create = function(args) {
     var model = new Model({
-      persistence: this,
+      nodb: this,
       name: args.name,
       proto: args.proto,
       properties: args.properties
