@@ -840,11 +840,7 @@ define(function() {
   };
 
   Type.prototype.initialize = function(instance, key, value) {
-    var valid = arguments.length === 2 ?
-      this.validate(instance, key) :
-      this.validate(instance, key, value);
-
-    if (!valid)
+    if (!this.validate.apply(this, arguments))
       throw 'Invalid value for property \'' + key + '\' for model \'' +
         instance.__model.name + '\'!';
 
